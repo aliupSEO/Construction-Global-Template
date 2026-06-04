@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../lib/firebase';
-import { Lock, Mail, Loader2, AlertCircle, HardHat, Eye, EyeOff, LogIn } from 'lucide-react';
+import { Lock, Mail, Loader2, AlertCircle, HardHat, Eye, EyeOff, LogIn, ArrowLeft, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export function Login() {
@@ -11,6 +11,8 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resetMode, setResetMode] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -27,6 +29,28 @@ export function Login() {
       console.error('Login error:', err);
       setError('Anmeldung fehlgeschlagen. Bitte überprüfen Sie E-Mail und Passwort.');
       toast.error('Anmeldung fehlgeschlagen');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    try {
+      if (!email) {
+        throw new Error('Bitte geben Sie Ihre E-Mail-Adresse ein.');
+      }
+      const actualEmail = email.includes('@') ? email : `${email}@satler-digital.com`;
+      await sendPasswordResetEmail(auth, actualEmail);
+      setResetSent(true);
+      toast.success('Link zum Zurücksetzen gesendet!');
+    } catch (err: any) {
+      console.error('Reset error:', err);
+      setError(err.message || 'Fehler beim Senden der E-Mail.');
+      toast.error('Fehler beim Senden');
     } finally {
       setLoading(false);
     }
@@ -65,13 +89,16 @@ export function Login() {
           </div>
           
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2 tracking-tight text-center lg:text-left">
-            Willkommen zurück
+            {resetMode ? 'Passwort zurücksetzen' : 'Willkommen zurück'}
           </h2>
           <p className="text-slate-500 mb-8 sm:mb-10 text-sm sm:text-base text-center lg:text-left">
-            Bitte loggen Sie sich in Ihr Baumanagement-Konto ein.
+            {resetMode 
+              ? 'Geben Sie Ihre E-Mail-Adresse ein, um einen Link zum Zurücksetzen Ihres Passworts zu erhalten.' 
+              : 'Bitte loggen Sie sich in Ihr Baumanagement-Konto ein.'}
           </p>
 
-          <form onSubmit={handleLogin} className="space-y-6">
+          {!resetMode ? (
+            <form onSubmit={handleLogin} className="space-y-6">
             {error && (
               <div className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3 shadow-sm">
                 <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
@@ -118,6 +145,15 @@ export function Login() {
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
+              <div className="flex justify-end pt-2">
+                <button 
+                  type="button" 
+                  onClick={() => setResetMode(true)}
+                  className="text-sm font-semibold text-brand-primary hover:text-brand-primary/80 transition-colors"
+                >
+                  Passwort vergessen?
+                </button>
+              </div>
             </div>
 
             <button
@@ -125,10 +161,82 @@ export function Login() {
               disabled={loading}
               className="w-full flex justify-center items-center py-4 px-4 border border-transparent rounded-xl shadow-lg shadow-brand-primary/30 text-sm font-bold text-white bg-brand-primary hover:bg-brand-primary/90 focus:outline-none focus:ring-4 focus:ring-brand-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-8 hover:-translate-y-0.5"
             >
-              {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <LogIn className="w-5 h-5 mr-2" />}
-              {loading ? 'Wird angemeldet...' : 'Login'}
+              {loading ? <Loader2 key="loader" className="w-5 h-5 animate-spin mr-2" /> : <LogIn key="login" className="w-5 h-5 mr-2" />}
+              <span>{loading ? 'Wird angemeldet...' : 'Login'}</span>
             </button>
           </form>
+          ) : resetSent ? (
+            <div className="space-y-6">
+              <div className="p-6 bg-emerald-50 border border-emerald-100 rounded-2xl text-center">
+                <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Mail className="w-8 h-8 text-emerald-600" />
+                </div>
+                <h3 className="text-lg font-bold text-emerald-900 mb-2">E-Mail gesendet!</h3>
+                <p className="text-sm text-emerald-700">
+                  Wir haben einen Link zum Zurücksetzen Ihres Passworts an <strong>{email}</strong> gesendet. Bitte überprüfen Sie Ihren Posteingang (und den Spam-Ordner).
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setResetMode(false);
+                  setResetSent(false);
+                }}
+                className="w-full flex justify-center items-center py-4 px-4 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 bg-white hover:bg-slate-50 transition-all"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Zurück zum Login
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleResetPassword} className="space-y-6">
+              {error && (
+                <div className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3 shadow-sm">
+                  <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-700">{error}</p>
+                </div>
+              )}
+              
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-700">E-Mail Adresse</label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-slate-400 group-focus-within:text-brand-primary transition-colors" />
+                  </div>
+                  <input
+                    type="text"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="block w-full pl-12 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-brand-primary/10 focus:border-brand-primary transition-all shadow-sm text-base"
+                    placeholder="name@firma.at"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setResetMode(false)}
+                  disabled={loading}
+                  className="flex-1 py-4 px-4 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 bg-white hover:bg-slate-50 transition-all disabled:opacity-50"
+                >
+                  Abbrechen
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-1 flex justify-center items-center py-4 px-4 border border-transparent rounded-xl shadow-lg shadow-brand-primary/30 text-sm font-bold text-white bg-brand-primary hover:bg-brand-primary/90 transition-all disabled:opacity-50"
+                >
+                  {loading ? <Loader2 key="loader" className="w-5 h-5 animate-spin" /> : (
+                    <>
+                      <Send key="send" className="w-4 h-4 mr-2" />
+                      <span>Senden</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          )}
           
           <div className="mt-12 text-center">
             <p className="text-sm text-slate-500 font-medium">

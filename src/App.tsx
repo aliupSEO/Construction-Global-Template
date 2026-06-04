@@ -20,6 +20,7 @@ import { AppProvider } from './contexts/AppContext';
 import { useAppSettings } from './hooks/useAppSettings';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Login } from './pages/Login';
+import { ResetPassword } from './pages/ResetPassword';
 import { Account } from './pages/Account';
 
 export function NavigationTracker() {
@@ -68,7 +69,9 @@ function App() {
         <Router>
             <NavigationTracker />
             <Routes>
+                {/* Public Routes */}
                 <Route path="/login" element={<Login />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 
                 {/* Admin only */}
                 <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
