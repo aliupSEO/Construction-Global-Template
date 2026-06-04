@@ -6,7 +6,7 @@ import { translateToGerman } from '../lib/translate';
 import { LeaveRequest } from '../types';
 import { DashboardShell } from '../components/DashboardShell';
 import { CalendarRange, Check, X, Clock, Play, FileText, MessageCircle, Printer } from 'lucide-react';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db, APP_ID } from '../lib/firebase';
 import toast from 'react-hot-toast';
 
@@ -144,9 +144,17 @@ export const LeaveRequests = () => {
             toast.success("Antrag genehmigt");
             
             // Open email client
+            let targetEmail = 'office@example.com';
+            try {
+                const docSnap = await getDoc(doc(db, 'apps', APP_ID, 'metadata', 'company_profile'));
+                if (docSnap.exists() && docSnap.data().email) {
+                    targetEmail = docSnap.data().email;
+                }
+            } catch(e) {}
+            
             const subject = encodeURIComponent(`Genehmigter Urlaubsantrag: ${req.employeeName}`);
             const body = encodeURIComponent(`Hallo Office-Team,\n\nder folgende Urlaubsantrag wurde genehmigt:\n\nMitarbeiter: ${req.employeeName}\nZeitraum: ${formatDate(req.startDate)} - ${formatDate(req.endDate)}\nGrund: ${req.reason}\n\nBitte im System vermerken.\n\nLiebe Grüße`);
-            window.location.href = `mailto:office@satler.com?subject=${subject}&body=${body}`;
+            window.location.href = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
             
             loadData();
         } catch (error) {

@@ -39,7 +39,8 @@ export function ForcePasswordResetModal() {
       // 2. Update Firestore Doc to remove the plaintext password
       const empRef = doc(db, 'apps', APP_ID, userCollection || 'employees', employeeId);
       await updateDoc(empRef, {
-        password: '' 
+        password: '',
+        requiresPasswordChange: false
       });
 
       toast.success('Passwort erfolgreich geändert.');

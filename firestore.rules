@@ -1,15 +1,120 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Globale Regel für das 2H Ecosystem (Isolierung der App-Daten)
-    match /apps/{appId}/{document=**} {
-      // Für diese Version erlauben wir Lese- und Schreibzugriff für alle (oder ggf. nur authentifizierte User, falls Auth später aktiv ist)
-      // WICHTIG: In Produktion sollte hier auf `request.auth != null` geprüft werden, falls ein Login existiert.
-      allow read, write: if appId == 'satler_bau_bauberichte_satler_v1';
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
     }
-    
-    // Root-Level Zugriff generell verbieten
+    function getRole() {
+      return request.auth.token.role;
+    }
+    function isAdmin() {
+      return isAuthenticated() && getRole() == 'admin';
+    }
+    function isVorarbeiter() {
+      return isAuthenticated() && (getRole() == 'vorarbeiter' || getRole() == 'admin');
+    }
+    function isMitarbeiter() {
+      return isAuthenticated() && getRole() != null;
+    }
+    function isOwnLeaveRequest() {
+      return request.auth.uid == resource.data.employeeId;
+    }
+
+    match /apps/{appId}/{document=**} {
+      allow read, write: if false; // Default deny all
+    }
+
+    // ─── EMPLOYEES ───────────────────────────────────────
+    match /apps/{appId}/employees/{docId} {
+      allow read: if isVorarbeiter();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ─── MANAGERS ────────────────────────────────────────
+    match /apps/{appId}/managers/{docId} {
+      allow read: if isVorarbeiter();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ─── DAILY REPORTS ───────────────────────────────────
+    match /apps/{appId}/daily_reports/{docId} {
+      allow read: if isMitarbeiter();
+      allow create, update: if isVorarbeiter();
+      allow delete: if isAdmin();
+    }
+
+    // ─── WEEKLY REPORTS ──────────────────────────────────
+    match /apps/{appId}/weekly_reports/{docId} {
+      allow read: if isMitarbeiter();
+      allow create, update: if isVorarbeiter();
+      allow delete: if isAdmin();
+    }
+
+    // ─── BAUSTELLEN (SITES) ──────────────────────────────
+    match /apps/{appId}/baustellen/{docId} {
+      allow read: if isMitarbeiter();
+      allow create, update: if isVorarbeiter();
+      allow delete: if isAdmin();
+    }
+
+    // ─── CLIENTS ─────────────────────────────────────────
+    match /apps/{appId}/clients/{docId} {
+      allow read: if isVorarbeiter();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ─── LEAVE REQUESTS ──────────────────────────────────
+    match /apps/{appId}/leave_requests/{docId} {
+      // Employees can read and create their own requests
+      allow read: if isMitarbeiter() && (isVorarbeiter() || isOwnLeaveRequest());
+      allow create: if isMitarbeiter() && request.auth.uid == request.resource.data.employeeId;
+      // Only admins/vorarbeiter can update status (approve/reject)
+      allow update: if isVorarbeiter();
+      allow delete: if isAdmin();
+    }
+
+    // ─── METADATA / SETTINGS ─────────────────────────────
+    match /apps/{appId}/metadata/{docId} {
+      allow read: if isMitarbeiter();
+      allow write: if isAdmin();
+    }
+
+    // ─── SYSTEM LOGS ─────────────────────────────────────
+    match /apps/{appId}/system_logs/{docId} {
+      allow read: if isAdmin();
+      allow create: if isMitarbeiter(); // Anyone can write logs
+      allow update, delete: if false;  // Immutable
+    }
+
+    // ─── ACTIONS / TASKS ─────────────────────────────────
+    match /apps/{appId}/actions/{docId} {
+      allow read, write: if isVorarbeiter();
+    }
+
+    // ─── SITE ACTIVITIES ─────────────────────────────────
+    match /apps/{appId}/site_activities/{docId} {
+      allow read: if isMitarbeiter();
+      allow create, update: if isVorarbeiter();
+      allow delete: if isAdmin();
+    }
+
+    // ─── SITE PHOTOS ─────────────────────────────────────
+    match /apps/{appId}/site_photos/{docId} {
+      allow read: if isMitarbeiter();
+      allow create: if isVorarbeiter();
+      allow delete: if isAdmin();
+    }
+
+    // ─── BAUSTELLEN FOTOS ────────────────────────────────
+    match /apps/{appId}/baustellen_fotos/{docId} {
+      allow read: if isMitarbeiter();
+      allow create: if isVorarbeiter();
+      allow delete: if isAdmin();
+    }
+
+    // ─── GLOBAL DENY ─────────────────────────────────────
     match /{document=**} {
       allow read, write: if false;
     }

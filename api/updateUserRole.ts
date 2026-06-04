@@ -51,11 +51,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(401).json({ error: 'Invalid or expired token' });
         }
         
-        const db = admin.firestore();
-        
-        // Verifiziere, dass der Caller wirklich ein Admin ist
-        const callerQuery = await db.collection('apps').doc('satler_bau_bauberichte_satler_v1').collection('employees').where('authUid', '==', decodedToken.uid).get();
-        if (callerQuery.empty || callerQuery.docs[0].data()?.role !== 'admin') {
+        const APP_ID = process.env.VITE_APP_ID || 'construction_global_v1';
+        let hasAccess = false;
+
+        // 1. Check Custom Claims first (Fastest, most secure)
+        if (decodedToken.role === 'admin') {
+            hasAccess = true;
+        } else {
+            // 2. Fallback to Firestore lookup if claims aren't set yet
+            const db = admin.firestore();
+            const callerQuery = await db.collection('apps').doc(APP_ID).collection('employees').where('authUid', '==', decodedToken.uid).get();
+            if (!callerQuery.empty && callerQuery.docs[0].data()?.role === 'admin') {
+                hasAccess = true;
+            } else {
+                const callerQueryMan = await db.collection('apps').doc(APP_ID).collection('managers').where('authUid', '==', decodedToken.uid).get();
+                if (!callerQueryMan.empty && callerQueryMan.docs[0].data()?.role === 'admin') {
+                    hasAccess = true;
+                }
+            }
+        }
+
+        if (!hasAccess) {
             return res.status(403).json({ error: 'Access Denied: Requires admin role' });
         }
 
@@ -65,15 +81,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(400).json({ error: 'Missing required fields (authUid, newRole)' });
         }
 
-        // Führe das Role-Update auf Firebase Firestore Ebene durch (nur users Collection)
-        // Setze { merge: true }, falls das Dokument unerwartet nicht existiert
-        await db.collection('users').doc(authUid).set({
-            role: newRole,
-        }, { merge: true });
+        // Führe das Role-Update auf Firebase Firestore Ebene durch
+        const employeeQuery = await db.collection('apps').doc(APP_ID).collection('employees').where('authUid', '==', authUid).get();
+        if (!employeeQuery.empty) {
+            await employeeQuery.docs[0].ref.update({
+                role: newRole,
+            });
+        } else {
+            const managerQuery = await db.collection('apps').doc(APP_ID).collection('managers').where('authUid', '==', authUid).get();
+            if (!managerQuery.empty) {
+                await managerQuery.docs[0].ref.update({
+                    role: newRole,
+                });
+            }
+        }
 
-        // Optional: Custom Claims in Firebase Auth aktualisieren, falls wir in Zukunft 
-        // rein Claim-basierte Rules schreiben möchten.
-        // await admin.auth().setCustomUserClaims(authUid, { role: newRole });
+        // Custom Claims in Firebase Auth aktualisieren
+        await admin.auth().setCustomUserClaims(authUid, { role: newRole, appId: APP_ID });
 
         return res.status(200).json({ success: true, message: 'Benutzerrolle erfolgreich aktualisiert!' });
 

@@ -42,52 +42,84 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setCurrentUser(user);
       if (user) {
         try {
-          let empDoc = null;
-          let docData = null;
-          let docColl: 'employees' | 'managers' | null = null;
-          let docId = null;
-
-          const qEmp = query(
-            collection(db, 'apps', APP_ID, 'employees'),
-            where('authUid', '==', user.uid)
-          );
-          const snapshotEmp = await getDocs(qEmp);
-          
-          if (!snapshotEmp.empty) {
-             empDoc = snapshotEmp.docs[0];
-             docData = empDoc.data();
-             docId = empDoc.id;
-             docColl = 'employees';
+          const tokenResult = await user.getIdTokenResult();
+          if (tokenResult.claims.role) {
+            setUserRole(tokenResult.claims.role as Role);
+            
+            // Still need to get employeeId, userCollection, requiresPasswordChange
+            const qEmp = query(
+              collection(db, 'apps', APP_ID, 'employees'),
+              where('authUid', '==', user.uid)
+            );
+            const snapshotEmp = await getDocs(qEmp);
+            
+            if (!snapshotEmp.empty) {
+               const empDoc = snapshotEmp.docs[0];
+               const docData = empDoc.data();
+               setEmployeeId(empDoc.id);
+               setUserCollection('employees');
+               setRequiresPasswordChange(docData.requiresPasswordChange === true);
+            } else {
+               const qMan = query(
+                 collection(db, 'apps', APP_ID, 'managers'),
+                 where('authUid', '==', user.uid)
+               );
+               const snapshotMan = await getDocs(qMan);
+               if (!snapshotMan.empty) {
+                  const manDoc = snapshotMan.docs[0];
+                  const docData = manDoc.data();
+                  setEmployeeId(manDoc.id);
+                  setUserCollection('managers');
+                  setRequiresPasswordChange(docData.requiresPasswordChange === true);
+               } else {
+                 setEmployeeId(null);
+                 setUserCollection(null);
+                 setRequiresPasswordChange(false);
+               }
+            }
           } else {
-             const qMan = query(
-               collection(db, 'apps', APP_ID, 'managers'),
-               where('authUid', '==', user.uid)
-             );
-             const snapshotMan = await getDocs(qMan);
-             if (!snapshotMan.empty) {
-                empDoc = snapshotMan.docs[0];
-                docData = empDoc.data();
-                docId = empDoc.id;
-                docColl = 'managers';
-             }
-          }
+            // Fallback: Only for first-time bootstrap (admin not yet set up)
+            let empDoc = null;
+            let docData = null;
+            let docColl: 'employees' | 'managers' | null = null;
+            let docId = null;
 
-          if (empDoc && docData && docColl) {
-            setUserRole(docData.role as Role || 'vorarbeiter');
-            setEmployeeId(docId);
-            setUserCollection(docColl);
-            setRequiresPasswordChange(!!docData.password && docData.password !== '');
-          } else if (user.email === 'hosiner@satler.com') {
-            // Bootstrap Admin Fallback, falls kein Eintrag existiert
-            setUserRole('admin');
-            setEmployeeId(null);
-            setUserCollection(null);
-            setRequiresPasswordChange(false);
-          } else {
-            setUserRole(null);
-            setEmployeeId(null);
-            setUserCollection(null);
-            setRequiresPasswordChange(false);
+            const qEmp = query(
+              collection(db, 'apps', APP_ID, 'employees'),
+              where('authUid', '==', user.uid)
+            );
+            const snapshotEmp = await getDocs(qEmp);
+            
+            if (!snapshotEmp.empty) {
+               empDoc = snapshotEmp.docs[0];
+               docData = empDoc.data();
+               docId = empDoc.id;
+               docColl = 'employees';
+            } else {
+               const qMan = query(
+                 collection(db, 'apps', APP_ID, 'managers'),
+                 where('authUid', '==', user.uid)
+               );
+               const snapshotMan = await getDocs(qMan);
+               if (!snapshotMan.empty) {
+                  empDoc = snapshotMan.docs[0];
+                  docData = empDoc.data();
+                  docId = empDoc.id;
+                  docColl = 'managers';
+               }
+            }
+
+            if (empDoc && docData && docColl) {
+              setUserRole(docData.role as Role || 'vorarbeiter');
+              setEmployeeId(docId);
+              setUserCollection(docColl);
+              setRequiresPasswordChange(docData.requiresPasswordChange === true);
+            } else {
+              setUserRole(null);
+              setEmployeeId(null);
+              setUserCollection(null);
+              setRequiresPasswordChange(false);
+            }
           }
         } catch (error) {
           console.error("Fehler beim Abrufen der Rolle:", error);

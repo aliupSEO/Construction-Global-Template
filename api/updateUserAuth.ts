@@ -36,26 +36,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(401).json({ error: 'Invalid or expired token' });
         }
         
-        const db = admin.firestore();
-        // Das Projekt nutzt scheinbar einen speziellen Auth-Ansatz. Normalerweise holen wir die Rolle aus dem Employee Doc:
-        // Da wir in der API keinen direkten Zugriff auf "APP_ID" im Frontend haben, 
-        // müssen wir über alle Apps iterieren oder eine Collection Group Query verwenden, falls 'APP_ID' dynamisch ist.
-        // Falls APP_ID fix "2H-Web-Solutions/Satler-baubericht" ist:
-        const callerQuery = await db.collection('apps').doc('satler_bau_bauberichte_satler_v1').collection('employees').where('authUid', '==', decodedToken.uid).get();
-        
+        const APP_ID = process.env.VITE_APP_ID || 'construction_global_v1';
         let hasAccess = false;
-        if (!callerQuery.empty) {
-            const callerData = callerQuery.docs[0].data();
-            if (callerData.role === 'admin' || callerData.role === 'vorarbeiter') {
-                hasAccess = true;
-            }
+
+        // 1. Check Custom Claims first
+        if (decodedToken.role === 'admin' || decodedToken.role === 'vorarbeiter') {
+            hasAccess = true;
         } else {
-            const callerQueryMan = await db.collection('apps').doc('satler_bau_bauberichte_satler_v1').collection('managers').where('authUid', '==', decodedToken.uid).get();
-            if (!callerQueryMan.empty) {
-                // Anyone in managers collection is essentially a Vorarbeiter/Admin
-                hasAccess = true;
-            } else if (decodedToken.email === 'hosiner@satler.com') {
-                 hasAccess = true;
+            // 2. Fallback to Firestore lookup
+            const db = admin.firestore();
+            const callerQuery = await db.collection('apps').doc(APP_ID).collection('employees').where('authUid', '==', decodedToken.uid).get();
+            
+            if (!callerQuery.empty) {
+                const callerData = callerQuery.docs[0].data();
+                if (callerData.role === 'admin' || callerData.role === 'vorarbeiter') {
+                    hasAccess = true;
+                }
+            } else {
+                const callerQueryMan = await db.collection('apps').doc(APP_ID).collection('managers').where('authUid', '==', decodedToken.uid).get();
+                if (!callerQueryMan.empty) {
+                    hasAccess = true;
+                }
             }
         }
 

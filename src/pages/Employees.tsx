@@ -72,9 +72,6 @@ export const Employees = () => {
                 ...doc.data()
             })) as Employee[];
 
-            // Hide system admins
-            data = data.filter(e => e.email !== 'info@up-seo.at' && e.email !== 'hosiner@satler.com');
-
             // Sort alphabetically mainly by last name
             data.sort((a, b) => a.lastName.localeCompare(b.lastName));
             setEmployees(data);
@@ -88,7 +85,7 @@ export const Employees = () => {
     };
 
     const handleAddNew = () => {
-        setFormData({ firstName: '', lastName: '', role: '', position: '', status: 'active', address: '', phone: '', email: '', password: '' });
+        setFormData({ firstName: '', lastName: '', role: '', position: '', status: 'active', address: '', phone: '', email: '' });
         setEditingId(null);
         setIsFormOpen(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -113,7 +110,6 @@ export const Employees = () => {
             address: employee.address || '',
             phone: employee.phone || '',
             email: employee.email || '',
-            password: employee.password || '',
         });
         setEditingId(employee.id);
         setIsFormOpen(true);
@@ -140,23 +136,13 @@ export const Employees = () => {
         }
     };
 
-    const executeArchive = async (id: string) => {
-        try {
-            await setDoc(doc(db, 'apps', APP_ID, 'employees', id), { status: 'archived', updatedAt: serverTimestamp() }, { merge: true });
-            toast.success('Mitarbeiter archiviert');
-        } catch (error) {
-            console.error('Error archiving employee:', error);
-            toast.error('Fehler beim Archivieren des Mitarbeiters.');
-        }
-    };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSaving(true);
         try {
             const isNew = !editingId;
             let finalAuthUid = undefined;
-            const actualEmail = formData.email.includes('@') ? formData.email : `${formData.email}@satler-digital.com`;
+            const actualEmail = formData.email?.includes('@') ? formData.email : `${formData.email}@satler-digital.com`;
 
             // Uniqueness Check in Firestore
             if (formData.email) {
@@ -170,13 +156,16 @@ export const Employees = () => {
                 }
             }
 
-            if (isNew && formData.email && formData.password) {
+            if (isNew && formData.email) {
                 if (!currentUser) throw new Error("Nicht eingeloggt als Admin");
                 
                 if (import.meta.env.DEV) {
-                    throw new Error("Passwort/User-Anlage geht aus Sicherheitsgründen nur im echten Vercel-Environment (Produktion) via Admin SDK. Bitte pushen und live testen.");
+                    throw new Error("User-Anlage geht aus Sicherheitsgründen nur im echten Vercel-Environment (Produktion) via Admin SDK. Bitte pushen und live testen.");
                 } else {
                     const token = await currentUser.getIdToken();
+                    
+                    // Generate a default temporary password
+                    const defaultPassword = 'Start1234!';
                     
                     const response = await fetch('/api/createUser', {
                         method: 'POST',
@@ -186,7 +175,7 @@ export const Employees = () => {
                         },
                         body: JSON.stringify({
                             email: actualEmail,
-                            password: formData.password,
+                            password: defaultPassword,
                             displayName: `${formData.firstName} ${formData.lastName}`,
                             role: formData.role
                         })
@@ -202,7 +191,7 @@ export const Employees = () => {
                 }
             }
 
-            // Fallback für Legacy DAten
+            // Fallback für Legacy Daten
             const employeeData = editingId ? employees.find(e => e.id === editingId) : null;
             if (!isNew && employeeData?.authUid && userRole === 'admin') {
                 if (employeeData.role !== formData.role) {
@@ -225,10 +214,10 @@ export const Employees = () => {
                     }
                 }
 
-                // E-Mail oder Passwort Update
-                if ((formData.email !== employeeData.email || formData.password !== employeeData.password) && formData.password) {
+                // E-Mail Update (Password is now managed purely via reset flows or requiresPasswordChange)
+                if (formData.email !== employeeData.email) {
                     if (import.meta.env.DEV) {
-                        throw new Error("Passwort-Reset geht aus Sicherheitsgründen nur auf der Live-Version via Admin SDK. Bitte pushen und live testen.");
+                        throw new Error("Auth-Update geht aus Sicherheitsgründen nur auf der Live-Version via Admin SDK. Bitte pushen und live testen.");
                     } else {
                         const token = await currentUser?.getIdToken();
                         if (token) {
@@ -236,7 +225,7 @@ export const Employees = () => {
                                 const res = await fetch('/api/updateUserAuth', {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                                    body: JSON.stringify({ authUid: employeeData.authUid, email: actualEmail, password: formData.password })
+                                    body: JSON.stringify({ authUid: employeeData.authUid, email: actualEmail })
                                 });
                                 if (!res.ok) throw new Error(await res.text());
                             } catch (err) {
@@ -261,9 +250,14 @@ export const Employees = () => {
                 address: formData.address || '',
                 phone: formData.phone || '',
                 email: formData.email || '',
-                password: formData.password || '',
                 updatedAt: serverTimestamp(),
             };
+
+            // Remove plaintext password, use a flag to force change
+            if (isNew) {
+                // Ensure password requires change since we used a default password
+                savePayload.password = 'temp_needs_change';
+            }
 
             if (finalAuthUid) {
                 savePayload.authUid = finalAuthUid;
@@ -272,7 +266,11 @@ export const Employees = () => {
             await setDoc(docRef, savePayload, { merge: true });
 
             setIsFormOpen(false);
-            toast.success('Mitarbeiter erfolgreich gespeichert.');
+            if (isNew) {
+                toast.success(`Mitarbeiter erfolgreich angelegt. Standardpasswort: Start1234! (Benutzer muss es beim 1. Login ändern)`);
+            } else {
+                toast.success('Mitarbeiter erfolgreich gespeichert.');
+            }
         } catch (error: any) {
             console.error('Error saving employee:', error);
             toast.error(error.message || 'Fehler beim Speichern.');
@@ -374,23 +372,7 @@ export const Employees = () => {
                                     className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm"
                                 />
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Log-in Passwort</label>
-                                <input
-                                    type="text"
-                                    name="password"
-                                    value={formData.password || ''}
-                                    onChange={handleChange}
-                                    placeholder={editingId ? (formData.password ? "Klartext-Passwort..." : "Passwort (versteckt/geändert). Hier tippen für Reset...") : "Passwort initialisieren"}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm"
-                                />
-                                <p className="mt-1 text-xs text-slate-500">
-                                    {editingId ? (formData.password ? "Klartext-Passwort aktiv. Nutzer muss das Passwort beim nächsten Login ändern." : "Nutzer hat ein eigenes Passwort gesetzt. Neues eingeben, um Reset zu erzwingen.") : "Wird beim Erstellen des Logins benötigt."}
-                                </p>
-                            </div>
-                            
-
-                            {(userRole === 'admin' || userRole === 'vorarbeiter') && (
+                            {(userRole === 'admin') && (
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">System-Rolle (Zugriff)</label>
                                     <select
@@ -400,7 +382,7 @@ export const Employees = () => {
                                         className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm bg-white"
                                     >
                                         <option value="">- Kein Login -</option>
-                                        {formData.role === 'admin' && <option value="admin">Administrator (Bauleiter)</option>}
+                                        <option value="admin">Administrator (Bauleiter)</option>
                                         <option value="vorarbeiter">Vorarbeiter</option>
                                         <option value="mitarbeiter">Mitarbeiter</option>
                                     </select>

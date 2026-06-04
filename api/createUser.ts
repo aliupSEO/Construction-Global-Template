@@ -28,23 +28,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         const idToken = authHeader.split('Bearer ')[1];
         const decodedToken = await admin.auth().verifyIdToken(idToken);
-        
-        const db = admin.firestore();
-        
-        const callerQuery = await db.collection('apps').doc('satler_bau_bauberichte_satler_v1').collection('employees').where('authUid', '==', decodedToken.uid).get();
+        const APP_ID = process.env.VITE_APP_ID || 'construction_global_v1';
         
         let hasAccess = false;
-        if (!callerQuery.empty) {
-            const callerData = callerQuery.docs[0].data();
-            if (callerData.role === 'admin' || callerData.role === 'vorarbeiter') {
-                hasAccess = true;
-            }
+
+        // 1. Check Custom Claims first (Fastest, most secure)
+        if (decodedToken.role === 'admin' || decodedToken.role === 'vorarbeiter') {
+            hasAccess = true;
         } else {
-            const callerQueryMan = await db.collection('apps').doc('satler_bau_bauberichte_satler_v1').collection('managers').where('authUid', '==', decodedToken.uid).get();
-            if (!callerQueryMan.empty) {
-                hasAccess = true;
-            } else if (decodedToken.email === 'hosiner@satler.com') {
-                 hasAccess = true;
+            // 2. Fallback to Firestore lookup if claims aren't set yet (e.g., legacy users or first bootstrap)
+            const db = admin.firestore();
+            const callerQuery = await db.collection('apps').doc(APP_ID).collection('employees').where('authUid', '==', decodedToken.uid).get();
+            
+            if (!callerQuery.empty) {
+                const callerData = callerQuery.docs[0].data();
+                if (callerData.role === 'admin' || callerData.role === 'vorarbeiter') {
+                    hasAccess = true;
+                }
+            } else {
+                const callerQueryMan = await db.collection('apps').doc(APP_ID).collection('managers').where('authUid', '==', decodedToken.uid).get();
+                if (!callerQueryMan.empty) {
+                    hasAccess = true;
+                }
             }
         }
 
@@ -65,6 +70,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             displayName,
         });
 
+        // Set Custom Claims for RBAC
+        await admin.auth().setCustomUserClaims(userRecord.uid, { 
+            role: role,
+            appId: APP_ID
+        });
 
         return res.status(200).json({ uid: userRecord.uid, message: 'User created successfully' });
 

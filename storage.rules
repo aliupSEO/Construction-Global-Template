@@ -1,0 +1,33 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return request.auth.token.role == 'admin';
+    }
+    function isVorarbeiter() {
+      return request.auth.token.role == 'vorarbeiter' || isAdmin();
+    }
+
+    // --- SITE PHOTOS & REPORT ATTACHMENTS ---
+    match /apps/{appId}/site_photos/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isVorarbeiter();
+      allow delete: if isAdmin();
+    }
+
+    match /apps/{appId}/report_attachments/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isVorarbeiter();
+      allow delete: if isAdmin();
+    }
+
+    // --- GLOBAL DENY ---
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

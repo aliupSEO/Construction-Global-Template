@@ -68,22 +68,32 @@ function App() {
             <NavigationTracker />
             <Routes>
                 <Route path="/login" element={<Login />} />
-                <Route element={<ProtectedRoute />}>
-                    <Route path="/print/:type/:id" element={<PrintReport />} />
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/weekly-reports/:id" element={<WeeklyReportForm />} />
-                    <Route path="/daily-reports/:id" element={<DailyReportForm />} />
-                    <Route path="/reports" element={<Reports />} />
-                    <Route path="/report-detail/:id" element={<ReportDetail />} />
-                    <Route path="/tasks" element={<Tasks />} />
+                
+                {/* Admin only */}
+                <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
                     <Route path="/employees" element={<Employees />} />
                     <Route path="/managers" element={<Managers />} />
                     <Route path="/clients" element={<Clients />} />
+                    <Route path="/settings" element={<Settings />} />
+                </Route>
+
+                {/* Admin + Vorarbeiter */}
+                <Route element={<ProtectedRoute allowedRoles={['admin', 'vorarbeiter']} />}>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/reports" element={<Reports />} />
+                    <Route path="/daily-reports/:id" element={<DailyReportForm />} />
+                    <Route path="/weekly-reports/:id" element={<WeeklyReportForm />} />
                     <Route path="/sites" element={<Sites />} />
                     <Route path="/sites/:id" element={<SiteDetail />} />
+                    <Route path="/tasks" element={<Tasks />} />
+                </Route>
+
+                {/* All roles (including mitarbeiter) */}
+                <Route element={<ProtectedRoute allowedRoles={['admin', 'vorarbeiter', 'mitarbeiter']} />}>
                     <Route path="/urlaubsantraege" element={<LeaveRequests />} />
                     <Route path="/konto" element={<Account />} />
-                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/report-detail/:id" element={<ReportDetail />} />
+                    <Route path="/print/:type/:id" element={<PrintReport />} />
                 </Route>
             </Routes>
         </Router>
