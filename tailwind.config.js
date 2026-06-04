@@ -5,14 +5,15 @@ export default {
     extend: {
       colors: {
         brand: {
-          dark: '#101010',      // Sidebar/Header Hintergrund
-          primary: '#ff0000',   // Primäres Rot
-          surface: '#ffffff',   // Main Content Hintergrund
+          dark: '#0f172a',      // Premium slate-900
+          primary: '#2563eb',   // Premium blue-600
+          surface: '#f8fafc',   // Crisp slate-50
+          accent: '#f59e0b',    // Construction amber
         },
       },
       fontFamily: {
-        sans: ['Barlow', 'sans-serif'], // Body Font
-        heading: ['Arial', 'sans-serif'], // Headings
+        sans: ['Inter', 'sans-serif'],
+        heading: ['Inter', 'sans-serif'],
       },
     },
   },

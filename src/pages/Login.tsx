@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../lib/firebase';
-import { Lock, Mail, Loader2, AlertCircle } from 'lucide-react';
+import { Lock, Mail, Loader2, AlertCircle, HardHat, Eye, EyeOff, LogIn } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -32,69 +33,108 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-700">
-        <div className="p-8">
-          <div className="flex justify-center mb-8">
-            <div className="w-16 h-16 bg-indigo-500/10 rounded-full flex items-center justify-center">
-              <Lock className="w-8 h-8 text-indigo-500" />
+    <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-brand-dark flex">
+      {/* Left Column - Image */}
+      <div className="hidden lg:flex lg:w-1/2 relative bg-brand-dark">
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-dark/90 via-brand-dark/50 to-transparent z-10" />
+        <img 
+          src="/login-bg.png" 
+          alt="Premium Construction Site" 
+          className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-80"
+        />
+        <div className="relative z-20 flex flex-col justify-center p-12 lg:p-16 xl:p-24 h-full">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-brand-primary/20 backdrop-blur-md border border-brand-primary/30 mb-8 shadow-2xl">
+            <HardHat className="w-8 h-8 text-brand-primary" />
+          </div>
+          <h1 className="text-4xl xl:text-5xl font-bold text-white mb-6 leading-tight tracking-tight">
+            Gestalten Sie die <br/><span className="text-brand-primary">Zukunft des Bauens.</span>
+          </h1>
+          <p className="text-lg text-slate-300 max-w-lg leading-relaxed font-light">
+            Das Construction Global Template bietet Ihnen die modernsten Werkzeuge zur Verwaltung Ihrer Baustellen, Mitarbeiter und Berichte – auf Premium-Niveau.
+          </p>
+        </div>
+      </div>
+
+      {/* Right Column - Login */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-16 xl:p-24 bg-brand-surface relative shadow-2xl z-20 lg:rounded-l-3xl lg:-ml-6 min-h-screen lg:min-h-0 overflow-y-auto">
+        <div className="w-full max-w-md py-8">
+          <div className="lg:hidden flex justify-center mb-8">
+            <div className="w-16 h-16 bg-brand-primary/10 rounded-2xl flex items-center justify-center shadow-inner">
+              <HardHat className="w-8 h-8 text-brand-primary" />
             </div>
           </div>
           
-          <h2 className="text-2xl font-bold text-center text-slate-100 mb-8">
-            Construction Global Template Login
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2 tracking-tight text-center lg:text-left">
+            Willkommen zurück
           </h2>
+          <p className="text-slate-500 mb-8 sm:mb-10 text-sm sm:text-base text-center lg:text-left">
+            Bitte loggen Sie sich in Ihr Baumanagement-Konto ein.
+          </p>
 
           <form onSubmit={handleLogin} className="space-y-6">
             {error && (
-              <div className="p-4 bg-red-500/10 border border-red-500 border-opacity-50 rounded-lg flex items-start gap-3">
+              <div className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3 shadow-sm">
                 <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                <p className="text-sm text-red-500">{error}</p>
+                <p className="text-sm text-red-700">{error}</p>
               </div>
             )}
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">Benutzername / E-Mail</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-slate-500" />
+              <label className="text-sm font-semibold text-slate-700">Benutzername oder E-Mail</label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-slate-400 group-focus-within:text-brand-primary transition-colors" />
                 </div>
                 <input
                   type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
-                  placeholder="benutzername"
+                  className="block w-full pl-12 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-brand-primary/10 focus:border-brand-primary transition-all shadow-sm text-base"
+                  placeholder="name@firma.at"
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">Passwort</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-slate-500" />
+              <label className="text-sm font-semibold text-slate-700">Passwort</label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-brand-primary transition-colors" />
                 </div>
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
+                  className="block w-full pl-12 pr-12 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-brand-primary/10 focus:border-brand-primary transition-all shadow-sm text-base"
                   placeholder="••••••••"
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none transition-colors"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
               </div>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-slate-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex justify-center items-center py-4 px-4 border border-transparent rounded-xl shadow-lg shadow-brand-primary/30 text-sm font-bold text-white bg-brand-primary hover:bg-brand-primary/90 focus:outline-none focus:ring-4 focus:ring-brand-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-8 hover:-translate-y-0.5"
             >
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Anmelden'}
+              {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <LogIn className="w-5 h-5 mr-2" />}
+              {loading ? 'Wird angemeldet...' : 'Login'}
             </button>
           </form>
+          
+          <div className="mt-12 text-center">
+            <p className="text-sm text-slate-500 font-medium">
+              Bei Login-Problemen kontaktieren Sie bitte <a href="mailto:info@up-seo.at" className="text-brand-primary hover:underline">info@up-seo.at</a>.
+            </p>
+          </div>
         </div>
       </div>
     </div>
