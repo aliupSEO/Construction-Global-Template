@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Globale Regel für das 2H Ecosystem (Isolierung der App-Daten)
+    match /apps/{appId}/{document=**} {
+      // Für diese Version erlauben wir Lese- und Schreibzugriff für alle (oder ggf. nur authentifizierte User, falls Auth später aktiv ist)
+      // WICHTIG: In Produktion sollte hier auf `request.auth != null` geprüft werden, falls ein Login existiert.
+      allow read, write: if appId == 'satler_bau_bauberichte_satler_v1';
+    }
+    
+    // Root-Level Zugriff generell verbieten
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

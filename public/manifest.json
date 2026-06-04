@@ -1,0 +1,22 @@
+{
+  "short_name": "Construction Global Template",
+  "name": "Construction Global Template",
+  "icons": [
+    {
+      "src": "/logo.jpeg",
+      "type": "image/jpeg",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/logo.jpeg",
+      "type": "image/jpeg",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#101010",
+  "orientation": "portrait"
+}
