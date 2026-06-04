@@ -16,7 +16,6 @@ import { Sites } from './pages/Sites';
 import { SiteDetail } from './pages/SiteDetail';
 import { LeaveRequests } from './pages/LeaveRequests';
 import { AuthProvider } from './contexts/AuthContext';
-import { AppProvider } from './contexts/AppContext';
 import { useAppSettings } from './hooks/useAppSettings';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Login } from './pages/Login';

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { verifyPasswordResetCode, confirmPasswordReset } from 'firebase/auth';
-import { auth } from '../lib/firebase';
+import { verifyPasswordResetCode, confirmPasswordReset, signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { auth, db, APP_ID } from '../lib/firebase';
 import { Lock, Loader2, AlertCircle, HardHat, Eye, EyeOff, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -66,8 +67,43 @@ export function ResetPassword() {
 
     try {
       await confirmPasswordReset(auth, oobCode, newPassword);
+      
+      // Attempt to auto-login to clear requiresPasswordChange flag in Firestore
+      if (email) {
+        try {
+            const userCred = await signInWithEmailAndPassword(auth, email, newPassword);
+            const userUid = userCred.user.uid;
+            
+            // Check employees collection
+            const qEmp = query(collection(db, 'apps', APP_ID, 'employees'), where('authUid', '==', userUid));
+            const empDocs = await getDocs(qEmp);
+            if (!empDocs.empty) {
+                await updateDoc(doc(db, 'apps', APP_ID, 'employees', empDocs.docs[0].id), { 
+                    requiresPasswordChange: false, 
+                    password: '' 
+                });
+            } else {
+                // Check managers collection
+                const qMan = query(collection(db, 'apps', APP_ID, 'managers'), where('authUid', '==', userUid));
+                const manDocs = await getDocs(qMan);
+                if (!manDocs.empty) {
+                    await updateDoc(doc(db, 'apps', APP_ID, 'managers', manDocs.docs[0].id), { 
+                        requiresPasswordChange: false, 
+                        password: '' 
+                    });
+                }
+            }
+        } catch (autoLoginErr) {
+            console.error('Auto login after reset failed:', autoLoginErr);
+        }
+      }
+
       setSuccess(true);
       toast.success('Passwort erfolgreich geändert!');
+      
+      // Auto redirect after 2 seconds
+      setTimeout(() => navigate('/'), 2000);
+      
     } catch (err: any) {
       console.error('Password reset error:', err);
       setError('Fehler beim Ändern des Passworts. Bitte versuchen Sie es erneut.');

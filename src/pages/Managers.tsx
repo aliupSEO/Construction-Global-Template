@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DashboardShell } from '../components/DashboardShell';
-import { db, APP_ID } from '../lib/firebase';
-import { collection, onSnapshot, doc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { db, APP_ID, auth } from '../lib/firebase';
+import { collection, onSnapshot, doc, setDoc, deleteDoc, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
 import { slugify } from '../lib/utils';
 import { Plus, Edit2, Trash2, X, Save, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { SignaturePad } from '../components/ui/SignaturePad';
@@ -24,7 +24,6 @@ interface Manager {
 
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
-import { query, where, getDocs } from 'firebase/firestore';
 
 export const Managers = () => {
     const { currentUser, userRole } = useAuth();
@@ -201,6 +200,11 @@ export const Managers = () => {
                 updatedAt: serverTimestamp(),
             };
 
+            if (isNew) {
+                savePayload.password = '';
+                savePayload.requiresPasswordChange = true;
+            }
+
             if (finalAuthUid) {
                 savePayload.authUid = finalAuthUid;
             }
@@ -208,7 +212,17 @@ export const Managers = () => {
             await setDoc(docRef, savePayload, { merge: true });
 
             setIsFormOpen(false);
-            toast.success('Bauleiter erfolgreich gespeichert.');
+            if (isNew) {
+                try {
+                    const { sendPasswordResetEmail } = await import('firebase/auth');
+                    await sendPasswordResetEmail(auth, actualEmail);
+                } catch (e) {
+                    console.error('Failed to send invite email', e);
+                }
+                toast.success('Bauleiter erfolgreich angelegt. Einladungs-E-Mail wurde gesendet.');
+            } else {
+                toast.success('Bauleiter erfolgreich gespeichert.');
+            }
         } catch (error: any) {
             console.error('Error saving manager:', error);
             toast.error(error.message || 'Fehler beim Speichern.');

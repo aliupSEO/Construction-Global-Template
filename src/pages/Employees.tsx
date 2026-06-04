@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DashboardShell } from '../components/DashboardShell';
-import { db, APP_ID } from '../lib/firebase';
+import { db, APP_ID, auth } from '../lib/firebase';
 import { collection, onSnapshot, doc, setDoc, deleteDoc, serverTimestamp, getDocs, query, where, updateDoc } from 'firebase/firestore';
 import { slugify } from '../lib/utils';
 import PhoneInput from 'react-phone-input-2';
@@ -265,8 +265,8 @@ export const Employees = () => {
 
             // Remove plaintext password, use a flag to force change
             if (isNew) {
-                // Ensure password requires change since we used a default password
-                savePayload.password = 'temp_needs_change';
+                savePayload.password = '';
+                savePayload.requiresPasswordChange = true;
             }
 
             if (finalAuthUid) {
@@ -277,7 +277,13 @@ export const Employees = () => {
 
             setIsFormOpen(false);
             if (isNew) {
-                toast.success(`Mitarbeiter erfolgreich angelegt. Standardpasswort: Start1234! (Benutzer muss es beim 1. Login ändern)`);
+                try {
+                    const { sendPasswordResetEmail } = await import('firebase/auth');
+                    await sendPasswordResetEmail(auth, actualEmail);
+                } catch (e) {
+                    console.error('Failed to send invite email', e);
+                }
+                toast.success(`Mitarbeiter erfolgreich angelegt. Einladungs-E-Mail wurde gesendet.`);
             } else {
                 toast.success('Mitarbeiter erfolgreich gespeichert.');
             }

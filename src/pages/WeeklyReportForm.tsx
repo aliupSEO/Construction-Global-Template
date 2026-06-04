@@ -3,7 +3,7 @@ import { DashboardShell } from '../components/DashboardShell';
 import { db, APP_ID } from '../lib/firebase';
 import { collection, doc, getDoc, setDoc, getDocs, serverTimestamp, runTransaction } from 'firebase/firestore';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Save, ArrowLeft } from 'lucide-react';
+import { Save, ArrowLeft, ChevronDown } from 'lucide-react';
 import { SignaturePad } from '../components/ui/SignaturePad';
 import { CustomSelect } from '../components/CustomSelect';
 import { slugify } from '../lib/utils';
