@@ -50,7 +50,7 @@ export const Tasks = () => {
                         value={newTask}
                         onChange={(e) => setNewTask(e.target.value)}
                         placeholder="Neue Aufgabe für Construction Global Template..."
-                        className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
+                        className="input-premium"
                     />
                     <button type="submit" className="bg-brand-primary text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center gap-2">
                         <Plus className="w-4 h-4" /> Hinzufügen

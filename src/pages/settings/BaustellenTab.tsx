@@ -123,7 +123,7 @@ export const BaustellenTab = () => {
                             value={formData.name}
                             onChange={handleChange}
                             required
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                            className="input-premium"
                         />
                     </div>
                     <div>
@@ -134,7 +134,7 @@ export const BaustellenTab = () => {
                             value={formData.address}
                             onChange={handleChange}
                             required
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                            className="input-premium"
                         />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -145,7 +145,7 @@ export const BaustellenTab = () => {
                                 name="postalCode"
                                 value={formData.postalCode}
                                 onChange={handleChange}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                                className="input-premium"
                             />
                         </div>
                         <div>
@@ -155,7 +155,7 @@ export const BaustellenTab = () => {
                                 name="city"
                                 value={formData.city}
                                 onChange={handleChange}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                                className="input-premium"
                             />
                         </div>
                     </div>
@@ -165,7 +165,7 @@ export const BaustellenTab = () => {
                             name="status"
                             value={formData.status}
                             onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border bg-white"
+                            className="input-premium appearance-none"
                         >
                             <option value="active">Aktiv</option>
                             <option value="archived">Archiviert</option>

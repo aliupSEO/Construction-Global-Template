@@ -15,7 +15,28 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const navigate = useNavigate();
-    const { currentUser } = useAuth();
+    const { currentUser, userRole, employeeName } = useAuth();
+    
+    const getInitials = () => {
+        if (employeeName) {
+            const parts = employeeName.split(' ');
+            if (parts.length >= 2) {
+                return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+            }
+            return employeeName.substring(0, 2).toUpperCase();
+        }
+        if (currentUser?.displayName) {
+            const parts = currentUser.displayName.split(' ');
+            if (parts.length >= 2) {
+                return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+            }
+            return currentUser.displayName.substring(0, 2).toUpperCase();
+        }
+        if (currentUser?.email) {
+            return currentUser.email.substring(0, 2).toUpperCase();
+        }
+        return 'SB';
+    };
 
     return (
         <div className="min-h-screen bg-brand-surface print:bg-white flex flex-col lg:flex-row">
@@ -31,7 +52,7 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
 
             <div className="lg:pl-[280px] flex flex-col flex-1 min-h-screen print:pl-0 w-full transition-all duration-300">
                 {/* MOBILE HEADER */}
-                <div className="lg:hidden h-20 bg-gradient-to-b from-[#0a0a0a] to-brand-dark/95 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-6 sticky top-0 z-30 print:hidden shadow-lg shadow-black/20">
+                <div className="lg:hidden h-20 bg-gradient-to-b from-brand-dark to-black border-b border-white/5 flex items-center justify-between px-6 sticky top-0 z-30 print:hidden shadow-lg shadow-black/20">
                     <div className="flex items-center">
                         <img src="/logo.jpeg" alt="Logo" className="h-9 w-auto rounded-lg shadow-md border border-white/10" />
                         <span className="text-xs uppercase tracking-widest text-brand-primary font-bold ml-3 mt-0.5">Construction</span>
@@ -42,7 +63,7 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
                 </div>
 
                 {/* DESKTOP HEADER */}
-                <header className="hidden lg:flex h-20 bg-gradient-to-b from-[#0a0a0a]/95 to-[#101010]/95 backdrop-blur-xl border-b border-white/5 items-center justify-between px-10 sticky top-0 z-30 print:hidden shadow-lg shadow-black/10">
+                <header className="hidden lg:flex h-20 bg-gradient-to-b from-brand-dark to-black border-b border-white/5 items-center justify-between px-10 sticky top-0 z-30 print:hidden shadow-lg shadow-black/10">
                     <div className="flex items-center space-x-4">
                         <h2 className="text-white font-heading text-xl tracking-wider font-bold drop-shadow-md">{title}</h2>
                         {title === 'Dashboard' && (
@@ -60,11 +81,11 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
                                 className="flex items-center space-x-3 bg-white/5 hover:bg-white/10 border border-white/10 px-2 py-1.5 pr-4 rounded-full transition-all cursor-pointer shadow-md group"
                             >
                                 <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-primary to-red-400 flex items-center justify-center text-sm font-bold text-white shadow-lg shadow-brand-primary/40 ring-2 ring-transparent group-hover:ring-brand-primary/50 transition-all">
-                                    {currentUser?.email ? currentUser.email.substring(0, 2).toUpperCase() : 'SB'}
+                                    {getInitials()}
                                 </div>
                                 <div className="hidden md:flex flex-col items-start">
-                                    <span className="text-xs font-semibold text-white tracking-wide">{currentUser?.email?.split('@')[0] || 'User'}</span>
-                                    <span className="text-[10px] text-gray-400 uppercase tracking-wider font-bold">Admin</span>
+                                    <span className="text-xs font-semibold text-white tracking-wide">{employeeName || currentUser?.displayName || currentUser?.email?.split('@')[0] || 'User'}</span>
+                                    <span className="text-[10px] text-gray-400 uppercase tracking-wider font-bold">{userRole || 'Admin'}</span>
                                 </div>
                                 <ChevronDown className={`w-4 h-4 text-gray-400 group-hover:text-white transition-transform duration-300 ${isProfileOpen ? 'rotate-180' : ''}`} />
                             </button>
@@ -81,7 +102,7 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
                                                 Angemeldet als
                                             </p>
                                             <p className="text-sm font-bold text-gray-900 truncate">
-                                                {currentUser?.email || 'Benutzer'}
+                                                {employeeName || currentUser?.displayName || currentUser?.email || 'Benutzer'}
                                             </p>
                                         </div>
                                         <div className="p-2 space-y-1">

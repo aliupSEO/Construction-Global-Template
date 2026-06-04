@@ -457,7 +457,7 @@ export const WeeklyReportForm = () => {
                             value={formData.reportNumber}
                             onChange={handleFormChange}
                             disabled={isReadOnly}
-                            className={`block w-full lg:w-1/4 rounded-md border p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm outline-none ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200' : 'border-gray-300'}`}
+                            className={isReadOnly ? 'input-premium-readonly' : 'input-premium'}
                         />
                     </div>
 
@@ -473,7 +473,7 @@ export const WeeklyReportForm = () => {
                                 value={formData.calendarWeek}
                                 onChange={handleFormChange}
                                 disabled={isReadOnly}
-                                className={`mt-1 block w-full rounded-md border p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200' : 'border-gray-300'}`}
+                                className={isReadOnly ? 'input-premium-readonly' : 'input-premium'}
                             />
                         </div>
                         <div>
@@ -486,7 +486,7 @@ export const WeeklyReportForm = () => {
                                 value={formData.year}
                                 onChange={handleFormChange}
                                 disabled={isReadOnly}
-                                className={`mt-1 block w-full rounded-md border p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200' : 'border-gray-300'}`}
+                                className={isReadOnly ? 'input-premium-readonly' : 'input-premium'}
                             />
                         </div>
                         <div>
@@ -497,7 +497,7 @@ export const WeeklyReportForm = () => {
                                 value={formData.month}
                                 onChange={handleFormChange}
                                 disabled={isReadOnly}
-                                className={`mt-1 block w-full rounded-md border p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200 appearance-none' : 'bg-white border-gray-300'}`}
+                                className={isReadOnly ? 'input-premium-readonly appearance-none' : 'input-premium appearance-none'}
                             >
                                 {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
                                     <option key={m} value={m}>{new Date(2000, m - 1).toLocaleString('de-DE', { month: 'long' })}</option>
@@ -618,7 +618,7 @@ export const WeeklyReportForm = () => {
                                                 <tr key={entry.id} className="hover:bg-gray-50">
                                                     <td className="px-2 py-2">
                                                         <select
-                                                            className={`block w-full rounded-md border p-1.5 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-xs ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200 appearance-none' : 'border-gray-300'}`}
+                                                            className={isReadOnly ? 'input-premium-sm-readonly appearance-none' : 'input-premium-sm appearance-none'}
                                                             value={entry.employeeId}
                                                             onChange={(e) => updateWeeklyEntryField(entry.id, 'employeeId', e.target.value)}
                                                             required
@@ -632,7 +632,7 @@ export const WeeklyReportForm = () => {
                                                     </td>
                                                     <td className="px-2 py-2">
                                                         <select
-                                                            className={`block w-full rounded-md border p-1.5 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-xs ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200 appearance-none' : 'border-gray-300'}`}
+                                                            className={isReadOnly ? 'input-premium-sm-readonly appearance-none' : 'input-premium-sm appearance-none'}
                                                             value={entry.constructionSiteId}
                                                             onChange={(e) => updateWeeklyEntryField(entry.id, 'constructionSiteId', e.target.value)}
                                                             required
@@ -651,7 +651,7 @@ export const WeeklyReportForm = () => {
                                                                 value={entry.days[day] === 0 ? '0' : (entry.days[day] || '')}
                                                                 onChange={(e) => updateWeeklyEntryHours(entry.id, day, e.target.value)}
                                                                 disabled={isReadOnly}
-                                                                className={`block w-full text-center rounded-md border p-1.5 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-xs ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200' : 'border-gray-200'}`}
+                                                                className={`text-center ${isReadOnly ? 'input-premium-sm-readonly' : 'input-premium-sm'}`}
                                                             />
                                                         </td>
                                                     ))}
@@ -706,7 +706,7 @@ export const WeeklyReportForm = () => {
                                                 <div className="pr-10">
                                                     <label className="block text-xs font-semibold text-gray-700 mb-1">Mitarbeiter</label>
                                                     <select
-                                                        className={`block w-full rounded-md border p-2.5 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200 appearance-none' : 'bg-gray-50 border-gray-300'}`}
+                                                        className={isReadOnly ? 'input-premium-sm-readonly appearance-none' : 'input-premium-sm appearance-none'}
                                                         value={entry.employeeId}
                                                         onChange={(e) => updateWeeklyEntryField(entry.id, 'employeeId', e.target.value)}
                                                         required
@@ -722,7 +722,7 @@ export const WeeklyReportForm = () => {
                                                 <div>
                                                     <label className="block text-xs font-semibold text-gray-700 mb-1">Baustelle</label>
                                                     <select
-                                                        className={`block w-full rounded-md border p-2.5 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200 appearance-none' : 'bg-gray-50 border-gray-300'}`}
+                                                        className={isReadOnly ? 'input-premium-sm-readonly appearance-none' : 'input-premium-sm appearance-none'}
                                                         value={entry.constructionSiteId}
                                                         onChange={(e) => updateWeeklyEntryField(entry.id, 'constructionSiteId', e.target.value)}
                                                         required
@@ -746,7 +746,7 @@ export const WeeklyReportForm = () => {
                                                                     value={entry.days[day] === 0 ? '0' : (entry.days[day] || '')}
                                                                     onChange={(e) => updateWeeklyEntryHours(entry.id, day, e.target.value)}
                                                                     disabled={isReadOnly}
-                                                                    className={`block w-full text-center rounded-md border p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200' : 'border-gray-300'}`}
+                                                                    className={`text-center ${isReadOnly ? 'input-premium-sm-readonly' : 'input-premium-sm'}`}
                                                                 />
                                                             </div>
                                                         ))}

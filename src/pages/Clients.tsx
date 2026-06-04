@@ -130,7 +130,7 @@ export const Clients = () => {
                                     required
                                     value={formData.companyOrName}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm"
+                                    className="input-premium"
                                 />
                             </div>
                             <div>
@@ -140,7 +140,7 @@ export const Clients = () => {
                                     name="contactPerson"
                                     value={formData.contactPerson}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm"
+                                    className="input-premium"
                                 />
                             </div>
                             <div>
@@ -150,7 +150,7 @@ export const Clients = () => {
                                     name="phone"
                                     value={formData.phone}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm"
+                                    className="input-premium"
                                 />
                             </div>
                             <div>
@@ -160,7 +160,7 @@ export const Clients = () => {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm"
+                                    className="input-premium"
                                 />
                             </div>
                             <div className="md:col-span-2">
@@ -171,7 +171,7 @@ export const Clients = () => {
                                     value={formData.address}
                                     onChange={handleChange}
                                     required
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                                    className="input-premium"
                                 />
                             </div>
                             <div className="md:col-span-2 grid grid-cols-2 gap-4">
@@ -182,7 +182,7 @@ export const Clients = () => {
                                         name="postalCode"
                                         value={formData.postalCode}
                                         onChange={handleChange}
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                                        className="input-premium"
                                     />
                                 </div>
                                 <div>
@@ -192,7 +192,7 @@ export const Clients = () => {
                                         name="city"
                                         value={formData.city}
                                         onChange={handleChange}
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                                        className="input-premium"
                                     />
                                 </div>
                             </div>

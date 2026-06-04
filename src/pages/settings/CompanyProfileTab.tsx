@@ -101,7 +101,7 @@ export const CompanyProfileTab = () => {
                             name="companyName"
                             value={formData.companyName}
                             onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                            className="input-premium"
                             required
                         />
                     </div>
@@ -114,7 +114,7 @@ export const CompanyProfileTab = () => {
                             value={formData.address}
                             onChange={handleChange}
                             required
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                            className="input-premium"
                         />
                     </div>
                     <div className="sm:col-span-2 grid grid-cols-2 gap-4">
@@ -125,7 +125,7 @@ export const CompanyProfileTab = () => {
                                 name="postalCode"
                                 value={formData.postalCode}
                                 onChange={handleChange}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                                className="input-premium"
                             />
                         </div>
                         <div>
@@ -135,7 +135,7 @@ export const CompanyProfileTab = () => {
                                 name="city"
                                 value={formData.city}
                                 onChange={handleChange}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                                className="input-premium"
                             />
                         </div>
                     </div>
@@ -147,7 +147,7 @@ export const CompanyProfileTab = () => {
                             name="phone"
                             value={formData.phone}
                             onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                            className="input-premium"
                         />
                     </div>
 
@@ -158,7 +158,7 @@ export const CompanyProfileTab = () => {
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                            className="input-premium"
                         />
                     </div>
 
@@ -169,7 +169,7 @@ export const CompanyProfileTab = () => {
                             name="website"
                             value={formData.website || ''}
                             onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                            className="input-premium"
                         />
                     </div>
 
@@ -180,7 +180,7 @@ export const CompanyProfileTab = () => {
                             name="managingDirector"
                             value={formData.managingDirector || ''}
                             onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                            className="input-premium"
                         />
                     </div>
 
@@ -191,7 +191,7 @@ export const CompanyProfileTab = () => {
                             name="vatId"
                             value={formData.vatId || ''}
                             onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                            className="input-premium"
                         />
                     </div>
 
@@ -202,7 +202,7 @@ export const CompanyProfileTab = () => {
                             name="commercialRegister"
                             value={formData.commercialRegister || ''}
                             onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                            className="input-premium"
                         />
                     </div>
 
@@ -213,7 +213,7 @@ export const CompanyProfileTab = () => {
                             name="iban"
                             value={formData.iban || ''}
                             onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                            className="input-premium"
                         />
                     </div>
 
@@ -224,7 +224,7 @@ export const CompanyProfileTab = () => {
                             name="bic"
                             value={formData.bic || ''}
                             onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm p-3 border"
+                            className="input-premium"
                         />
                     </div>
 

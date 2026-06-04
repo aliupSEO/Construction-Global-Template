@@ -12,11 +12,6 @@ const mainNavigation = [
     { name: 'Baustellen', href: '/sites', icon: MapPin },
 ];
 
-const leaveNavigation = [
-    { name: 'Anfragen', href: '/urlaubsantraege?tab=pending', icon: Clock },
-    { name: 'Genehmigt', href: '/urlaubsantraege?tab=approved', icon: CheckCircle },
-    { name: 'Abgelehnt', href: '/urlaubsantraege?tab=rejected', icon: XCircle },
-];
 
 const reportsNavigation = [
     { name: 'Übersicht', href: '/reports', icon: LayoutList },
@@ -41,7 +36,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     const { userRole } = useAuth();
     const [isReportsOpen, setIsReportsOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-    const [isLeaveOpen, setIsLeaveOpen] = useState(false);
+
     const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
 
     const filteredSettingsNavigation = settingsNavigation.filter(item => {
@@ -109,61 +104,6 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                 <div className="mt-8 mb-2">
                     <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest pl-3 pb-2">Verwaltung</div>
                     
-                    {userRole === 'admin' ? (
-                        <div className="space-y-1">
-                            <button
-                                onClick={() => setIsLeaveOpen(!isLeaveOpen)}
-                                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 font-medium ${isLeaveOpen ? 'bg-white/5 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
-                            >
-                                <div className="flex items-center space-x-3">
-                                    <CalendarDays className={`w-5 h-5 ${isLeaveOpen ? 'text-brand-primary' : 'text-gray-400'}`} />
-                                    <span>Urlaubsanträge</span>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    {pendingLeaveCount > 0 && (
-                                        <span className="bg-brand-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md shadow-brand-primary/30">
-                                            {pendingLeaveCount}
-                                        </span>
-                                    )}
-                                    {isLeaveOpen ? <ChevronUp className="w-4 h-4 opacity-50" /> : <ChevronDown className="w-4 h-4 opacity-50" />}
-                                </div>
-                            </button>
-
-                            {isLeaveOpen && (
-                                <div className="mt-1 space-y-1 pl-4 relative before:absolute before:left-6 before:top-0 before:bottom-2 before:w-px before:bg-white/10">
-                                    {leaveNavigation.map((item) => {
-                                        const urlObj = new URL(item.href, 'http://dummy.com');
-                                        const targetTab = urlObj.searchParams.get('tab');
-                                        const currentTab = new URLSearchParams(location.search).get('tab') || 'pending';
-                                        const isActive = location.pathname === '/urlaubsantraege' && currentTab === targetTab;
-                                        
-                                        return (
-                                            <Link
-                                                key={item.name}
-                                                to={item.href}
-                                                onClick={onClose}
-                                                className={`flex items-center space-x-3 pl-6 pr-4 py-2.5 rounded-xl transition-all text-sm relative ${isActive
-                                                    ? 'text-white font-semibold bg-white/5'
-                                                    : 'text-gray-400 hover:text-white hover:bg-white/5'
-                                                    }`}
-                                            >
-                                                {isActive && <div className="absolute left-[-17px] top-1/2 -translate-y-1/2 w-1 h-5 bg-brand-primary rounded-r-full" />}
-                                                <item.icon className={`w-4 h-4 ${isActive ? 'text-brand-primary' : 'opacity-70'}`} />
-                                                <div className="flex-1 flex items-center justify-between">
-                                                    <span>{item.name}</span>
-                                                    {item.name === 'Anfragen' && pendingLeaveCount > 0 && (
-                                                        <span className="bg-brand-primary/20 text-brand-primary text-[10px] font-bold px-2 py-0.5 rounded-full border border-brand-primary/30">
-                                                            {pendingLeaveCount}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </Link>
-                                        );
-                                    })}
-                                </div>
-                            )}
-                        </div>
-                    ) : (
                         <div className="space-y-1">
                             <Link
                                 to="/urlaubsantraege"
@@ -176,10 +116,14 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                                 <CalendarDays className={`w-5 h-5 ${location.pathname === '/urlaubsantraege' ? 'text-white' : 'text-gray-400'}`} />
                                 <div className="flex-1 flex justify-between items-center">
                                     <span>Urlaubsanträge</span>
+                                    {userRole === 'admin' && pendingLeaveCount > 0 && (
+                                        <span className="bg-brand-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md shadow-brand-primary/30">
+                                            {pendingLeaveCount}
+                                        </span>
+                                    )}
                                 </div>
                             </Link>
                         </div>
-                    )}
 
                     <div className="pt-1">
                         <button

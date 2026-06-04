@@ -24,3 +24,50 @@
 ::-webkit-scrollbar-thumb {
   @apply bg-gray-300 rounded-full hover:bg-gray-400;
 }
+
+@layer components {
+  .input-premium {
+    @apply block w-full rounded-xl px-4 py-3 shadow-sm text-base sm:text-sm border border-slate-200 bg-slate-50/50 hover:border-slate-300 focus:bg-white focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all duration-200 outline-none;
+  }
+  
+  .input-premium-readonly {
+    @apply block w-full rounded-xl px-4 py-3 shadow-sm text-base sm:text-sm border border-gray-100 bg-gray-50/80 text-gray-500 cursor-not-allowed outline-none;
+  }
+
+  .input-premium-sm {
+    @apply block w-full rounded-lg px-3 py-2 shadow-sm text-sm border border-slate-200 bg-slate-50/50 hover:border-slate-300 focus:bg-white focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all duration-200 outline-none;
+  }
+  
+  .input-premium-sm-readonly {
+    @apply block w-full rounded-lg px-3 py-2 shadow-sm text-sm border border-gray-100 bg-gray-50/80 text-gray-500 cursor-not-allowed outline-none;
+  }
+
+  /* React Phone Input Overrides */
+  .phone-premium-container {
+    @apply relative w-full;
+  }
+  
+  .phone-premium-container .react-tel-input .form-control.input-premium-phone {
+    @apply block w-full rounded-xl pl-[52px] pr-4 py-3 shadow-sm text-base sm:text-sm border border-slate-200 bg-slate-50/50 hover:border-slate-300 focus:bg-white focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all duration-200 outline-none h-[46px];
+  }
+
+  .phone-premium-container .react-tel-input .flag-dropdown.phone-dropdown-btn {
+    @apply absolute top-[1px] bottom-[1px] left-[1px] w-12 flex items-center justify-center bg-transparent border-0 rounded-l-xl hover:bg-slate-100 transition-colors;
+  }
+
+  .phone-premium-container .react-tel-input .selected-flag {
+    @apply w-full flex items-center justify-center hover:bg-transparent px-3 bg-transparent;
+  }
+
+  .phone-premium-container .react-tel-input .country-list.phone-dropdown-menu {
+    @apply absolute top-full left-0 mt-2 z-50 bg-white border border-gray-100 shadow-xl rounded-xl py-2 max-h-60 overflow-y-auto w-[280px];
+  }
+  
+  .phone-premium-container .react-tel-input .country-list .country {
+    @apply px-4 py-2 hover:bg-brand-primary/5 transition-colors;
+  }
+  
+  .phone-premium-container .react-tel-input .country-list .country.highlight {
+    @apply bg-brand-primary/10;
+  }
+}

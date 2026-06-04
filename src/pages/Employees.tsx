@@ -312,7 +312,7 @@ export const Employees = () => {
                                     required
                                     value={formData.firstName}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm"
+                                    className="input-premium"
                                 />
                             </div>
                             <div>
@@ -323,7 +323,7 @@ export const Employees = () => {
                                     required
                                     value={formData.lastName}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm"
+                                    className="input-premium"
                                 />
                             </div>
                             <div>
@@ -333,7 +333,7 @@ export const Employees = () => {
                                     name="address"
                                     value={formData.address || ''}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm"
+                                    className="input-premium"
                                 />
                             </div>
                             <div>
@@ -343,7 +343,7 @@ export const Employees = () => {
                                     name="phone"
                                     value={formData.phone || ''}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm"
+                                    className="input-premium"
                                 />
                             </div>
                             <div>
@@ -352,7 +352,7 @@ export const Employees = () => {
                                     name="position"
                                     value={formData.position}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm bg-white"
+                                    className="input-premium appearance-none"
                                 >
                                     <option value="">- Bitte wählen -</option>
                                     <option value="Vorarbeiter">Vorarbeiter</option>
@@ -369,7 +369,7 @@ export const Employees = () => {
                                     value={formData.email || ''}
                                     onChange={handleChange}
                                     placeholder="z.B. klaus oder klaus@firma.at"
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm"
+                                    className="input-premium"
                                 />
                             </div>
                             {(userRole === 'admin') && (
@@ -379,7 +379,7 @@ export const Employees = () => {
                                         name="role"
                                         value={formData.role}
                                         onChange={handleChange}
-                                        className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm bg-white"
+                                        className="input-premium appearance-none"
                                     >
                                         <option value="">- Kein Login -</option>
                                         <option value="admin">Administrator (Bauleiter)</option>
@@ -394,7 +394,7 @@ export const Employees = () => {
                                     name="status"
                                     value={formData.status}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm bg-white"
+                                    className="input-premium appearance-none"
                                 >
                                     <option value="active">Aktiv</option>
                                     <option value="archived">Archiviert</option>

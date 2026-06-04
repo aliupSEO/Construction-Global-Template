@@ -441,7 +441,7 @@ export const DailyReportForm = () => {
                             value={formData.constructionSite}
                             onChange={handleChange}
                             disabled={isReadOnly}
-                            className={`block w-full rounded-md p-3 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-base sm:text-sm border ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200 appearance-none' : 'bg-white border-gray-300'}`}
+                            className={isReadOnly ? 'input-premium-readonly appearance-none' : 'input-premium appearance-none'}
                         >
                             <option value="">- Baustelle wählen -</option>
                             {dbBaustellen.map(b => (
@@ -458,7 +458,7 @@ export const DailyReportForm = () => {
                             value={formData.managerId}
                             onChange={handleChange}
                             disabled={isReadOnly}
-                            className={`block w-full rounded-md p-3 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-base sm:text-sm border ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200 appearance-none' : 'bg-white border-gray-300'}`}
+                            className={isReadOnly ? 'input-premium-readonly appearance-none' : 'input-premium appearance-none'}
                         >
                             <option value="">- Bauleiter wählen -</option>
                             {dbManagers.map(m => (
@@ -482,7 +482,7 @@ export const DailyReportForm = () => {
                             value={formData.date}
                             onChange={handleChange}
                             disabled={isReadOnly}
-                            className={`block w-full rounded-md p-3 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-base sm:text-sm border ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200' : 'border-gray-300'}`}
+                            className={isReadOnly ? 'input-premium-readonly' : 'input-premium'}
                         />
                     </div>
 
@@ -495,7 +495,7 @@ export const DailyReportForm = () => {
                                 value={formData.calendarWeek}
                                 onChange={handleChange}
                                 disabled={isReadOnly}
-                                className={`block w-full rounded-md p-3 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-base sm:text-sm border ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200' : 'border-gray-300'}`}
+                                className={isReadOnly ? 'input-premium-readonly' : 'input-premium'}
                             />
                         </div>
                         <div>
@@ -507,7 +507,7 @@ export const DailyReportForm = () => {
                                 value={formData.weather}
                                 onChange={handleChange}
                                 disabled={isReadOnly}
-                                className={`block w-full rounded-md p-3 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-base sm:text-sm border ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200' : 'border-gray-300'}`}
+                                className={isReadOnly ? 'input-premium-readonly' : 'input-premium'}
                             />
                         </div>
                     </div>
@@ -520,7 +520,7 @@ export const DailyReportForm = () => {
                             value={formData.reportNumber}
                             onChange={handleChange}
                             disabled={isReadOnly}
-                            className={`block w-full rounded-md p-3 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-base sm:text-sm border ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200' : 'border-gray-300'}`}
+                            className={isReadOnly ? 'input-premium-readonly' : 'input-premium'}
                         />
                     </div>
 
@@ -559,7 +559,7 @@ export const DailyReportForm = () => {
                                                 onChange={(e) => handleEmployeeChange(index, 'workDescription', e.target.value)}
                                                 placeholder="z.B. Maurerarbeiten"
                                                 disabled={isReadOnly}
-                                                className={`block w-full rounded-md p-3 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-base sm:text-sm border ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200' : 'bg-white border-gray-300'}`}
+                                                className={isReadOnly ? 'input-premium-readonly' : 'input-premium'}
                                             />
                                         </div>
                                         {!isReadOnly && (
@@ -654,11 +654,11 @@ export const DailyReportForm = () => {
                                                                                     handleAssignedEmployeeFieldChange(index, dbEmp.id, 'hours', e.target.value);
                                                                                 }}
                                                                                 disabled={isReadOnly || assignedData?.hours === 'K'}
-                                                                                className={`block w-full rounded-md p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm border ${
+                                                                                className={
                                                                                     showErrors && (!assignedData?.hours && !assignedData?.badWeatherHours && !assignedData?.doctorHours)
-                                                                                        ? 'border-red-500 bg-red-50'
-                                                                                        : isReadOnly || assignedData?.hours === 'K' ? 'bg-gray-100 text-gray-500 border-gray-200' : 'border-gray-300 bg-white'
-                                                                                }`}
+                                                                                        ? 'input-premium-sm !border-red-500 !bg-red-50 !ring-red-500/20'
+                                                                                        : isReadOnly || assignedData?.hours === 'K' ? 'input-premium-sm-readonly' : 'input-premium-sm'
+                                                                                }
                                                                             />
                                                                         </div>
                                                                         <div className="flex-1">
@@ -673,9 +673,7 @@ export const DailyReportForm = () => {
                                                                                     handleAssignedEmployeeFieldChange(index, dbEmp.id, 'badWeatherHours', e.target.value);
                                                                                 }}
                                                                                 disabled={isReadOnly || assignedData?.hours === 'K'}
-                                                                                className={`block w-full rounded-md p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm border ${
-                                                                                    isReadOnly || assignedData?.hours === 'K' ? 'bg-gray-100 text-gray-500 border-gray-200' : 'border-gray-300 bg-white'
-                                                                                }`}
+                                                                                className={isReadOnly || assignedData?.hours === 'K' ? 'input-premium-sm-readonly' : 'input-premium-sm'}
                                                                             />
                                                                         </div>
                                                                         <div className="flex-1">
@@ -690,9 +688,7 @@ export const DailyReportForm = () => {
                                                                                     handleAssignedEmployeeFieldChange(index, dbEmp.id, 'doctorHours', e.target.value);
                                                                                 }}
                                                                                 disabled={isReadOnly || assignedData?.hours === 'K'}
-                                                                                className={`block w-full rounded-md p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm border ${
-                                                                                    isReadOnly || assignedData?.hours === 'K' ? 'bg-gray-100 text-gray-500 border-gray-200' : 'border-gray-300 bg-white'
-                                                                                }`}
+                                                                                className={isReadOnly || assignedData?.hours === 'K' ? 'input-premium-sm-readonly' : 'input-premium-sm'}
                                                                             />
                                                                         </div>
                                                                     </div>
@@ -770,7 +766,7 @@ export const DailyReportForm = () => {
                         onChange={handleChange}
                         disabled={isReadOnly}
                         placeholder="Materialien, Lieferscheinnummern, etc. hier eintragen..."
-                        className={`block w-full rounded-md p-4 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-base border min-h-[6rem] ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200' : 'border-gray-300'}`}
+                        className={`min-h-[6rem] ${isReadOnly ? 'input-premium-readonly' : 'input-premium'}`}
                     />
                 </div>
 
@@ -783,7 +779,7 @@ export const DailyReportForm = () => {
                         onChange={handleChange}
                         disabled={isReadOnly}
                         placeholder="Bagger, Kran, Rüttelplatte, etc. hier eintragen..."
-                        className={`block w-full rounded-md p-4 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-base border min-h-[6rem] ${isReadOnly ? 'bg-gray-100 text-gray-500 border-gray-200' : 'border-gray-300'}`}
+                        className={`min-h-[6rem] ${isReadOnly ? 'input-premium-readonly' : 'input-premium'}`}
                     />
                 </div>
 

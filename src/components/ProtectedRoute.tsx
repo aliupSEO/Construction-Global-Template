@@ -14,7 +14,7 @@ export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-brand-dark">
         <Loader2 className="w-8 h-8 text-brand-primary animate-spin" />
       </div>
     );
@@ -30,7 +30,7 @@ export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
 
   if (allowedRoles && userRole && !allowedRoles.includes(userRole as any)) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-slate-100 flex-col">
+      <div className="min-h-screen flex items-center justify-center bg-brand-dark text-slate-100 flex-col">
         <h1 className="text-2xl font-bold mb-4">Zugriff verweigert</h1>
         <p>Ihre Rolle berechtigt Sie nicht, diese Seite anzuzeigen.</p>
         <button 

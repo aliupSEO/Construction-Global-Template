@@ -542,7 +542,7 @@ export const SitePhotos: React.FC<SitePhotosProps> = ({ siteId }) => {
                                     value={newActivityName}
                                     onChange={(e) => setNewActivityName(e.target.value)}
                                     placeholder="z.B. Fenster installieren..."
-                                    className="flex-1 px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 text-base"
+                                    className="input-premium"
                                     autoFocus
                                 />
                                 <div className="flex gap-2">

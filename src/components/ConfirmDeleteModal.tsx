@@ -75,7 +75,7 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     placeholder="löschen"
-                                    className="block w-full px-3 py-2 border border-red-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm font-mono"
+                                    className="input-premium font-mono !border-red-300 focus:!border-red-500 focus:!ring-red-500"
                                 />
                             </div>
                         </div>

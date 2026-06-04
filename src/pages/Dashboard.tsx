@@ -6,6 +6,7 @@ import { db, storage, APP_ID } from '../lib/firebase';
 import { collection, query, where, onSnapshot, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import imageCompression from 'browser-image-compression';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Baustelle {
     id: string;
@@ -14,7 +15,15 @@ interface Baustelle {
 }
 
 export const Dashboard = () => {
+    const { currentUser, userRole, employeeName } = useAuth();
     const [sites, setSites] = useState<Baustelle[]>([]);
+
+    const today = new Date().toLocaleDateString('de-DE', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
     
     // Photo Modal States
     const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
@@ -199,61 +208,84 @@ export const Dashboard = () => {
 
     return (
         <DashboardShell title="Dashboard">
-            <div className="flex flex-col gap-6 mt-2 max-w-4xl">
+            <div className="max-w-6xl space-y-8 mt-2">
                 
-                {/* Schnell Foto Card */}
-                <button
-                    onClick={() => setIsPhotoModalOpen(true)}
-                    className="group bg-white rounded-xl shadow-sm border-l-4 border-l-red-500 border-t border-b border-r border-gray-100 p-6 hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center text-left"
-                >
-                    <div className="flex items-center">
-                        <div className="p-4 rounded-full bg-red-50 text-red-600 mr-4 group-hover:scale-110 transition-transform">
-                            <Camera className="w-8 h-8" />
-                        </div>
+                {/* Welcome Banner */}
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-primary/10 to-brand-primary/5 p-8 border border-brand-primary/20 shadow-sm">
+                    <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-brand-primary/10 rounded-full blur-3xl"></div>
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900">Schnelles Foto aufnehmen</h3>
-                            <p className="text-sm text-gray-500 mt-1">Direkt ein Foto für eine Baustelle dokumentieren.</p>
+                            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                                Willkommen zurück{employeeName ? `, ${employeeName}` : (currentUser?.email ? `, ${currentUser.email.split('@')[0]}` : '')}!
+                            </h2>
+                            <p className="text-gray-600">
+                                {today}
+                            </p>
                         </div>
                     </div>
-                </button>
+                </div>
 
-                {/* Tagesbericht Card */}
-                <Link
-                    to="/daily-reports/new"
-                    className="group bg-white rounded-xl shadow-sm border-l-4 border-l-brand-primary border-t border-b border-r border-gray-100 p-6 hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between"
-                >
-                    <div className="flex items-center mb-4 sm:mb-0">
-                        <div className="p-4 rounded-full bg-brand-primary/10 text-brand-primary mr-4 group-hover:scale-110 transition-transform">
-                            <FileText className="w-8 h-8" />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Schnell Foto Card */}
+                    <button
+                        onClick={() => setIsPhotoModalOpen(true)}
+                        className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 overflow-hidden text-left flex flex-col h-full"
+                    >
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-full blur-3xl -mr-10 -mt-10 opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                        <div className="p-6 md:p-8 flex-1 flex flex-col relative z-10">
+                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 text-white flex items-center justify-center mb-6 shadow-md shadow-red-500/20 group-hover:scale-110 transition-transform duration-300">
+                                <Camera className="w-7 h-7" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Schnelles Foto</h3>
+                            <p className="text-gray-500 leading-relaxed flex-1">Direkt ein Foto für eine Baustelle dokumentieren.</p>
+                            
+                            <div className="mt-6 flex items-center text-red-600 font-semibold group-hover:gap-2 transition-all">
+                                <span>Aufnehmen</span>
+                                <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
+                            </div>
                         </div>
-                        <div>
-                            <h3 className="text-xl font-bold text-gray-900">Neuer Tagesbericht</h3>
-                            <p className="text-sm text-gray-500 mt-1">Leistungen, Material und Wetter für einen Tag erfassen.</p>
-                        </div>
-                    </div>
-                    <div className="bg-brand-primary/10 text-brand-primary px-8 py-3 rounded-lg font-medium text-center w-full sm:w-auto group-hover:bg-brand-primary group-hover:text-white transition-colors">
-                        Starten
-                    </div>
-                </Link>
+                    </button>
 
-                {/* Wochenbericht Card */}
-                <Link
-                    to="/weekly-reports/new"
-                    className="group bg-white rounded-xl shadow-sm border-l-4 border-l-green-500 border-t border-b border-r border-gray-100 p-6 hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between"
-                >
-                    <div className="flex items-center mb-4 sm:mb-0">
-                        <div className="p-4 rounded-full bg-green-50 text-green-600 mr-4 group-hover:scale-110 transition-transform">
-                            <CalendarDays className="w-8 h-8" />
+                    {/* Tagesbericht Card */}
+                    <Link
+                        to="/daily-reports/new"
+                        className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full"
+                    >
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-brand-primary/5 rounded-full blur-3xl -mr-10 -mt-10 opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                        <div className="p-6 md:p-8 flex-1 flex flex-col relative z-10">
+                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-primary to-red-700 text-white flex items-center justify-center mb-6 shadow-md shadow-brand-primary/20 group-hover:scale-110 transition-transform duration-300">
+                                <FileText className="w-7 h-7" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Tagesbericht</h3>
+                            <p className="text-gray-500 leading-relaxed flex-1">Leistungen, Material und Wetter für einen Tag erfassen.</p>
+                            
+                            <div className="mt-6 flex items-center text-brand-primary font-semibold group-hover:gap-2 transition-all">
+                                <span>Starten</span>
+                                <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
+                            </div>
                         </div>
-                        <div>
-                            <h3 className="text-xl font-bold text-gray-900">Neuer Wochenbericht</h3>
-                            <p className="text-sm text-gray-500 mt-1">Stundennachweise für die gesamte Woche anlegen.</p>
+                    </Link>
+
+                    {/* Wochenbericht Card */}
+                    <Link
+                        to="/weekly-reports/new"
+                        className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full"
+                    >
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full blur-3xl -mr-10 -mt-10 opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                        <div className="p-6 md:p-8 flex-1 flex flex-col relative z-10">
+                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white flex items-center justify-center mb-6 shadow-md shadow-emerald-500/20 group-hover:scale-110 transition-transform duration-300">
+                                <CalendarDays className="w-7 h-7" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Wochenbericht</h3>
+                            <p className="text-gray-500 leading-relaxed flex-1">Stundennachweise für die gesamte Woche anlegen.</p>
+                            
+                            <div className="mt-6 flex items-center text-emerald-600 font-semibold group-hover:gap-2 transition-all">
+                                <span>Starten</span>
+                                <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
+                            </div>
                         </div>
-                    </div>
-                    <div className="bg-green-50 text-green-700 px-8 py-3 rounded-lg font-medium text-center w-full sm:w-auto group-hover:bg-green-600 group-hover:text-white transition-colors">
-                        Starten
-                    </div>
-                </Link>
+                    </Link>
+                </div>
             </div>
 
             {/* Quick Photo Modal */}
@@ -325,7 +357,7 @@ export const Dashboard = () => {
                                             value={selectedSiteId}
                                             onChange={(e) => setSelectedSiteId(e.target.value)}
                                             disabled={uploading}
-                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 text-gray-900 bg-white"
+                                            className="input-premium appearance-none"
                                         >
                                             <option value="">-- Bitte wählen --</option>
                                             {sites.map(site => (
@@ -344,7 +376,7 @@ export const Dashboard = () => {
                                             onChange={(e) => setPhotoTitle(e.target.value)}
                                             disabled={uploading}
                                             placeholder="z.B. Betonieren, Fliesen verlegen..."
-                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 text-gray-900"
+                                            className="input-premium"
                                         />
                                     </div>
 

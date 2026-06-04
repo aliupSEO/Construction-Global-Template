@@ -523,7 +523,7 @@ export const Reports = () => {
                                 type="date"
                                 value={filterDailyDate}
                                 onChange={(e) => setFilterDailyDate(e.target.value)}
-                                className="w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm"
+                                className="input-premium"
                             />
                         </div>
                         <div className="w-full md:w-1/3">
@@ -545,7 +545,7 @@ export const Reports = () => {
                             <select
                                 value={filterDailySite}
                                 onChange={(e) => setFilterDailySite(e.target.value)}
-                                className="w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm bg-white"
+                                className="input-premium appearance-none"
                             >
                                 <option value="">- Alle Baustellen -</option>
                                 {dbBaustellen
@@ -583,7 +583,7 @@ export const Reports = () => {
                                 type="date"
                                 value={filterWeeklyDateFrom}
                                 onChange={(e) => setFilterWeeklyDateFrom(e.target.value)}
-                                className="w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm"
+                                className="input-premium"
                             />
                         </div>
                         <div className="w-full md:w-1/4">
@@ -592,7 +592,7 @@ export const Reports = () => {
                                 type="date"
                                 value={filterWeeklyDateTo}
                                 onChange={(e) => setFilterWeeklyDateTo(e.target.value)}
-                                className="w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm"
+                                className="input-premium"
                             />
                         </div>
                         <div className="w-full md:w-1/4">
@@ -602,7 +602,7 @@ export const Reports = () => {
                                 placeholder="z.B. 10"
                                 value={filterWeeklyWeek}
                                 onChange={(e) => setFilterWeeklyWeek(e.target.value)}
-                                className="w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm"
+                                className="input-premium"
                             />
                         </div>
                         <div className="w-full md:w-auto">

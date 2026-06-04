@@ -9,6 +9,8 @@ interface AuthContextType {
   currentUser: User | null;
   userRole: Role;
   employeeId: string | null;
+  employeeName: string | null;
+  setEmployeeName: (name: string | null) => void;
   userCollection: 'employees' | 'managers' | null;
   requiresPasswordChange: boolean;
   loading: boolean;
@@ -18,6 +20,8 @@ const AuthContext = createContext<AuthContextType>({
   currentUser: null,
   userRole: null,
   employeeId: null,
+  employeeName: null,
+  setEmployeeName: () => {},
   userCollection: null,
   requiresPasswordChange: false,
   loading: true,
@@ -31,6 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userRole, setUserRole] = useState<Role>(null);
   const [employeeId, setEmployeeId] = useState<string | null>(null);
+  const [employeeName, setEmployeeName] = useState<string | null>(null);
   const [userCollection, setUserCollection] = useState<'employees' | 'managers' | null>(null);
   const [requiresPasswordChange, setRequiresPasswordChange] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
@@ -57,6 +62,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                const empDoc = snapshotEmp.docs[0];
                const docData = empDoc.data();
                setEmployeeId(empDoc.id);
+               if (docData.firstName && docData.lastName) {
+                   setEmployeeName(`${docData.firstName} ${docData.lastName}`);
+               } else {
+                   setEmployeeName(null);
+               }
                setUserCollection('employees');
                setRequiresPasswordChange(docData.requiresPasswordChange === true);
             } else {
@@ -69,10 +79,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                   const manDoc = snapshotMan.docs[0];
                   const docData = manDoc.data();
                   setEmployeeId(manDoc.id);
+                  if (docData.firstName && docData.lastName) {
+                      setEmployeeName(`${docData.firstName} ${docData.lastName}`);
+                  } else {
+                      setEmployeeName(null);
+                  }
                   setUserCollection('managers');
                   setRequiresPasswordChange(docData.requiresPasswordChange === true);
                } else {
                  setEmployeeId(null);
+                 setEmployeeName(null);
                  setUserCollection(null);
                  setRequiresPasswordChange(false);
                }
@@ -112,11 +128,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             if (empDoc && docData && docColl) {
               setUserRole(docData.role as Role || 'vorarbeiter');
               setEmployeeId(docId);
+              if (docData.firstName && docData.lastName) {
+                  setEmployeeName(`${docData.firstName} ${docData.lastName}`);
+              } else {
+                  setEmployeeName(null);
+              }
               setUserCollection(docColl);
               setRequiresPasswordChange(docData.requiresPasswordChange === true);
             } else {
               setUserRole(null);
               setEmployeeId(null);
+              setEmployeeName(null);
               setUserCollection(null);
               setRequiresPasswordChange(false);
             }
@@ -125,11 +147,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           console.error("Fehler beim Abrufen der Rolle:", error);
           setUserRole(null);
           setEmployeeId(null);
+          setEmployeeName(null);
           setRequiresPasswordChange(false);
         }
       } else {
         setUserRole(null);
         setEmployeeId(null);
+        setEmployeeName(null);
         setRequiresPasswordChange(false);
       }
       setLoading(false);
@@ -139,7 +163,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, userRole, employeeId, userCollection, requiresPasswordChange, loading }}>
+    <AuthContext.Provider value={{ currentUser, userRole, employeeId, employeeName, setEmployeeName, userCollection, requiresPasswordChange, loading }}>
       {children}
     </AuthContext.Provider>
   );

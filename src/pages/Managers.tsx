@@ -237,7 +237,7 @@ export const Managers = () => {
                                     required
                                     value={formData.firstName}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm"
+                                    className="input-premium"
                                 />
                             </div>
                             <div>
@@ -248,7 +248,7 @@ export const Managers = () => {
                                     required
                                     value={formData.lastName}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm"
+                                    className="input-premium"
                                 />
                             </div>
                             <div>
@@ -258,7 +258,7 @@ export const Managers = () => {
                                     name="phone"
                                     value={formData.phone}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm"
+                                    className="input-premium"
                                 />
                             </div>
                             <div>
@@ -268,7 +268,7 @@ export const Managers = () => {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm"
+                                    className="input-premium"
                                     placeholder="z.B. klaus oder klaus@firma.at"
                                 />
                             </div>
@@ -280,7 +280,7 @@ export const Managers = () => {
                                     value={formData.password || ''}
                                     onChange={handleChange}
                                     placeholder={editingId ? (formData.password ? "Klartext-Passwort..." : "Passwort (versteckt). Hier tippen für Reset...") : "Passwort initialisieren"}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm"
+                                    className="input-premium"
                                 />
                                 <p className="mt-1 text-xs text-slate-500">
                                     {editingId ? (formData.password ? "Klartext-Passwort aktiv. Nutzer muss es ändern." : "Nutzer hat eigenes Passwort. Neues eingeben für Reset.") : "Wird beim Erstellen benötigt."}
@@ -292,7 +292,7 @@ export const Managers = () => {
                                     name="status"
                                     value={formData.status}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm bg-white"
+                                    className="input-premium appearance-none"
                                 >
                                     <option value="active">Aktiv</option>
                                     <option value="archived">Archiviert</option>
