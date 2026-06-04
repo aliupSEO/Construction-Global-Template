@@ -136,3 +136,32 @@
     @apply border-brand-primary;
   }
 }
+
+/* App Settings - Global Overrides */
+html.disable-animations *,
+html.disable-animations *::before,
+html.disable-animations *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+html.compact-mode table td,
+html.compact-mode table th {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+html.compact-mode .p-6 {
+  padding: 1rem !important;
+}
+
+html.compact-mode .py-3 {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+html.compact-mode .space-y-6 > * + * {
+  margin-top: 1rem !important;
+}

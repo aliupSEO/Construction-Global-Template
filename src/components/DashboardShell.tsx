@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Sidebar } from './Sidebar';
-import { Menu, User, LogOut, ChevronDown } from 'lucide-react';
+import { Menu, User, LogOut, ChevronDown, HardHat } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { signOut } from 'firebase/auth';
-import { auth } from '../lib/firebase';
+import { auth, db, APP_ID } from '../lib/firebase';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 interface Props {
     children: React.ReactNode;
@@ -17,6 +18,18 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const navigate = useNavigate();
     const { currentUser, userRole, employeeName } = useAuth();
+    const [logoUrl, setLogoUrl] = useState<string | null>(null);
+
+    React.useEffect(() => {
+        const unsubscribe = onSnapshot(doc(db, 'apps', APP_ID, 'metadata', 'company_profile'), (docSnap) => {
+            if (docSnap.exists() && docSnap.data().logoBase64) {
+                setLogoUrl(docSnap.data().logoBase64);
+            } else {
+                setLogoUrl(null);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
     
     const getInitials = () => {
         if (employeeName) {
@@ -41,7 +54,7 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
 
     return (
         <div className="min-h-screen bg-brand-surface print:bg-white flex flex-col lg:flex-row">
-            <Sidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+            <Sidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} logoUrl={logoUrl} />
 
             {/* Mobile Overlay */}
             {isMobileMenuOpen && (
@@ -55,7 +68,13 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
                 {/* MOBILE HEADER */}
                 <div className="lg:hidden h-20 bg-gradient-to-b from-brand-dark to-black border-b border-white/5 flex items-center justify-between px-6 sticky top-0 z-30 print:hidden shadow-lg shadow-black/20">
                     <div className="flex items-center">
-                        <img src="/logo.jpeg" alt="Logo" className="h-9 w-auto rounded-lg shadow-md border border-white/10" />
+                        {logoUrl ? (
+                            <img src={logoUrl} alt="Logo" className="h-9 w-auto rounded-lg shadow-md border border-white/10 bg-white" />
+                        ) : (
+                            <div className="h-9 w-9 rounded-lg bg-gradient-to-tr from-brand-primary/20 to-brand-primary/5 border border-brand-primary/20 flex items-center justify-center shadow-md">
+                                <HardHat className="w-5 h-5 text-brand-primary" />
+                            </div>
+                        )}
                         <span className="text-xs uppercase tracking-widest text-brand-primary font-bold ml-3 mt-0.5">Construction</span>
                     </div>
                     <button onClick={() => setIsMobileMenuOpen(true)} className="text-gray-400 hover:text-white p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-transparent hover:border-white/10 shadow-sm">

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { DashboardShell } from '../components/DashboardShell';
 import { db, APP_ID } from '../lib/firebase';
 import { collection, doc, getDoc, setDoc, getDocs, serverTimestamp, runTransaction, query, where } from 'firebase/firestore';
+import { CustomSelect } from '../components/CustomSelect';
+import { CustomDatePicker } from '../components/CustomDatePicker';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Save, ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { SignaturePad } from '../components/ui/SignaturePad';
@@ -435,36 +437,24 @@ export const DailyReportForm = () => {
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Baustelle *</label>
-                        <select
-                            name="constructionSite"
-                            required
+                        <CustomSelect
+                            options={dbBaustellen.map(b => ({ value: b.name, label: b.name }))}
                             value={formData.constructionSite}
-                            onChange={handleChange}
+                            onChange={(value) => setFormData(prev => ({ ...prev, constructionSite: value }))}
+                            placeholder="Bitte Baustelle wählen..."
                             disabled={isReadOnly}
-                            className={isReadOnly ? 'input-premium-readonly appearance-none' : 'input-premium appearance-none'}
-                        >
-                            <option value="" disabled hidden>Bitte Baustelle wählen...</option>
-                            {dbBaustellen.map(b => (
-                                <option key={b.id} value={b.name}>{b.name}</option>
-                            ))}
-                        </select>
+                        />
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Bauleiter *</label>
-                        <select
-                            name="managerId"
-                            required
+                        <CustomSelect
+                            options={dbManagers.map(m => ({ value: m.id, label: m.name }))}
                             value={formData.managerId}
-                            onChange={handleChange}
+                            onChange={(value) => setFormData(prev => ({ ...prev, managerId: value }))}
+                            placeholder="Bitte Bauleiter wählen..."
                             disabled={isReadOnly}
-                            className={isReadOnly ? 'input-premium-readonly appearance-none' : 'input-premium appearance-none'}
-                        >
-                            <option value="" disabled hidden>Bitte Bauleiter wählen...</option>
-                            {dbManagers.map(m => (
-                                <option key={m.id} value={m.id}>{m.name}</option>
-                            ))}
-                        </select>
+                        />
                         {formData.managerSignature && (
                             <div className="mt-2 text-xs text-green-600 flex items-center bg-green-50 p-2 rounded border border-green-100">
                                 <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
@@ -475,14 +465,13 @@ export const DailyReportForm = () => {
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Datum *</label>
-                        <input
-                            type="date"
-                            name="date"
-                            required
-                            value={formData.date}
-                            onChange={handleChange}
+                        <CustomDatePicker
+                            selected={formData.date ? new Date(formData.date) : null}
+                            onChange={(date) => {
+                                const localDateString = date ? new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().split('T')[0] : '';
+                                setFormData(prev => ({ ...prev, date: localDateString }));
+                            }}
                             disabled={isReadOnly}
-                            className={isReadOnly ? 'input-premium-readonly' : 'input-premium'}
                         />
                     </div>
 

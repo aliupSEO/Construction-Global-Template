@@ -5,6 +5,7 @@ import { collection, doc, getDoc, setDoc, getDocs, serverTimestamp, runTransacti
 import { useNavigate, useParams } from 'react-router-dom';
 import { Save, ArrowLeft } from 'lucide-react';
 import { SignaturePad } from '../components/ui/SignaturePad';
+import { CustomSelect } from '../components/CustomSelect';
 import { slugify } from '../lib/utils';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -493,37 +494,34 @@ export const WeeklyReportForm = () => {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Monat *</label>
-                            <select
-                                name="month"
-                                required
-                                value={formData.month}
-                                onChange={handleFormChange}
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Monat *</label>
+                            <CustomSelect
+                                options={Array.from({ length: 12 }, (_, i) => i + 1).map(m => ({
+                                    value: m.toString(),
+                                    label: new Date(2000, m - 1).toLocaleString('de-DE', { month: 'long' })
+                                }))}
+                                value={formData.month.toString()}
+                                onChange={(value) => setFormData(prev => ({ ...prev, month: parseInt(value, 10) }))}
+                                placeholder="Bitte Monat wählen..."
                                 disabled={isReadOnly}
-                                className={isReadOnly ? 'input-premium-readonly appearance-none' : 'input-premium appearance-none'}
-                            >
-                                <option value="" disabled hidden>Bitte Monat wählen...</option>
-                                {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
-                                    <option key={m} value={m}>{new Date(2000, m - 1).toLocaleString('de-DE', { month: 'long' })}</option>
-                                ))}
-                            </select>
+                            />
                         </div>
                     </div>
                 </div>
 
                 {/* Weekly Table Matrix */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6">
-                    <div className="flex justify-between items-center mb-4 border-b pb-2">
-                        <h3 className="text-lg font-medium text-gray-900">Arbeitszeiten (Stunden pro Tag)</h3>
+                    <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
+                        <h3 className="text-lg font-bold text-gray-900 tracking-tight">Arbeitszeiten (Stunden pro Tag)</h3>
                         <div className="flex items-center space-x-3">
-                            <span className="text-xs font-semibold text-gray-500 bg-gray-50 px-2 py-1 rounded-md border border-gray-200">
+                            <span className="text-xs font-semibold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full border border-gray-200 shadow-sm">
                                 K = Krank &nbsp;&bull;&nbsp; U = Urlaub &nbsp;&bull;&nbsp; F = Feiertag
                             </span>
                             {!isReadOnly && (
                                 <button
                                     type="button"
                                     onClick={addWeeklyEntry}
-                                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded text-brand-primary bg-brand-primary/10 hover:bg-brand-primary/20"
+                                    className="inline-flex items-center px-4 py-1.5 border border-transparent text-sm font-bold rounded-full text-brand-primary bg-brand-primary/10 hover:bg-brand-primary/20 hover:shadow-sm transition-all"
                                 >
                                     + Neue Zeile
                                 </button>
@@ -534,10 +532,9 @@ export const WeeklyReportForm = () => {
                     <div className="space-y-6">
                         {/* Whole week holiday shortcuts */}
                         {weeklyEntries.length > 0 && (
-                            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                                <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Feiertage für die gesamte Woche festlegen:</h4>
-                                <p className="text-xs text-gray-500 mb-3">Aktivieren Sie einen Wochentag, um diesen bei allen Einträgen als Feiertag (&quot;F&quot;) zu markieren.</p>
-                                <div className="flex flex-wrap gap-4">
+                            <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                                <h4 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-3">Feiertage für die gesamte Woche festlegen:</h4>
+                                <div className="flex flex-wrap gap-2">
                                     {(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const).map(day => {
                                         const labels: Record<string, string> = {
                                             monday: 'Montag',
@@ -549,19 +546,20 @@ export const WeeklyReportForm = () => {
                                             sunday: 'Sonntag'
                                         };
                                         return (
-                                            <label key={day} className="inline-flex items-center space-x-2 cursor-pointer select-none">
+                                            <label key={day} className={`cursor-pointer inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold border transition-all ${holidayDays[day] ? 'bg-brand-primary text-white border-brand-primary shadow-md' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:border-gray-300'} ${isReadOnly ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                                 <input
                                                     type="checkbox"
                                                     checked={holidayDays[day]}
                                                     onChange={() => toggleHolidayDay(day)}
                                                     disabled={isReadOnly}
-                                                    className={`h-4 w-4 text-brand-primary focus:ring-brand-primary border-gray-300 rounded ${isReadOnly ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                    className="hidden"
                                                 />
-                                                <span className="text-sm font-medium text-gray-700">{labels[day]}</span>
+                                                {labels[day]}
                                             </label>
                                         );
                                     })}
                                 </div>
+                                <p className="text-xs text-gray-500 mt-3 font-medium">Aktivieren Sie einen Wochentag, um diesen bei allen Einträgen als Feiertag ("F") zu markieren.</p>
                             </div>
                         )}
 
@@ -573,10 +571,10 @@ export const WeeklyReportForm = () => {
                             <>
                                 <div className="hidden lg:block overflow-x-auto">
                                     <table className="w-full text-sm text-left text-gray-500">
-                                    <thead className="bg-gray-50 text-gray-700 text-xs uppercase">
+                                    <thead className="bg-gray-50 text-gray-500 text-[10px] font-bold uppercase tracking-widest border-b border-gray-100">
                                         <tr>
-                                            <th className="px-3 py-3 w-48">Mitarbeiter</th>
-                                            <th className="px-3 py-3 w-48">Baustelle</th>
+                                            <th className="px-3 py-4 w-48 rounded-tl-xl">Mitarbeiter</th>
+                                            <th className="px-3 py-4 w-48">Baustelle</th>
                                             {(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const).map(day => {
                                                 const labels: Record<string, string> = {
                                                     monday: 'Mo',
@@ -588,24 +586,24 @@ export const WeeklyReportForm = () => {
                                                     sunday: 'So'
                                                 };
                                                 return (
-                                                    <th key={day} className="px-1 py-2 w-14 text-center">
-                                                        <div className="flex flex-col items-center space-y-1">
+                                                    <th key={day} className="px-1 py-4 w-14 text-center">
+                                                        <div className="flex flex-col items-center space-y-1.5">
                                                             <span>{labels[day]}</span>
-                                                            <label className="inline-flex items-center cursor-pointer" title={`Feiertag für alle am ${labels[day]}`}>
+                                                            <label className="inline-flex items-center cursor-pointer hover:opacity-80 transition-opacity" title={`Feiertag für alle am ${labels[day]}`}>
                                                                 <input
                                                                     type="checkbox"
                                                                     checked={holidayDays[day]}
                                                                     onChange={() => toggleHolidayDay(day)}
                                                                     disabled={isReadOnly}
-                                                                    className={`h-3.5 w-3.5 text-brand-primary focus:ring-brand-primary border-gray-300 rounded ${isReadOnly ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                                    className={`h-4 w-4 text-brand-primary focus:ring-brand-primary border-gray-300 rounded shadow-sm ${isReadOnly ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                                 />
                                                             </label>
                                                         </div>
                                                     </th>
                                                 );
                                             })}
-                                            <th className="px-2 py-3 w-20 text-center">Summe</th>
-                                            <th className="px-1 py-3 w-10 text-center"></th>
+                                            <th className="px-2 py-4 w-20 text-center">Summe</th>
+                                            <th className="px-1 py-4 w-10 text-center rounded-tr-xl"></th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-100">
@@ -620,33 +618,39 @@ export const WeeklyReportForm = () => {
                                             }, 0);
                                             return (
                                                 <tr key={entry.id} className="hover:bg-gray-50">
-                                                    <td className="px-2 py-2">
-                                                        <select
-                                                            className={isReadOnly ? 'input-premium-sm-readonly appearance-none' : 'input-premium-sm appearance-none'}
-                                                            value={entry.employeeId}
-                                                            onChange={(e) => updateWeeklyEntryField(entry.id, 'employeeId', e.target.value)}
-                                                            required
-                                                            disabled={isReadOnly}
-                                                        >
-                                                            <option value="" disabled>Mitarbeiter wählen</option>
-                                                            {dbEmployees.map(emp => (
-                                                                <option key={emp.id} value={emp.id}>{emp.lastName}, {emp.firstName}</option>
-                                                            ))}
-                                                        </select>
+                                                    <td className="px-2 py-3">
+                                                        <div className="relative">
+                                                            <select
+                                                                className={isReadOnly ? 'input-premium-sm-readonly appearance-none pr-8' : 'input-premium-sm appearance-none pr-8'}
+                                                                value={entry.employeeId}
+                                                                onChange={(e) => updateWeeklyEntryField(entry.id, 'employeeId', e.target.value)}
+                                                                required
+                                                                disabled={isReadOnly}
+                                                            >
+                                                                <option value="" disabled>Mitarbeiter wählen</option>
+                                                                {dbEmployees.map(emp => (
+                                                                    <option key={emp.id} value={emp.id}>{emp.lastName}, {emp.firstName}</option>
+                                                                ))}
+                                                            </select>
+                                                            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                                                        </div>
                                                     </td>
-                                                    <td className="px-2 py-2">
-                                                        <select
-                                                            className={isReadOnly ? 'input-premium-sm-readonly appearance-none' : 'input-premium-sm appearance-none'}
-                                                            value={entry.constructionSiteId}
-                                                            onChange={(e) => updateWeeklyEntryField(entry.id, 'constructionSiteId', e.target.value)}
-                                                            required
-                                                            disabled={isReadOnly}
-                                                        >
-                                                            <option value="" disabled>Baustelle wählen</option>
-                                                            {dbBaustellen.map(site => (
-                                                                <option key={site.id} value={site.id}>{site.name}</option>
-                                                            ))}
-                                                        </select>
+                                                    <td className="px-2 py-3">
+                                                        <div className="relative">
+                                                            <select
+                                                                className={isReadOnly ? 'input-premium-sm-readonly appearance-none pr-8' : 'input-premium-sm appearance-none pr-8'}
+                                                                value={entry.constructionSiteId}
+                                                                onChange={(e) => updateWeeklyEntryField(entry.id, 'constructionSiteId', e.target.value)}
+                                                                required
+                                                                disabled={isReadOnly}
+                                                            >
+                                                                <option value="" disabled>Baustelle wählen</option>
+                                                                {dbBaustellen.map(site => (
+                                                                    <option key={site.id} value={site.id}>{site.name}</option>
+                                                                ))}
+                                                            </select>
+                                                            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                                                        </div>
                                                     </td>
                                                     {(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const).map(day => (
                                                         <td key={day} className="px-1 py-2 text-center">
@@ -659,8 +663,8 @@ export const WeeklyReportForm = () => {
                                                             />
                                                         </td>
                                                     ))}
-                                                    <td className="px-2 py-2 text-center font-medium text-gray-900">
-                                                        {empTotal} <span className="text-gray-400 text-xs">h</span>
+                                                    <td className="px-2 py-3 text-center font-bold text-gray-900 bg-gray-50/30">
+                                                        {empTotal} <span className="text-gray-400 text-xs font-medium">h</span>
                                                     </td>
                                                     <td className="px-1 py-2 text-center">
                                                         {!isReadOnly && (
@@ -767,15 +771,18 @@ export const WeeklyReportForm = () => {
                             </div>
                         </>
                         )}
-                        <div className="flex justify-end pt-4 pr-2">
-                            <div className="bg-brand-dark text-white px-6 py-3 rounded-lg shadow-sm flex flex-col items-end space-y-1">
-                                <div className="flex items-center space-x-4">
-                                    <span className="font-medium">Gesamtstunden:</span>
-                                    <span className="text-2xl font-bold">{totals.total} <span className="text-sm font-normal text-gray-300">h</span></span>
+                        <div className="flex justify-end pt-6 pr-2">
+                            <div className="bg-brand-dark text-white px-8 py-5 rounded-2xl shadow-xl flex flex-col items-end space-y-2 relative overflow-hidden">
+                                <div className="absolute -right-6 -top-6 w-24 h-24 bg-white/5 rounded-full blur-2xl"></div>
+                                <div className="absolute -left-6 -bottom-6 w-24 h-24 bg-brand-primary/20 rounded-full blur-2xl"></div>
+                                
+                                <div className="flex items-center space-x-4 relative z-10">
+                                    <span className="font-semibold text-gray-300 uppercase tracking-widest text-xs">Gesamtstunden</span>
+                                    <span className="text-4xl font-bold">{totals.total} <span className="text-lg font-normal text-gray-400">h</span></span>
                                 </div>
                                 {(totals.sw > 0 || totals.doc > 0) && (
-                                    <div className="text-sm text-gray-300 flex space-x-3">
-                                        <span>davon:</span>
+                                    <div className="text-xs text-gray-400 flex space-x-3 bg-black/20 px-3 py-1.5 rounded-lg relative z-10">
+                                        <span className="uppercase tracking-wider">davon:</span>
                                         <span>Normal: <strong className="text-white">{totals.normal}h</strong></span>
                                         {totals.sw > 0 && <span>SW: <strong className="text-white">{totals.sw}h</strong></span>}
                                         {totals.doc > 0 && <span>Arzt: <strong className="text-white">{totals.doc}h</strong></span>}

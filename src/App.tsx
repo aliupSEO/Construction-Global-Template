@@ -6,7 +6,6 @@ import { Tasks } from './pages/Tasks';
 import { Settings } from './pages/Settings';
 import { Employees } from './pages/Employees';
 import { Managers } from './pages/Managers';
-import { Clients } from './pages/Clients';
 import { DailyReports } from './pages/DailyReports';
 import { DailyReportForm } from './pages/DailyReportForm';
 import { WeeklyReports } from './pages/WeeklyReports';
@@ -17,6 +16,8 @@ import { Sites } from './pages/Sites';
 import { SiteDetail } from './pages/SiteDetail';
 import { LeaveRequests } from './pages/LeaveRequests';
 import { AuthProvider } from './contexts/AuthContext';
+import { AppProvider } from './contexts/AppContext';
+import { useAppSettings } from './hooks/useAppSettings';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Login } from './pages/Login';
 import { Account } from './pages/Account';
@@ -73,7 +74,6 @@ function App() {
                 <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
                     <Route path="/employees" element={<Employees />} />
                     <Route path="/managers" element={<Managers />} />
-                    <Route path="/clients" element={<Clients />} />
                     <Route path="/settings" element={<Settings />} />
                 </Route>
 

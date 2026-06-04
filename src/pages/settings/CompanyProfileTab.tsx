@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { db, APP_ID } from '../../lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { fileToBase64 } from '../../lib/utils';
-import { Save, Upload } from 'lucide-react';
+import { Save, Upload, HardHat } from 'lucide-react';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 export const CompanyProfileTab = () => {
     const [loading, setLoading] = useState(true);
@@ -101,6 +103,7 @@ export const CompanyProfileTab = () => {
                             name="companyName"
                             value={formData.companyName}
                             onChange={handleChange}
+                            placeholder="z.B. Muster Bau GmbH"
                             className="input-premium"
                             required
                         />
@@ -113,6 +116,7 @@ export const CompanyProfileTab = () => {
                             name="address"
                             value={formData.address}
                             onChange={handleChange}
+                            placeholder="z.B. Musterstraße 123"
                             required
                             className="input-premium"
                         />
@@ -125,6 +129,7 @@ export const CompanyProfileTab = () => {
                                 name="postalCode"
                                 value={formData.postalCode}
                                 onChange={handleChange}
+                                placeholder="z.B. 1010"
                                 className="input-premium"
                             />
                         </div>
@@ -135,20 +140,26 @@ export const CompanyProfileTab = () => {
                                 name="city"
                                 value={formData.city}
                                 onChange={handleChange}
+                                placeholder="z.B. Wien"
                                 className="input-premium"
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Telefon</label>
-                        <input
-                            type="text"
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleChange}
-                            className="input-premium"
-                        />
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
+                        <div className="phone-premium-container">
+                            <PhoneInput
+                                country={'at'}
+                                preferredCountries={['at', 'de', 'ch']}
+                                value={formData.phone}
+                                onChange={(phone) => setFormData({ ...formData, phone })}
+                                containerClass="w-full"
+                                inputClass="!w-full !h-[42px] !pl-12 !pr-4 !bg-gray-50/50 focus:!bg-white !border !border-gray-200 focus:!border-brand-primary focus:!ring-2 focus:!ring-brand-primary/20 !rounded-xl !text-sm !font-medium !text-gray-900 !transition-all hover:!border-gray-300"
+                                buttonClass="!bg-transparent !border-none !rounded-l-xl !pl-3"
+                                dropdownClass="!rounded-xl !border-gray-100 !shadow-xl"
+                            />
+                        </div>
                     </div>
 
                     <div>
@@ -158,6 +169,7 @@ export const CompanyProfileTab = () => {
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
+                            placeholder="z.B. office@musterbau.at"
                             className="input-premium"
                         />
                     </div>
@@ -169,6 +181,7 @@ export const CompanyProfileTab = () => {
                             name="website"
                             value={formData.website || ''}
                             onChange={handleChange}
+                            placeholder="z.B. https://www.musterbau.at"
                             className="input-premium"
                         />
                     </div>
@@ -180,6 +193,7 @@ export const CompanyProfileTab = () => {
                             name="managingDirector"
                             value={formData.managingDirector || ''}
                             onChange={handleChange}
+                            placeholder="z.B. Max Mustermann"
                             className="input-premium"
                         />
                     </div>
@@ -191,6 +205,7 @@ export const CompanyProfileTab = () => {
                             name="vatId"
                             value={formData.vatId || ''}
                             onChange={handleChange}
+                            placeholder="z.B. ATU12345678"
                             className="input-premium"
                         />
                     </div>
@@ -202,6 +217,7 @@ export const CompanyProfileTab = () => {
                             name="commercialRegister"
                             value={formData.commercialRegister || ''}
                             onChange={handleChange}
+                            placeholder="z.B. FN 123456 x"
                             className="input-premium"
                         />
                     </div>
@@ -213,6 +229,7 @@ export const CompanyProfileTab = () => {
                             name="iban"
                             value={formData.iban || ''}
                             onChange={handleChange}
+                            placeholder="z.B. AT12 3456 7890 1234 5678"
                             className="input-premium"
                         />
                     </div>
@@ -224,21 +241,38 @@ export const CompanyProfileTab = () => {
                             name="bic"
                             value={formData.bic || ''}
                             onChange={handleChange}
+                            placeholder="z.B. MUSTERAT"
                             className="input-premium"
                         />
                     </div>
 
                     <div className="sm:col-span-2 border-t mt-4 pt-6 border-gray-200">
                         <label className="block text-sm font-medium text-gray-700">Logo</label>
+                        <p className="mt-1 text-xs text-gray-500 mb-3">
+                            Empfohlene Größe: Quadratisch, max. 800 KB, z.B. 200x200 Pixel. Dieses Logo wird auf allen Bauberichten und in der Navigation angezeigt.
+                        </p>
                         <div className="mt-1 flex items-center space-x-4">
-                            {formData.logoBase64 && (
-                                <img src={formData.logoBase64} alt="Company Logo" className="h-16 w-auto object-contain bg-gray-50 rounded" />
+                            {formData.logoBase64 ? (
+                                <img src={formData.logoBase64} alt="Company Logo" className="h-16 w-auto object-contain bg-white shadow-sm border border-gray-100 rounded-xl p-2" />
+                            ) : (
+                                <div className="h-16 w-16 bg-brand-primary/10 rounded-xl flex items-center justify-center border border-brand-primary/20 shadow-sm">
+                                    <HardHat className="w-8 h-8 text-brand-primary" />
+                                </div>
                             )}
-                            <label className="cursor-pointer bg-white py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary flex items-center">
+                            <label className="cursor-pointer bg-white py-2.5 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary flex items-center transition-all">
                                 <Upload className="w-5 h-5 mr-2" />
                                 Logo hochladen
                                 <input type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} />
                             </label>
+                            {formData.logoBase64 && (
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, logoBase64: '' })}
+                                    className="py-2.5 px-4 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all"
+                                >
+                                    Entfernen
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, FileText, Settings, Circle, Users, UserCircle, CalendarDays, X, ChevronDown, ChevronUp, MapPin, PlusCircle, LayoutList, Download, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { LayoutDashboard, FileText, Settings, Circle, Users, UserCircle, CalendarDays, X, ChevronDown, ChevronUp, MapPin, PlusCircle, LayoutList, Download, Clock, CheckCircle, XCircle, HardHat } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTaskSync } from '../hooks/useTaskSync';
 import { useAuth } from '../contexts/AuthContext';
@@ -13,18 +13,22 @@ const mainNavigation = [
 ];
 
 
-const settingsNavigation = [
+const managementNavigation = [
     { name: 'Mitarbeiter', href: '/employees', icon: Users },
     { name: 'Bauleiter', href: '/managers', icon: UserCircle },
-    { name: 'Firmendaten', href: '/settings', icon: Settings },
+];
+
+const settingsNavigation = [
+    { name: 'Einstellungen', href: '/settings', icon: Settings },
 ];
 
 interface SidebarProps {
     isOpen?: boolean;
     onClose?: () => void;
+    logoUrl?: string | null;
 }
 
-export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
+export const Sidebar = ({ isOpen, onClose, logoUrl }: SidebarProps) => {
     const location = useLocation();
     const { isOnline } = useTaskSync();
     const { userRole } = useAuth();
@@ -32,10 +36,14 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
     const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
 
-    const filteredSettingsNavigation = settingsNavigation.filter(item => {
+    const filteredManagementNavigation = managementNavigation.filter(item => {
         if (userRole === 'admin') return true;
         if (item.name === 'Mitarbeiter' && userRole === 'vorarbeiter') return true;
-        if (item.name === 'Mitarbeiter') return true;
+        return false;
+    });
+
+    const filteredSettingsNavigation = settingsNavigation.filter(item => {
+        if (userRole === 'admin') return true;
         return false;
     });
 
@@ -60,12 +68,17 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             {/* TOP AREA */}
             <div className="p-6 relative">
                 <div className="absolute inset-0 bg-brand-primary/5 blur-3xl rounded-full" />
-                <div className="relative flex items-center justify-between z-10">
-                    <div className="flex flex-col">
-                        <img src="/logo.jpeg" alt="Logo" className="h-10 w-auto rounded-lg shadow-lg border border-white/10" />
-                        <span className="text-[10px] uppercase tracking-widest text-brand-primary font-bold mt-3 ml-1">Construction</span>
-                    </div>
-                    <button onClick={onClose} className="lg:hidden text-gray-400 hover:text-white p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                <div className="relative flex flex-col items-center justify-center z-10 w-full pt-4 pb-2">
+                    {logoUrl ? (
+                        <img src={logoUrl} alt="Logo" className="h-16 w-auto max-w-[180px] object-contain rounded-xl shadow-lg border border-white/10 bg-white p-1.5" />
+                    ) : (
+                        <div className="h-16 w-16 rounded-xl bg-gradient-to-tr from-brand-primary/20 to-brand-primary/5 border border-brand-primary/20 flex items-center justify-center shadow-lg">
+                            <HardHat className="w-8 h-8 text-brand-primary" />
+                        </div>
+                    )}
+                    <span className="text-[12px] uppercase tracking-widest text-brand-primary font-bold mt-4">Construction</span>
+                    
+                    <button onClick={onClose} className="absolute top-0 right-0 -mt-2 -mr-2 lg:hidden text-gray-400 hover:text-white p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
@@ -135,40 +148,50 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                     </div>
 
                     <div className="pt-1">
-                        <button
-                            onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-                            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 font-medium ${isSettingsOpen ? 'bg-white/5 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
-                        >
-                            <div className="flex items-center space-x-3">
-                                <Settings className={`w-5 h-5 ${isSettingsOpen ? 'text-brand-primary' : 'text-gray-400'}`} />
-                                <span>Einstellungen</span>
-                            </div>
-                            {isSettingsOpen ? <ChevronUp className="w-4 h-4 opacity-50" /> : <ChevronDown className="w-4 h-4 opacity-50" />}
-                        </button>
-
-                        {isSettingsOpen && (
-                            <div className="mt-1 space-y-1 pl-4 relative before:absolute before:left-6 before:top-0 before:bottom-2 before:w-px before:bg-white/10">
-                                {filteredSettingsNavigation.map((item) => {
-                                    const isActive = location.pathname === item.href;
-                                    return (
-                                        <Link
-                                            key={item.name}
-                                            to={item.href}
-                                            onClick={onClose}
-                                            className={`flex items-center space-x-3 pl-6 pr-4 py-2.5 rounded-xl transition-all text-sm relative ${isActive
-                                                ? 'text-white font-semibold bg-white/5'
-                                                : 'text-gray-400 hover:text-white hover:bg-white/5'
-                                                }`}
-                                        >
-                                            {isActive && <div className="absolute left-[-17px] top-1/2 -translate-y-1/2 w-1 h-5 bg-brand-primary rounded-r-full" />}
-                                            <item.icon className={`w-4 h-4 ${isActive ? 'text-brand-primary' : 'opacity-70'}`} />
-                                            <span>{item.name}</span>
-                                        </Link>
-                                    );
-                                })}
-                            </div>
-                        )}
+                        {filteredManagementNavigation.map((item) => {
+                            const isActive = location.pathname === item.href;
+                            return (
+                                <Link
+                                    key={item.name}
+                                    to={item.href}
+                                    onClick={onClose}
+                                    className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 mt-1 ${isActive
+                                        ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/30 font-bold'
+                                        : 'text-gray-400 hover:text-white hover:bg-white/5 font-medium'
+                                        }`}
+                                >
+                                    <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-400'}`} />
+                                    <div className="flex-1 flex justify-between items-center">
+                                        <span>{item.name}</span>
+                                    </div>
+                                </Link>
+                            );
+                        })}
                     </div>
+
+                    {filteredSettingsNavigation.length > 0 && (
+                        <div className="pt-4 mt-4 border-t border-white/10">
+                            {filteredSettingsNavigation.map((item) => {
+                                const isActive = location.pathname === item.href;
+                                return (
+                                    <Link
+                                        key={item.name}
+                                        to={item.href}
+                                        onClick={onClose}
+                                        className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
+                                            ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/30 font-bold'
+                                            : 'text-gray-400 hover:text-white hover:bg-white/5 font-medium'
+                                            }`}
+                                    >
+                                        <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-400'}`} />
+                                        <div className="flex-1 flex justify-between items-center">
+                                            <span>{item.name}</span>
+                                        </div>
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
             </nav>
 

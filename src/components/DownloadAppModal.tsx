@@ -62,37 +62,37 @@ export const DownloadAppModal: React.FC<DownloadAppModalProps> = ({ isOpen, onCl
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
         
         {/* Header Dynamisch */}
-        <div className="bg-brand-dark p-6 text-white relative flex flex-col items-center text-center">
+        <div className="p-8 pb-6 relative flex flex-col items-center text-center">
           {view !== 'selection' && (
              <button
                 onClick={() => setView('selection')}
-                className="absolute top-4 left-4 text-gray-400 hover:text-white transition-colors"
+                className="absolute top-6 left-6 text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition-all"
                 title="Zurück zur Auswahl"
              >
-                <ArrowLeft className="w-6 h-6" />
+                <ArrowLeft className="w-5 h-5" />
              </button>
           )}
 
           <button
             onClick={handleClose}
-            className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+            className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition-all"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5" />
           </button>
           
-          <div className="bg-white/10 p-4 rounded-full mb-4">
+          <div className="bg-brand-primary/10 p-4 rounded-full mb-5 shadow-inner border border-brand-primary/20">
             {view === 'selection' && <Download className="w-10 h-10 text-brand-primary" />}
             {view === 'mobile' && <Smartphone className="w-10 h-10 text-brand-primary" />}
             {view === 'desktop' && <Monitor className="w-10 h-10 text-brand-primary" />}
           </div>
           
-          <h2 className="text-2xl font-bold">
+          <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
              {view === 'selection' && 'App installieren'}
              {view === 'mobile' && 'Als Handyapp installieren'}
              {view === 'desktop' && 'Auf dem Computer installieren'}
           </h2>
           
-          <p className="text-gray-300 mt-2 text-sm">
+          <p className="text-gray-500 mt-2 text-sm max-w-sm mx-auto">
              {view === 'selection' && 'Wähle dein aktuelles Gerät aus, um die passenden Installationshinweise zu erhalten.'}
              {view === 'mobile' && 'Installiere Construction Global Template direkt auf deinem Homescreen.'}
              {view === 'desktop' && 'Installiere die App auf deinem PC oder Mac für schnellen Zugriff.'}
@@ -100,31 +100,31 @@ export const DownloadAppModal: React.FC<DownloadAppModalProps> = ({ isOpen, onCl
         </div>
 
         {/* Content Dynamisch */}
-        <div className="p-6">
+        <div className="px-8 pb-8">
           {view === 'selection' && (
              <div className="space-y-4">
                 <button
                    onClick={() => setView('mobile')}
-                   className="w-full flex items-center space-x-4 p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors text-left"
+                   className="w-full group flex items-center space-x-4 p-5 border border-gray-200 rounded-2xl hover:border-brand-primary hover:bg-brand-primary/5 hover:shadow-md transition-all text-left"
                 >
-                   <div className="bg-gray-100 p-3 rounded-lg text-brand-dark shrink-0">
+                   <div className="bg-gray-50 border border-gray-100 p-3.5 rounded-xl text-gray-500 group-hover:text-brand-primary group-hover:bg-white group-hover:shadow-sm transition-all shrink-0">
                       <Smartphone className="w-6 h-6" />
                    </div>
                    <div>
-                      <h3 className="font-bold text-gray-900 text-lg">Handy / Tablet</h3>
+                      <h3 className="font-bold text-gray-900 text-lg group-hover:text-brand-primary transition-colors">Handy / Tablet</h3>
                       <p className="text-sm text-gray-500">Für iOS und Android Geräte</p>
                    </div>
                 </button>
 
                 <button
                    onClick={() => setView('desktop')}
-                   className="w-full flex items-center space-x-4 p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors text-left"
+                   className="w-full group flex items-center space-x-4 p-5 border border-gray-200 rounded-2xl hover:border-brand-primary hover:bg-brand-primary/5 hover:shadow-md transition-all text-left"
                 >
-                   <div className="bg-gray-100 p-3 rounded-lg text-brand-dark shrink-0">
+                   <div className="bg-gray-50 border border-gray-100 p-3.5 rounded-xl text-gray-500 group-hover:text-brand-primary group-hover:bg-white group-hover:shadow-sm transition-all shrink-0">
                       <Monitor className="w-6 h-6" />
                    </div>
                    <div>
-                      <h3 className="font-bold text-gray-900 text-lg">Computer (PC / Mac)</h3>
+                      <h3 className="font-bold text-gray-900 text-lg group-hover:text-brand-primary transition-colors">Computer (PC / Mac)</h3>
                       <p className="text-sm text-gray-500">Für Desktop-Browser</p>
                    </div>
                 </button>
@@ -180,8 +180,8 @@ export const DownloadAppModal: React.FC<DownloadAppModalProps> = ({ isOpen, onCl
           )}
         </div>
         
-        <div className="bg-gray-50 p-4 border-t border-gray-100 text-center">
-          <button onClick={handleClose} className="text-gray-500 hover:text-brand-dark font-medium text-sm">
+        <div className="bg-gray-50/80 p-5 border-t border-gray-100 flex justify-center">
+          <button onClick={handleClose} className="text-gray-500 hover:text-gray-900 font-semibold text-sm px-6 py-2 rounded-full hover:bg-gray-200/50 transition-colors">
             Schließen
           </button>
         </div>
