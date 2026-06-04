@@ -477,7 +477,7 @@ export const Employees = () => {
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 <span className={`px-2 py-1 inline-flex text-xs leading-4 font-semibold rounded-md ${
                                                     employee.role === 'admin' ? 'bg-purple-100 text-purple-800' :
-                                                    employee.role === 'vorarbeiter' ? 'bg-blue-100 text-blue-800' :
+                                                    employee.role === 'vorarbeiter' ? 'bg-brand-primary/10 text-brand-primary' :
                                                     employee.role === 'mitarbeiter' ? 'bg-gray-100 text-gray-800' :
                                                     'bg-gray-50 text-gray-500'
                                                 }`}>

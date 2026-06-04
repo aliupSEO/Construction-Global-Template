@@ -53,7 +53,7 @@ export const Account: React.FC = () => {
         <DashboardShell title="Mein Konto">
             <div className="bg-brand-surface border border-gray-800 rounded-xl p-6 md:p-8 max-w-3xl shadow-xl">
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-6 border-b border-gray-800 pb-8 mb-8">
-                    <div className="w-24 h-24 rounded-full border-2 border-indigo-500/30 bg-brand-dark flex items-center justify-center text-3xl font-bold text-indigo-400">
+                    <div className="w-24 h-24 rounded-full border-2 border-brand-primary/30 bg-brand-dark flex items-center justify-center text-3xl font-bold text-brand-primary">
                         {currentUser?.email ? currentUser.email.substring(0, 2).toUpperCase() : 'ME'}
                     </div>
                     <div>
@@ -62,7 +62,7 @@ export const Account: React.FC = () => {
                         </h1>
                         <div className="flex items-center gap-3">
                             <span className="px-3 py-1 bg-brand-dark border border-gray-700 rounded-full text-sm text-gray-300 flex items-center gap-2">
-                                <Shield className="w-4 h-4 text-indigo-400" />
+                                <Shield className="w-4 h-4 text-brand-primary" />
                                 {userRole === 'admin' ? 'Administrator' : userRole === 'vorarbeiter' ? 'Vorarbeiter' : 'Mitarbeiter'}
                             </span>
                             {employeeData?.position && (

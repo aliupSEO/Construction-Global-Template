@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Sidebar } from './Sidebar';
-import { Menu } from 'lucide-react';
+import { Menu, User, LogOut, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { signOut } from 'firebase/auth';
@@ -24,32 +24,49 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
             {/* Mobile Overlay */}
             {isMobileMenuOpen && (
                 <div
-                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden transition-opacity"
                     onClick={() => setIsMobileMenuOpen(false)}
                 />
             )}
 
-            <div className="lg:pl-64 flex flex-col flex-1 min-h-screen print:pl-0 w-full">
+            <div className="lg:pl-[280px] flex flex-col flex-1 min-h-screen print:pl-0 w-full transition-all duration-300">
                 {/* MOBILE HEADER */}
-                <div className="lg:hidden h-16 bg-brand-dark border-b border-gray-800 flex items-center justify-between px-4 sticky top-0 z-30 print:hidden shadow-sm">
-                    <img src="/logo.jpeg" alt="Construction Global Template Logo" className="h-8 w-auto rounded" />
-                    <button onClick={() => setIsMobileMenuOpen(true)} className="text-gray-400 hover:text-white p-2">
+                <div className="lg:hidden h-20 bg-gradient-to-b from-[#0a0a0a] to-brand-dark/95 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-6 sticky top-0 z-30 print:hidden shadow-lg shadow-black/20">
+                    <div className="flex items-center">
+                        <img src="/logo.jpeg" alt="Logo" className="h-9 w-auto rounded-lg shadow-md border border-white/10" />
+                        <span className="text-xs uppercase tracking-widest text-brand-primary font-bold ml-3 mt-0.5">Construction</span>
+                    </div>
+                    <button onClick={() => setIsMobileMenuOpen(true)} className="text-gray-400 hover:text-white p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-transparent hover:border-white/10 shadow-sm">
                         <Menu className="w-6 h-6" />
                     </button>
                 </div>
 
                 {/* DESKTOP HEADER */}
-                <header className="hidden lg:flex h-16 bg-brand-dark border-b border-gray-800 items-center justify-between px-8 sticky top-0 z-30 print:hidden shadow-sm">
-                    <h2 className="text-white font-heading text-lg">{title}</h2>
+                <header className="hidden lg:flex h-20 bg-gradient-to-b from-[#0a0a0a]/95 to-[#101010]/95 backdrop-blur-xl border-b border-white/5 items-center justify-between px-10 sticky top-0 z-30 print:hidden shadow-lg shadow-black/10">
+                    <div className="flex items-center space-x-4">
+                        <h2 className="text-white font-heading text-xl tracking-wider font-bold drop-shadow-md">{title}</h2>
+                        {title === 'Dashboard' && (
+                            <span className="bg-brand-primary/10 text-brand-primary text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-full font-bold border border-brand-primary/20">
+                                Live
+                            </span>
+                        )}
+                    </div>
 
                     <div className="flex items-center space-x-6">
                         {/* User Profile */}
                         <div className="relative">
                             <button 
                                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                                className="w-8 h-8 rounded-full bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center text-xs font-bold ring-2 ring-transparent hover:ring-indigo-500/50 transition-all cursor-pointer"
+                                className="flex items-center space-x-3 bg-white/5 hover:bg-white/10 border border-white/10 px-2 py-1.5 pr-4 rounded-full transition-all cursor-pointer shadow-md group"
                             >
-                                {currentUser?.email ? currentUser.email.substring(0, 2).toUpperCase() : 'SB'}
+                                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-primary to-red-400 flex items-center justify-center text-sm font-bold text-white shadow-lg shadow-brand-primary/40 ring-2 ring-transparent group-hover:ring-brand-primary/50 transition-all">
+                                    {currentUser?.email ? currentUser.email.substring(0, 2).toUpperCase() : 'SB'}
+                                </div>
+                                <div className="hidden md:flex flex-col items-start">
+                                    <span className="text-xs font-semibold text-white tracking-wide">{currentUser?.email?.split('@')[0] || 'User'}</span>
+                                    <span className="text-[10px] text-gray-400 uppercase tracking-wider font-bold">Admin</span>
+                                </div>
+                                <ChevronDown className={`w-4 h-4 text-gray-400 group-hover:text-white transition-transform duration-300 ${isProfileOpen ? 'rotate-180' : ''}`} />
                             </button>
 
                             {isProfileOpen && (
@@ -58,30 +75,42 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
                                         className="fixed inset-0 z-40"
                                         onClick={() => setIsProfileOpen(false)}
                                     />
-                                    <div className="absolute right-0 mt-2 w-48 bg-brand-surface border border-gray-800 rounded-md shadow-lg py-1 z-50">
-                                        <button
-                                            onClick={() => {
-                                                setIsProfileOpen(false);
-                                                navigate('/konto');
-                                            }}
-                                            className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-brand-dark hover:text-white"
-                                        >
-                                            Mein Konto
-                                        </button>
-                                        <button
-                                            onClick={async () => {
-                                                setIsProfileOpen(false);
-                                                if (import.meta.env.DEV) {
-                                                    alert("Lokal im Dev-Modus ausgeloggt (Mock)");
-                                                } else {
-                                                    await signOut(auth);
-                                                }
-                                                navigate('/login');
-                                            }}
-                                            className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-brand-dark hover:text-red-300"
-                                        >
-                                            Abmelden
-                                        </button>
+                                    <div className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] ring-1 ring-black/5 py-2 z-50 transform opacity-100 scale-100 transition-all origin-top-right overflow-hidden">
+                                        <div className="px-5 py-4 border-b border-gray-100 bg-slate-50/50">
+                                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+                                                Angemeldet als
+                                            </p>
+                                            <p className="text-sm font-bold text-gray-900 truncate">
+                                                {currentUser?.email || 'Benutzer'}
+                                            </p>
+                                        </div>
+                                        <div className="p-2 space-y-1">
+                                            <button
+                                                onClick={() => {
+                                                    setIsProfileOpen(false);
+                                                    navigate('/konto');
+                                                }}
+                                                className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary rounded-xl transition-colors group"
+                                            >
+                                                <User className="w-4 h-4 mr-3 text-gray-400 group-hover:text-brand-primary transition-colors" />
+                                                Mein Konto
+                                            </button>
+                                            <button
+                                                onClick={async () => {
+                                                    setIsProfileOpen(false);
+                                                    if (import.meta.env.DEV) {
+                                                        alert("Lokal im Dev-Modus ausgeloggt (Mock)");
+                                                    } else {
+                                                        await signOut(auth);
+                                                    }
+                                                    navigate('/login');
+                                                }}
+                                                className="w-full flex items-center px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl transition-colors group"
+                                            >
+                                                <LogOut className="w-4 h-4 mr-3 text-red-400 group-hover:text-red-600 transition-colors" />
+                                                Abmelden
+                                            </button>
+                                        </div>
                                     </div>
                                 </>
                             )}

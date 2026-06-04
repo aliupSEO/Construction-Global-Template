@@ -220,10 +220,10 @@ export const Dashboard = () => {
                 {/* Tagesbericht Card */}
                 <Link
                     to="/daily-reports/new"
-                    className="group bg-white rounded-xl shadow-sm border-l-4 border-l-blue-500 border-t border-b border-r border-gray-100 p-6 hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between"
+                    className="group bg-white rounded-xl shadow-sm border-l-4 border-l-brand-primary border-t border-b border-r border-gray-100 p-6 hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between"
                 >
                     <div className="flex items-center mb-4 sm:mb-0">
-                        <div className="p-4 rounded-full bg-blue-50 text-blue-600 mr-4 group-hover:scale-110 transition-transform">
+                        <div className="p-4 rounded-full bg-brand-primary/10 text-brand-primary mr-4 group-hover:scale-110 transition-transform">
                             <FileText className="w-8 h-8" />
                         </div>
                         <div>
@@ -231,7 +231,7 @@ export const Dashboard = () => {
                             <p className="text-sm text-gray-500 mt-1">Leistungen, Material und Wetter für einen Tag erfassen.</p>
                         </div>
                     </div>
-                    <div className="bg-blue-50 text-blue-700 px-8 py-3 rounded-lg font-medium text-center w-full sm:w-auto group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <div className="bg-brand-primary/10 text-brand-primary px-8 py-3 rounded-lg font-medium text-center w-full sm:w-auto group-hover:bg-brand-primary group-hover:text-white transition-colors">
                         Starten
                     </div>
                 </Link>

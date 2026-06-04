@@ -64,8 +64,8 @@ export function ForcePasswordResetModal() {
       <div className="max-w-md w-full bg-slate-800 rounded-xl shadow-2xl border border-slate-700 overflow-hidden">
         <div className="p-8">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-indigo-500/10 rounded-full flex items-center justify-center">
-              <Lock className="w-8 h-8 text-indigo-500" />
+            <div className="w-16 h-16 bg-brand-primary/10 rounded-full flex items-center justify-center">
+              <Lock className="w-8 h-8 text-brand-primary" />
             </div>
           </div>
           
@@ -90,7 +90,7 @@ export function ForcePasswordResetModal() {
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="block w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
+                className="block w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary transition-shadow"
                 placeholder="Mindestens 6 Zeichen"
                 required
                 minLength={6}
@@ -103,7 +103,7 @@ export function ForcePasswordResetModal() {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="block w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
+                className="block w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary transition-shadow"
                 placeholder="Passwort wiederholen"
                 required
                 minLength={6}
@@ -113,7 +113,7 @@ export function ForcePasswordResetModal() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-slate-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-brand-primary hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary focus:ring-offset-slate-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Passwort sicher speichern'}
             </button>

@@ -15,7 +15,7 @@ export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-900">
-        <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-brand-primary animate-spin" />
       </div>
     );
   }
@@ -35,7 +35,7 @@ export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
         <p>Ihre Rolle berechtigt Sie nicht, diese Seite anzuzeigen.</p>
         <button 
           onClick={() => window.history.back()} 
-          className="mt-6 px-4 py-2 bg-indigo-500 rounded hover:bg-indigo-600 transition-colors"
+          className="mt-6 px-4 py-2 bg-brand-primary rounded hover:bg-brand-primary/90 transition-colors"
         >
           Zurück
         </button>

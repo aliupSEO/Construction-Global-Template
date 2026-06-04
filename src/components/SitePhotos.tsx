@@ -442,8 +442,8 @@ export const SitePhotos: React.FC<SitePhotosProps> = ({ siteId }) => {
                             </div>
 
                             {selectedPhoto.location && (
-                                <div className="flex items-start text-gray-600 bg-blue-50/50 p-3 rounded-xl border border-blue-100">
-                                    <MapPin className="w-5 h-5 mr-3 text-blue-600 flex-shrink-0 mt-0.5" />
+                                <div className="flex items-start text-gray-600 bg-brand-primary/5 p-3 rounded-xl border border-brand-primary/20">
+                                    <MapPin className="w-5 h-5 mr-3 text-brand-primary flex-shrink-0 mt-0.5" />
                                     <div>
                                         <p className="text-sm font-medium text-gray-900">GPS Position</p>
                                         <p className="text-xs mb-2 text-gray-500">Erfasst bei Aufnahme</p>
@@ -451,7 +451,7 @@ export const SitePhotos: React.FC<SitePhotosProps> = ({ siteId }) => {
                                             href={`https://www.google.com/maps/search/?api=1&query=${selectedPhoto.location.latitude},${selectedPhoto.location.longitude}`}
                                             target="_blank"
                                             rel="noreferrer"
-                                            className="inline-flex items-center text-xs font-semibold bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1.5 rounded-lg transition-colors"
+                                            className="inline-flex items-center text-xs font-semibold bg-brand-primary/10 text-brand-primary hover:bg-brand-primary/20 px-3 py-1.5 rounded-lg transition-colors"
                                         >
                                             <Map className="w-3 h-3 mr-1.5" />
                                             In Maps öffnen
@@ -506,7 +506,7 @@ export const SitePhotos: React.FC<SitePhotosProps> = ({ siteId }) => {
             />
             
             {uploading && (
-                <div className="mb-6 p-4 bg-indigo-50 border border-indigo-100 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm text-indigo-800">
+                <div className="mb-6 p-4 bg-brand-primary/5 border border-brand-primary/20 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm text-brand-primary">
                     <div className="flex items-center">
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-brand-primary mr-3 flex-shrink-0"></div>
                         <span className="font-medium text-sm">
