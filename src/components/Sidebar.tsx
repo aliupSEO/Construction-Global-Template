@@ -13,12 +13,6 @@ const mainNavigation = [
 ];
 
 
-const reportsNavigation = [
-    { name: 'Übersicht', href: '/reports', icon: LayoutList },
-    { name: 'Tagesbericht', href: '/daily-reports/new', icon: PlusCircle },
-    { name: 'Wochenbericht', href: '/weekly-reports/new', icon: PlusCircle },
-];
-
 const settingsNavigation = [
     { name: 'Mitarbeiter', href: '/employees', icon: Users },
     { name: 'Bauleiter', href: '/managers', icon: UserCircle },
@@ -34,7 +28,6 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     const location = useLocation();
     const { isOnline } = useTaskSync();
     const { userRole } = useAuth();
-    const [isReportsOpen, setIsReportsOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
@@ -126,39 +119,19 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                         </div>
 
                     <div className="pt-1">
-                        <button
-                            onClick={() => setIsReportsOpen(!isReportsOpen)}
-                            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 font-medium ${isReportsOpen ? 'bg-white/5 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+                        <Link
+                            to="/reports"
+                            onClick={onClose}
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${location.pathname.includes('/reports') || location.pathname.includes('/daily-reports') || location.pathname.includes('/weekly-reports')
+                                ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/30 font-bold'
+                                : 'text-gray-400 hover:text-white hover:bg-white/5 font-medium'
+                                }`}
                         >
-                            <div className="flex items-center space-x-3">
-                                <FileText className={`w-5 h-5 ${isReportsOpen ? 'text-brand-primary' : 'text-gray-400'}`} />
+                            <FileText className={`w-5 h-5 ${location.pathname.includes('/reports') || location.pathname.includes('/daily-reports') || location.pathname.includes('/weekly-reports') ? 'text-white' : 'text-gray-400'}`} />
+                            <div className="flex-1 flex justify-between items-center">
                                 <span>Berichte</span>
                             </div>
-                            {isReportsOpen ? <ChevronUp className="w-4 h-4 opacity-50" /> : <ChevronDown className="w-4 h-4 opacity-50" />}
-                        </button>
-
-                        {isReportsOpen && (
-                            <div className="mt-1 space-y-1 pl-4 relative before:absolute before:left-6 before:top-0 before:bottom-2 before:w-px before:bg-white/10">
-                                {reportsNavigation.map((item) => {
-                                    const isActive = location.pathname === item.href;
-                                    return (
-                                        <Link
-                                            key={item.name}
-                                            to={item.href}
-                                            onClick={onClose}
-                                            className={`flex items-center space-x-3 pl-6 pr-4 py-2.5 rounded-xl transition-all text-sm relative ${isActive
-                                                ? 'text-white font-semibold bg-white/5'
-                                                : 'text-gray-400 hover:text-white hover:bg-white/5'
-                                                }`}
-                                        >
-                                            {isActive && <div className="absolute left-[-17px] top-1/2 -translate-y-1/2 w-1 h-5 bg-brand-primary rounded-r-full" />}
-                                            <item.icon className={`w-4 h-4 ${isActive ? 'text-brand-primary' : 'opacity-70'}`} />
-                                            <span>{item.name}</span>
-                                        </Link>
-                                    );
-                                })}
-                            </div>
-                        )}
+                        </Link>
                     </div>
 
                     <div className="pt-1">

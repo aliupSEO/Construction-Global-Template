@@ -454,6 +454,7 @@ export const WeeklyReportForm = () => {
                         <input
                             type="text"
                             name="reportNumber"
+                            placeholder="Wird automatisch generiert"
                             value={formData.reportNumber}
                             onChange={handleFormChange}
                             disabled={isReadOnly}
@@ -469,6 +470,7 @@ export const WeeklyReportForm = () => {
                                 name="calendarWeek"
                                 min="1"
                                 max="53"
+                                placeholder="z.B. 42"
                                 required
                                 value={formData.calendarWeek}
                                 onChange={handleFormChange}
@@ -482,6 +484,7 @@ export const WeeklyReportForm = () => {
                                 type="number"
                                 name="year"
                                 min="2000"
+                                placeholder="z.B. 2024"
                                 required
                                 value={formData.year}
                                 onChange={handleFormChange}
@@ -499,6 +502,7 @@ export const WeeklyReportForm = () => {
                                 disabled={isReadOnly}
                                 className={isReadOnly ? 'input-premium-readonly appearance-none' : 'input-premium appearance-none'}
                             >
+                                <option value="" disabled hidden>Bitte Monat wählen...</option>
                                 {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
                                     <option key={m} value={m}>{new Date(2000, m - 1).toLocaleString('de-DE', { month: 'long' })}</option>
                                 ))}

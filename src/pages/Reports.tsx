@@ -2,9 +2,11 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { DashboardShell } from '../components/DashboardShell';
 import { db, APP_ID } from '../lib/firebase';
 import { collection, query, orderBy, onSnapshot, deleteDoc, doc, getDocs, writeBatch, serverTimestamp, getDoc } from 'firebase/firestore';
-import { FileText, ArrowRight, Calendar, Edit2, Trash2, Printer } from 'lucide-react';
+import { FileText, ArrowRight, Calendar, Edit2, Trash2, Printer, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { CustomSelect } from '../components/CustomSelect';
+import { CustomDatePicker } from '../components/CustomDatePicker';
 
 const getDayKey = (dateString: string) => {
     if (!dateString) return null;
@@ -491,111 +493,148 @@ export const Reports = () => {
     return (
         <DashboardShell title="Bauberichte Historie">
 
-            {/* Tabs */}
-            <div className="flex space-x-2 mb-6 border-b border-gray-200">
-                <button
-                    onClick={() => setActiveTab('daily')}
-                    className={`py-3 px-6 font-medium text-sm border-b-2 transition-colors ${activeTab === 'daily'
-                        ? 'border-brand-primary text-brand-primary'
-                        : 'border-transparent text-gray-500 hover:text-gray-700'
-                        }`}
-                >
-                    Tagesberichte
-                </button>
-                <button
-                    onClick={() => setActiveTab('weekly')}
-                    className={`py-3 px-6 font-medium text-sm border-b-2 transition-colors ${activeTab === 'weekly'
-                        ? 'border-brand-primary text-brand-primary'
-                        : 'border-transparent text-gray-500 hover:text-gray-700'
-                        }`}
-                >
-                    Wochenberichte
-                </button>
+            {/* Header / Tabs */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0 mb-6 border-b border-gray-200 pb-4 sm:pb-0">
+                <div className="flex space-x-2">
+                    <button
+                        onClick={() => setActiveTab('daily')}
+                        className={`py-3 px-6 font-medium text-sm border-b-2 transition-colors ${activeTab === 'daily'
+                            ? 'border-brand-primary text-brand-primary'
+                            : 'border-transparent text-gray-500 hover:text-gray-700'
+                            }`}
+                    >
+                        Tagesberichte
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('weekly')}
+                        className={`py-3 px-6 font-medium text-sm border-b-2 transition-colors ${activeTab === 'weekly'
+                            ? 'border-brand-primary text-brand-primary'
+                            : 'border-transparent text-gray-500 hover:text-gray-700'
+                            }`}
+                    >
+                        Wochenberichte
+                    </button>
+                </div>
+                
+                <div className="flex space-x-3 w-full sm:w-auto">
+                    <button
+                        onClick={() => navigate('/daily-reports/new')}
+                        className="flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2 border border-brand-primary/20 text-sm font-medium rounded-xl text-brand-primary bg-brand-primary/10 hover:bg-brand-primary hover:text-white hover:shadow-lg hover:shadow-brand-primary/30 transition-all duration-200 group"
+                    >
+                        <Plus className="w-4 h-4 mr-2 group-hover:text-white" />
+                        Neuer Tagesbericht
+                    </button>
+                    <button
+                        onClick={() => navigate('/weekly-reports/new')}
+                        className="flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl text-white bg-brand-primary shadow-lg shadow-brand-primary/30 hover:bg-brand-primary/90 transition-colors"
+                    >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Neuer Wochenbericht
+                    </button>
+                </div>
             </div>
 
             {/* Filter Bar */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
                 {activeTab === 'daily' ? (
-                    <div className="flex flex-col md:flex-row gap-4 items-end">
-                        <div className="w-full md:w-1/3">
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                        <div className="md:col-span-5">
                             <label className="block text-xs font-medium text-gray-500 mb-1">Datum</label>
-                            <input
-                                type="date"
-                                value={filterDailyDate}
-                                onChange={(e) => setFilterDailyDate(e.target.value)}
-                                className="input-premium"
+                            <CustomDatePicker
+                                selected={filterDailyDate ? new Date(filterDailyDate) : null}
+                                onChange={(date) => {
+                                    if (date) {
+                                        // Adjust for timezone offset to get local YYYY-MM-DD
+                                        const offset = date.getTimezoneOffset() * 60000;
+                                        const localISOTime = (new Date(date.getTime() - offset)).toISOString().split('T')[0];
+                                        setFilterDailyDate(localISOTime);
+                                    } else {
+                                        setFilterDailyDate('');
+                                    }
+                                }}
                             />
                         </div>
-                        <div className="w-full md:w-1/3">
+                        <div className="md:col-span-5">
                             <div className="flex justify-between items-center mb-1">
                                 <label className="block text-xs font-medium text-gray-500">Baustelle</label>
-                                <select 
+                                <CustomSelect 
                                     value={siteFilterStatus} 
-                                    onChange={(e) => {
-                                        setSiteFilterStatus(e.target.value as any);
-                                        setFilterDailySite(''); // Reset Baustelle wenn Status wechselt
+                                    onChange={(val) => {
+                                        setSiteFilterStatus(val as any);
+                                        setFilterDailySite('');
                                     }}
-                                    className="text-[10px] border-none text-brand-primary bg-transparent focus:ring-0 cursor-pointer p-0 font-medium outline-none"
-                                >
-                                    <option value="active">Nur Aktive</option>
-                                    <option value="archived">Nur Archivierte</option>
-                                    <option value="all">Alle anzeigen</option>
-                                </select>
+                                    options={[
+                                        { value: 'active', label: 'Nur Aktive' },
+                                        { value: 'archived', label: 'Nur Archivierte' },
+                                        { value: 'all', label: 'Alle anzeigen' }
+                                    ]}
+                                    variant="inline"
+                                />
                             </div>
-                            <select
+                            <CustomSelect
                                 value={filterDailySite}
-                                onChange={(e) => setFilterDailySite(e.target.value)}
-                                className="input-premium appearance-none"
-                            >
-                                <option value="">- Alle Baustellen -</option>
-                                {dbBaustellen
-                                    .filter(b => {
-                                        const isActive = !b.status || b.status === 'active';
-                                        if (siteFilterStatus === 'active') return isActive;
-                                        if (siteFilterStatus === 'archived') return !isActive;
-                                        return true;
-                                    })
-                                    .sort((a, b) => (a.name || '').localeCompare(b.name || ''))
-                                    .map(b => (
-                                        <option key={b.id} value={b.name}>{b.name}</option>
-                                    ))
-                                }
-                            </select>
+                                onChange={(val) => setFilterDailySite(val)}
+                                placeholder="- Alle Baustellen -"
+                                options={[
+                                    { value: '', label: '- Alle Baustellen -' },
+                                    ...dbBaustellen
+                                        .filter(b => {
+                                            const isActive = !b.status || b.status === 'active';
+                                            if (siteFilterStatus === 'active') return isActive;
+                                            if (siteFilterStatus === 'archived') return !isActive;
+                                            return true;
+                                        })
+                                        .sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+                                        .map(b => ({ value: b.name, label: b.name }))
+                                ]}
+                            />
                         </div>
-                        <div className="w-full md:w-auto">
+                        <div className="md:col-span-2">
                             <button
                                 onClick={() => { 
                                     setFilterDailyDate(''); 
                                     setFilterDailySite(''); 
                                     setSiteFilterStatus('active'); 
                                 }}
-                                className="w-full md:w-auto px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 hover:text-gray-900 transition-colors shadow-sm h-[46px] flex items-center justify-center"
                             >
                                 Zurücksetzen
                             </button>
                         </div>
                     </div>
                 ) : (
-                    <div className="flex flex-col md:flex-row gap-4 items-end">
-                        <div className="w-full md:w-1/4">
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                        <div className="md:col-span-3">
                             <label className="block text-xs font-medium text-gray-500 mb-1">Datum von</label>
-                            <input
-                                type="date"
-                                value={filterWeeklyDateFrom}
-                                onChange={(e) => setFilterWeeklyDateFrom(e.target.value)}
-                                className="input-premium"
+                            <CustomDatePicker
+                                selected={filterWeeklyDateFrom ? new Date(filterWeeklyDateFrom) : null}
+                                onChange={(date) => {
+                                    if (date) {
+                                        const offset = date.getTimezoneOffset() * 60000;
+                                        const localISOTime = (new Date(date.getTime() - offset)).toISOString().split('T')[0];
+                                        setFilterWeeklyDateFrom(localISOTime);
+                                    } else {
+                                        setFilterWeeklyDateFrom('');
+                                    }
+                                }}
                             />
                         </div>
-                        <div className="w-full md:w-1/4">
+                        <div className="md:col-span-3">
                             <label className="block text-xs font-medium text-gray-500 mb-1">Datum bis</label>
-                            <input
-                                type="date"
-                                value={filterWeeklyDateTo}
-                                onChange={(e) => setFilterWeeklyDateTo(e.target.value)}
-                                className="input-premium"
+                            <CustomDatePicker
+                                selected={filterWeeklyDateTo ? new Date(filterWeeklyDateTo) : null}
+                                onChange={(date) => {
+                                    if (date) {
+                                        const offset = date.getTimezoneOffset() * 60000;
+                                        const localISOTime = (new Date(date.getTime() - offset)).toISOString().split('T')[0];
+                                        setFilterWeeklyDateTo(localISOTime);
+                                    } else {
+                                        setFilterWeeklyDateTo('');
+                                    }
+                                }}
                             />
                         </div>
-                        <div className="w-full md:w-1/4">
+                        <div className="md:col-span-4">
                             <label className="block text-xs font-medium text-gray-500 mb-1">Kalenderwoche (KW)</label>
                             <input
                                 type="number"
@@ -605,10 +644,10 @@ export const Reports = () => {
                                 className="input-premium"
                             />
                         </div>
-                        <div className="w-full md:w-auto">
+                        <div className="md:col-span-2">
                             <button
                                 onClick={() => { setFilterWeeklyWeek(''); setFilterWeeklyDateFrom(''); setFilterWeeklyDateTo(''); }}
-                                className="w-full md:w-auto px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 hover:text-gray-900 transition-colors shadow-sm h-[46px] flex items-center justify-center"
                             >
                                 Zurücksetzen
                             </button>
@@ -618,19 +657,21 @@ export const Reports = () => {
             </div>
 
             {/* Bulk Selection Interface */}
-            <div className="flex items-center gap-4 mb-4 mt-2">
-                <label className="flex items-center gap-2 cursor-pointer">
-                    <input 
-                        type="checkbox" 
-                        className="w-5 h-5 rounded border-gray-300 text-brand-primary focus:ring-brand-primary"
-                        checked={activeTab === 'daily' ? isAllDailySelected : isAllWeeklySelected}
-                        onChange={activeTab === 'daily' ? handleSelectAllDaily : handleSelectAllWeekly}
-                    />
-                    <span className="text-sm font-medium text-gray-700">Alle sichtbaren auswählen</span>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <label className="flex items-center gap-3 cursor-pointer group">
+                    <div className="relative flex items-center justify-center">
+                        <input 
+                            type="checkbox" 
+                            className="w-5 h-5 rounded border-gray-300 text-brand-primary focus:ring-brand-primary transition-colors cursor-pointer"
+                            checked={activeTab === 'daily' ? isAllDailySelected : isAllWeeklySelected}
+                            onChange={activeTab === 'daily' ? handleSelectAllDaily : handleSelectAllWeekly}
+                        />
+                    </div>
+                    <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">Alle sichtbaren Berichte auswählen</span>
                 </label>
                 
                 {(activeTab === 'daily' ? selectedDaily.length > 0 : selectedWeekly.length > 0) && (
-                    <button onClick={handleBulkPrint} className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-brand-primary/90 transition-colors flex items-center shadow-sm">
+                    <button onClick={handleBulkPrint} className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-xl text-white bg-brand-primary hover:bg-brand-primary/90 shadow-lg shadow-brand-primary/30 transition-all duration-200 w-full sm:w-auto">
                         <Printer className="w-4 h-4 mr-2" />
                         {activeTab === 'daily' ? selectedDaily.length : selectedWeekly.length} {(activeTab === 'daily' ? selectedDaily.length : selectedWeekly.length) === 1 ? 'Bericht' : 'Berichte'} drucken
                     </button>
@@ -641,12 +682,17 @@ export const Reports = () => {
             {activeTab === 'daily' && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     {filteredDailyReports.length === 0 ? (
-                        <div className="p-12 text-center flex flex-col items-center justify-center">
-                            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                                <FileText className="w-8 h-8 text-gray-400" />
+                        <div className="p-16 text-center flex flex-col items-center justify-center bg-white rounded-2xl border border-gray-100 shadow-sm">
+                            <div className="w-24 h-24 bg-brand-primary/5 rounded-full flex items-center justify-center mb-6">
+                                <FileText className="w-12 h-12 text-brand-primary/40" />
                             </div>
-                            <h3 className="text-lg font-medium text-gray-900 mb-1">Keine Tagesberichte</h3>
-                            <button onClick={() => navigate('/daily-reports/new')} className="text-brand-primary font-medium mt-2 hover:underline">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Keine Tagesberichte</h3>
+                            <p className="text-gray-500 mb-8 max-w-md">Es wurden noch keine Tagesberichte erfasst, die diesen Filterkriterien entsprechen.</p>
+                            <button 
+                                onClick={() => navigate('/daily-reports/new')} 
+                                className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-medium rounded-xl text-brand-primary bg-brand-primary/10 hover:bg-brand-primary hover:text-white hover:shadow-lg hover:shadow-brand-primary/30 transition-all duration-200 group"
+                            >
+                                <Plus className="w-4 h-4 mr-2 group-hover:text-white transition-colors" />
                                 Ersten Bericht anlegen
                             </button>
                         </div>
@@ -742,26 +788,42 @@ export const Reports = () => {
             {/* Weekly Reports View */}
             {activeTab === 'weekly' && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="p-4 border-b border-gray-100 flex justify-end items-center bg-gray-50">
+                    {/* Generate Reports Banner */}
+                    <div className="p-4 border-b border-gray-100 bg-brand-primary/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-brand-primary/10 rounded-full flex items-center justify-center shrink-0">
+                                <FileText className="w-5 h-5 text-brand-primary" />
+                            </div>
+                            <div>
+                                <h4 className="text-sm font-semibold text-gray-900">Fehlende Berichte generieren</h4>
+                                <p className="text-xs text-gray-500">Automatisch Wochenberichte für vergangene Zeiten erstellen.</p>
+                            </div>
+                        </div>
                         <button
                             onClick={generatePastWeeklyReports}
                             disabled={isGenerating}
-                            className={`px-4 py-2 border border-brand-primary text-brand-primary text-sm font-medium rounded-md hover:bg-brand-primary/5 transition-colors flex items-center ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-brand-primary/20 text-sm font-medium rounded-xl text-brand-primary bg-white hover:bg-brand-primary hover:text-white shadow-sm transition-all duration-200 group ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
                             {isGenerating ? (
-                                <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-primary mr-2"></div> Generiere...</>
+                                <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-primary group-hover:border-white mr-2"></div> Generiere...</>
                             ) : (
-                                'Fehlende Wochenberichte generieren'
+                                'Berichte generieren'
                             )}
                         </button>
                     </div>
+
                     {filteredWeeklyReports.length === 0 ? (
-                        <div className="p-12 text-center flex flex-col items-center justify-center">
-                            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                                <FileText className="w-8 h-8 text-gray-400" />
+                        <div className="p-16 text-center flex flex-col items-center justify-center bg-white rounded-2xl border border-gray-100 shadow-sm mt-4 mx-4 mb-4">
+                            <div className="w-24 h-24 bg-brand-primary/5 rounded-full flex items-center justify-center mb-6">
+                                <FileText className="w-12 h-12 text-brand-primary/40" />
                             </div>
-                            <h3 className="text-lg font-medium text-gray-900 mb-1">Keine Wochenberichte</h3>
-                            <button onClick={() => navigate('/weekly-reports/new')} className="text-brand-primary font-medium mt-2 hover:underline">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Keine Wochenberichte</h3>
+                            <p className="text-gray-500 mb-8 max-w-md">Es wurden noch keine Wochenberichte erfasst, die diesen Filterkriterien entsprechen.</p>
+                            <button 
+                                onClick={() => navigate('/weekly-reports/new')} 
+                                className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-medium rounded-xl text-white bg-brand-primary hover:bg-brand-primary/90 shadow-lg shadow-brand-primary/30 transition-all duration-200 group"
+                            >
+                                <Plus className="w-4 h-4 mr-2 text-white" />
                                 Ersten Wochenbericht anlegen
                             </button>
                         </div>

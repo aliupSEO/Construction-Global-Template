@@ -3,12 +3,14 @@
   "dependencies": {
     "browser-image-compression": "^2.0.2",
     "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
     "firebase": "^12.10.0",
     "firebase-admin": "^13.8.0",
     "html2pdf.js": "^0.14.0",
     "lucide-react": "^0.577.0",
     "pdf-lib": "^1.17.1",
     "react": "^19.2.4",
+    "react-datepicker": "^9.1.0",
     "react-dom": "^19.2.4",
     "react-hot-toast": "^2.6.0",
     "react-markdown": "^10.1.0",
@@ -19,6 +21,7 @@
   "devDependencies": {
     "@types/node": "^25.3.5",
     "@types/react": "^19.2.14",
+    "@types/react-datepicker": "^6.2.0",
     "@types/react-dom": "^19.2.3",
     "@types/react-signature-canvas": "^1.0.7",
     "@vercel/node": "^5.7.12",

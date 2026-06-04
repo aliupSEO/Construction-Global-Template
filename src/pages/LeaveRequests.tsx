@@ -230,8 +230,9 @@ export const LeaveRequests = () => {
         }
     };
 
-    const formatDate = (dateStr: string) => {
-        const d = new Date(dateStr);
+    const formatDate = (dateVal: string | number) => {
+        if (!dateVal) return '';
+        const d = new Date(dateVal);
         return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
     };
 

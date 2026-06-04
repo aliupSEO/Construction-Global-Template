@@ -443,7 +443,7 @@ export const DailyReportForm = () => {
                             disabled={isReadOnly}
                             className={isReadOnly ? 'input-premium-readonly appearance-none' : 'input-premium appearance-none'}
                         >
-                            <option value="">- Baustelle wählen -</option>
+                            <option value="" disabled hidden>Bitte Baustelle wählen...</option>
                             {dbBaustellen.map(b => (
                                 <option key={b.id} value={b.name}>{b.name}</option>
                             ))}
@@ -460,7 +460,7 @@ export const DailyReportForm = () => {
                             disabled={isReadOnly}
                             className={isReadOnly ? 'input-premium-readonly appearance-none' : 'input-premium appearance-none'}
                         >
-                            <option value="">- Bauleiter wählen -</option>
+                            <option value="" disabled hidden>Bitte Bauleiter wählen...</option>
                             {dbManagers.map(m => (
                                 <option key={m.id} value={m.id}>{m.name}</option>
                             ))}
@@ -492,6 +492,7 @@ export const DailyReportForm = () => {
                             <input
                                 type="number"
                                 name="calendarWeek"
+                                placeholder="z.B. 42"
                                 value={formData.calendarWeek}
                                 onChange={handleChange}
                                 disabled={isReadOnly}
@@ -517,6 +518,7 @@ export const DailyReportForm = () => {
                         <input
                             type="text"
                             name="reportNumber"
+                            placeholder="Wird automatisch generiert"
                             value={formData.reportNumber}
                             onChange={handleChange}
                             disabled={isReadOnly}
