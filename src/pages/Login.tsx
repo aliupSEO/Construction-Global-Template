@@ -4,6 +4,7 @@ import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/aut
 import { auth } from '../lib/firebase';
 import { Lock, Mail, Loader2, AlertCircle, HardHat, Eye, EyeOff, LogIn, ArrowLeft, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 export function Login() {
   const [email, setEmail] = useState('');
@@ -14,6 +15,7 @@ export function Login() {
   const [resetMode, setResetMode] = useState(false);
   const [resetSent, setResetSent] = useState(false);
   const navigate = useNavigate();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,13 +23,30 @@ export function Login() {
     setLoading(true);
 
     try {
+      // reCAPTCHA v3 verification — only if a real site key is configured
+      const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
+      const hasRealKey = siteKey && !siteKey.startsWith('6Le_your');
+
+      if (hasRealKey && executeRecaptcha) {
+        const token = await executeRecaptcha('login');
+        const captchaRes = await fetch('/api/verifyCaptcha', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        });
+        if (!captchaRes.ok) {
+          const data = await captchaRes.json();
+          throw new Error(data.error || 'reCAPTCHA-Überprüfung fehlgeschlagen. Bitte versuchen Sie es erneut.');
+        }
+      }
+
       const actualEmail = email.includes('@') ? email : `${email}@satler-digital.com`;
       await signInWithEmailAndPassword(auth, actualEmail, password);
       toast.success('Anmeldung erfolgreich');
       navigate('/');
     } catch (err: any) {
       console.error('Login error:', err);
-      setError('Anmeldung fehlgeschlagen. Bitte überprüfen Sie E-Mail und Passwort.');
+      setError(err.message || 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie E-Mail und Passwort.');
       toast.error('Anmeldung fehlgeschlagen');
     } finally {
       setLoading(false);

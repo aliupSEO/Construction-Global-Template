@@ -124,6 +124,29 @@ function sendJSON(res, status, data) {
 }
 
 // --- Route handlers ---
+async function handleVerifyCaptcha(req, res) {
+    const { token } = await parseBody(req);
+    if (!token) return sendJSON(res, 400, { success: false, error: 'Missing token' });
+
+    const secret = process.env.RECAPTCHA_SECRET_KEY || '';
+    if (!secret) {
+        // In local dev without a secret key, skip verification and allow through
+        console.log('[captcha] No RECAPTCHA_SECRET_KEY set — skipping verification in dev');
+        return sendJSON(res, 200, { success: true, score: 1.0, dev: true });
+    }
+
+    try {
+        const r = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${token}`, { method: 'POST' });
+        const data = await r.json();
+        if (!data.success || data.score < 0.5) {
+            return sendJSON(res, 403, { success: false, error: 'Suspicious activity detected.' });
+        }
+        sendJSON(res, 200, { success: true, score: data.score });
+    } catch (e) {
+        sendJSON(res, 500, { success: false, error: e.message });
+    }
+}
+
 async function handleCreateUser(req, res) {
     const auth = await verifyAdminOrVorarbeiter(req.headers.authorization);
     if (auth.error) return sendJSON(res, auth.status, { error: auth.error });
@@ -212,6 +235,7 @@ const server = http.createServer(async (req, res) => {
     console.log(`→ ${req.method} ${url}`);
 
     try {
+        if (url === '/api/verifyCaptcha' && req.method === 'POST') return await handleVerifyCaptcha(req, res);
         if (url === '/api/createUser' && req.method === 'POST') return await handleCreateUser(req, res);
         if (url === '/api/updateUserAuth' && req.method === 'POST') return await handleUpdateUserAuth(req, res);
         if (url === '/api/updateUserRole' && req.method === 'POST') return await handleUpdateUserRole(req, res);
@@ -224,7 +248,7 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, () => {
     console.log(`\n🚀 Dev API server running at http://localhost:${PORT}`);
-    console.log('   Handles: /api/createUser, /api/updateUserAuth, /api/updateUserRole\n');
+    console.log('   Handles: /api/verifyCaptcha, /api/createUser, /api/updateUserAuth, /api/updateUserRole\n');
 });
 
 server.on('error', (err) => {
