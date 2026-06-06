@@ -145,37 +145,39 @@ export const Sidebar = ({ isOpen, onClose, logoUrl }: SidebarProps) => {
                 {/* Bottom area */}
                 <div className="p-4 mt-auto bg-gradient-to-t from-[#050505] to-transparent space-y-3">
 
-                    {/* User profile card */}
-                    <div className="flex items-center gap-3 px-3 py-3 rounded-2xl bg-white/5 border border-white/10">
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-primary to-red-400 flex items-center justify-center text-xs font-bold text-white shrink-0 overflow-hidden">
-                            {currentUser?.photoURL
-                                ? <img src={currentUser.photoURL} alt="avatar" className="w-full h-full object-cover" />
-                                : (employeeName?.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2) || currentUser?.email?.slice(0,2).toUpperCase() || 'SB')
-                            }
+                    {/* User profile card — mobile only (desktop has these in the header) */}
+                    <div className="lg:hidden space-y-2">
+                        <div className="flex items-center gap-3 px-3 py-3 rounded-2xl bg-white/5 border border-white/10">
+                            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-primary to-red-400 flex items-center justify-center text-xs font-bold text-white shrink-0 overflow-hidden">
+                                {currentUser?.photoURL
+                                    ? <img src={currentUser.photoURL} alt="avatar" className="w-full h-full object-cover" />
+                                    : (employeeName?.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2) || currentUser?.email?.slice(0,2).toUpperCase() || 'SB')
+                                }
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-xs font-semibold text-white truncate">{employeeName || currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Benutzer'}</p>
+                                <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">{userRole || 'Mitarbeiter'}</p>
+                            </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-xs font-semibold text-white truncate">{employeeName || currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Benutzer'}</p>
-                            <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">{userRole || 'Mitarbeiter'}</p>
-                        </div>
+
+                        {/* Account + Logout */}
+                        <Link
+                            to="/konto"
+                            onClick={onClose}
+                            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                        >
+                            <User className="w-4 h-4 shrink-0" />
+                            Mein Konto
+                        </Link>
+
+                        <button
+                            onClick={() => setShowLogoutConfirm(true)}
+                            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:text-white hover:bg-red-500/20 transition-colors"
+                        >
+                            <LogOut className="w-4 h-4 shrink-0" />
+                            Abmelden
+                        </button>
                     </div>
-
-                    {/* Account + Logout */}
-                    <Link
-                        to="/konto"
-                        onClick={onClose}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-                    >
-                        <User className="w-4 h-4 shrink-0" />
-                        Mein Konto
-                    </Link>
-
-                    <button
-                        onClick={() => setShowLogoutConfirm(true)}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:text-white hover:bg-red-500/20 transition-colors"
-                    >
-                        <LogOut className="w-4 h-4 shrink-0" />
-                        Abmelden
-                    </button>
 
                     <div className="h-px bg-white/5 my-1" />
 
