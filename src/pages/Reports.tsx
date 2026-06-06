@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { DashboardShell } from '../components/DashboardShell';
 import { db, APP_ID } from '../lib/firebase';
-import { collection, query, orderBy, onSnapshot, deleteDoc, doc, getDocs, writeBatch, serverTimestamp, getDoc } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, doc, getDocs, writeBatch, serverTimestamp, getDoc } from 'firebase/firestore';
 import { FileText, ArrowRight, Calendar, Edit2, Trash2, Printer, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { CustomSelect } from '../components/CustomSelect';
 import { CustomDatePicker } from '../components/CustomDatePicker';
 import toast from 'react-hot-toast';
+import { softDelete, getDaysUntilExpiry } from '../lib/softDelete';
 
 const getDayKey = (dateString: string) => {
     if (!dateString) return null;
@@ -78,7 +79,7 @@ const buildCombinedString = (normal: number, sw: number, doc: number, special: s
 
 export const Reports = () => {
     const navigate = useNavigate();
-    const { userRole } = useAuth();
+    const { userRole, currentUser, employeeName } = useAuth();
     const [activeTab, setActiveTab] = useState<'daily' | 'weekly'>('daily');
     const [dailyReports, setDailyReports] = useState<any[]>([]);
     const [weeklyReports, setWeeklyReports] = useState<any[]>([]);
@@ -107,26 +108,24 @@ export const Reports = () => {
         );
 
         const unDaily = onSnapshot(qDaily, (snapshot) => {
-            const data = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            } as any));
+            const data = snapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() } as any))
+                .filter((r: any) => !r.isDeleted);
 
             // local sort to reinforce date order if createdAt fluctuates
-            data.sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
+            data.sort((a: any, b: any) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
             setDailyReports(data);
             setLoading(false);
         });
 
         const qWeekly = collection(db, 'apps', APP_ID, 'weekly_reports');
         const unWeekly = onSnapshot(qWeekly, (snapshot) => {
-            const data = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            } as any));
+            const data = snapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() } as any))
+                .filter((r: any) => !r.isDeleted);
 
             // Sort by year desc, week desc
-            data.sort((a, b) => {
+            data.sort((a: any, b: any) => {
                 const yearDiff = (b.year || 0) - (a.year || 0);
                 if (yearDiff !== 0) return yearDiff;
                 return (b.calendarWeek || 0) - (a.calendarWeek || 0);
@@ -472,12 +471,15 @@ export const Reports = () => {
     };
 
     const handleDelete = async (collectionName: string, id: string) => {
-        if (window.confirm('Bericht wirklich löschen?')) {
-            try {
-                await deleteDoc(doc(db, 'apps', APP_ID, collectionName, id));
-            } catch (error) {
-                console.error("Fehler beim Löschen:", error);
-            }
+        try {
+            await softDelete(collectionName, id, {
+                uid: currentUser?.uid || 'system',
+                name: employeeName || currentUser?.email || 'Admin',
+            });
+            toast.success('Bericht in den Papierkorb verschoben.');
+        } catch (error) {
+            console.error('Fehler beim Löschen:', error);
+            toast.error('Fehler beim Löschen.');
         }
     };
 

@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { DashboardShell } from '../components/DashboardShell';
 import { db, APP_ID, auth } from '../lib/firebase';
-import { collection, onSnapshot, doc, setDoc, deleteDoc, serverTimestamp, getDocs, query, where, updateDoc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, setDoc, serverTimestamp, getDocs, query, where, updateDoc } from 'firebase/firestore';
 import { slugify } from '../lib/utils';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { CustomSelect } from '../components/CustomSelect';
-import { Plus, Edit2, Trash2, X, Save, Loader2, Archive, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Save, Loader2, Archive, ChevronLeft, ChevronRight, RotateCcw, Trash, Clock } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import toast from 'react-hot-toast';
+import { softDelete, restoreItem, permanentDelete, getDaysUntilExpiry } from '../lib/softDelete';
 
 const ROLE_MAP: Record<string, string> = {
     'admin': 'Administrator',
@@ -31,6 +32,9 @@ interface Employee {
     email?: string;
     authUid?: string;
     password?: string;
+    isDeleted?: boolean;
+    expireAt?: any;
+    deletedByName?: string;
 }
 
 export const Employees = () => {
@@ -40,7 +44,7 @@ export const Employees = () => {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<'active' | 'archived'>('active');
+    const [activeTab, setActiveTab] = useState<'active' | 'archived' | 'trash'>('active');
     
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
@@ -132,14 +136,36 @@ export const Employees = () => {
 
     const executeDeleteAdmin = async () => {
         if (!itemToDelete) return;
+        if (activeTab === 'trash') {
+            // permanent delete from trash
+            try {
+                await permanentDelete('employees', itemToDelete.id);
+                toast.success('Mitarbeiter endgültig gelöscht');
+            } catch {
+                toast.error('Fehler beim endgültigen Löschen.');
+            }
+        } else {
+            // soft delete
+            try {
+                await softDelete('employees', itemToDelete.id, {
+                    uid: currentUser?.uid || '',
+                    name: currentUser?.email || 'Admin',
+                });
+                toast.success('Mitarbeiter in den Papierkorb verschoben');
+            } catch {
+                toast.error('Fehler beim Löschen des Mitarbeiters.');
+            }
+        }
+        setDeleteModalOpen(false);
+        setItemToDelete(null);
+    };
+
+    const handleRestore = async (employee: Employee) => {
         try {
-            await deleteDoc(doc(db, 'apps', APP_ID, 'employees', itemToDelete.id));
-            toast.success('Mitarbeiter endgültig gelöscht');
-            setDeleteModalOpen(false);
-            setItemToDelete(null);
-        } catch (error) {
-            console.error('Error deleting employee:', error);
-            toast.error('Fehler beim Löschen des Mitarbeiters.');
+            await restoreItem('employees', employee.id);
+            toast.success('Mitarbeiter wiederhergestellt.');
+        } catch {
+            toast.error('Fehler beim Wiederherstellen.');
         }
     };
 
@@ -459,18 +485,25 @@ export const Employees = () => {
                 <div className="p-4 border-b border-gray-100 flex items-center space-x-4">
                     <button
                         onClick={() => { setActiveTab('active'); setCurrentPage(1); }}
-                        className={`text-sm font-medium px-1 py-2 border-b-2 transition-colors ${activeTab === 'active' ? 'border-brand-primary text-brand-primary' : 'border-transparent text-gray-500 hover:text-gray-700'
-                            }`}
+                        className={`text-sm font-medium px-1 py-2 border-b-2 transition-colors ${activeTab === 'active' ? 'border-brand-primary text-brand-primary' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
                     >
                         Aktive Mitarbeiter
                     </button>
                     <button
                         onClick={() => { setActiveTab('archived'); setCurrentPage(1); }}
-                        className={`text-sm font-medium px-1 py-2 border-b-2 transition-colors ${activeTab === 'archived' ? 'border-brand-primary text-brand-primary' : 'border-transparent text-gray-500 hover:text-gray-700'
-                            }`}
+                        className={`text-sm font-medium px-1 py-2 border-b-2 transition-colors ${activeTab === 'archived' ? 'border-brand-primary text-brand-primary' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
                     >
                         Archiviert
                     </button>
+                    {userRole === 'admin' && employees.some(e => e.isDeleted) && (
+                        <button
+                            onClick={() => { setActiveTab('trash'); setCurrentPage(1); }}
+                            className={`flex items-center gap-1.5 text-sm font-medium px-1 py-2 border-b-2 transition-colors ${activeTab === 'trash' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-red-600'}`}
+                        >
+                            <Trash className="w-3.5 h-3.5" />
+                            Papierkorb ({employees.filter(e => e.isDeleted).length})
+                        </button>
+                    )}
                 </div>
                 {loading ? (
                     <div className="p-8 flex justify-center">
@@ -482,6 +515,12 @@ export const Employees = () => {
                     </div>
                 ) : (
                     <div>
+                        {activeTab === 'trash' && (
+                            <div className="p-3 bg-red-50 border-b border-red-200 flex items-center gap-2 text-xs text-red-600">
+                                <Clock className="w-4 h-4" />
+                                Gelöschte Mitarbeiter werden nach 30 Tagen automatisch endgültig entfernt.
+                            </div>
+                        )}
                         <div className="overflow-x-auto">
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
@@ -490,25 +529,32 @@ export const Employees = () => {
                                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
                                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">System-Rolle</th>
                                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    {activeTab === 'trash' && <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Läuft ab</th>}
                                     <th scope="col" className="relative px-6 py-3"><span className="sr-only">Aktionen</span></th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {(() => {
-                                    const filteredEmployees = employees.filter(e => activeTab === 'archived' ? (e.status === 'archived' || e.active === false) : (e.status === 'active' || (!e.status && e.active !== false)));
+                                    const filteredEmployees = employees.filter(e => {
+                                        if (activeTab === 'trash') return (e as any).isDeleted;
+                                        if ((e as any).isDeleted) return false;
+                                        if (activeTab === 'archived') return e.status === 'archived' || e.active === false;
+                                        return e.status === 'active' || (!e.status && e.active !== false);
+                                    });
                                     const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
                                     const paginatedEmployees = filteredEmployees.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
                                     
                                     return paginatedEmployees.map((employee) => {
                                         const isArchived = employee.status === 'archived' || employee.active === false;
+                                        const isTrash = activeTab === 'trash';
                                         return (
-                                            <tr key={employee.id} className="hover:bg-gray-50">
+                                            <tr key={employee.id} className={`hover:bg-gray-50 ${isTrash ? 'bg-red-50/20' : ''}`}>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div className="text-sm font-medium text-gray-900">{employee.lastName}, {employee.firstName}</div>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                    {employee.position || (['Vorarbeiter', 'Hilfsarbeiter', 'Facharbeiter', 'Ausführender', 'VA', 'HA', 'FA'].includes(employee.role) ? 
-                                                        (employee.role === 'VA' ? 'Vorarbeiter' : employee.role === 'HA' ? 'Hilfsarbeiter' : employee.role === 'FA' ? 'Facharbeiter' : employee.role) 
+                                                    {employee.position || (['Vorarbeiter', 'Hilfsarbeiter', 'Facharbeiter', 'Ausführender', 'VA', 'HA', 'FA'].includes(employee.role) ?
+                                                        (employee.role === 'VA' ? 'Vorarbeiter' : employee.role === 'HA' ? 'Hilfsarbeiter' : employee.role === 'FA' ? 'Facharbeiter' : employee.role)
                                                         : '-')}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -522,28 +568,44 @@ export const Employees = () => {
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${!isArchived ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                                                        {!isArchived ? 'Aktiv' : 'Archiviert'}
-                                                    </span>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    {(userRole === 'admin' || userRole === 'vorarbeiter') && (
-                                                        <button
-                                                            onClick={() => handleEdit(employee)}
-                                                            className="text-brand-primary hover:text-brand-primary/80 mr-4"
-                                                            title="Bearbeiten"
-                                                        >
-                                                            <Edit2 className="w-4 h-4" />
-                                                        </button>
+                                                    {isTrash ? (
+                                                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-700">Gelöscht</span>
+                                                    ) : (
+                                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${!isArchived ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                                                            {!isArchived ? 'Aktiv' : 'Archiviert'}
+                                                        </span>
                                                     )}
-                                                    {(userRole === 'admin' || userRole === 'vorarbeiter') && (
-                                                        <button
-                                                            onClick={() => handleDeleteClick(employee)}
-                                                            className="text-red-600 hover:text-red-900"
-                                                            title="Löschen / Archivieren"
-                                                        >
-                                                            <Trash2 className="w-4 h-4" />
-                                                        </button>
+                                                </td>
+                                                {isTrash && (
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <span className="inline-flex items-center gap-1 text-xs font-bold text-red-600 bg-red-100 px-2.5 py-1 rounded-full">
+                                                            <Clock className="w-3 h-3" />{getDaysUntilExpiry((employee as any).expireAt)}d
+                                                        </span>
+                                                    </td>
+                                                )}
+                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    {isTrash ? (
+                                                        <div className="flex items-center justify-end gap-2">
+                                                            <button onClick={() => handleRestore(employee)} className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 hover:bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200">
+                                                                <RotateCcw className="w-3.5 h-3.5" /> Wiederherstellen
+                                                            </button>
+                                                            <button onClick={() => handleDeleteClick(employee)} className="flex items-center gap-1.5 text-xs font-bold text-red-600 hover:bg-red-50 px-3 py-1.5 rounded-lg border border-red-200">
+                                                                <Trash2 className="w-3.5 h-3.5" /> Löschen
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <>
+                                                            {(userRole === 'admin' || userRole === 'vorarbeiter') && (
+                                                                <button onClick={() => handleEdit(employee)} className="text-brand-primary hover:text-brand-primary/80 mr-4" title="Bearbeiten">
+                                                                    <Edit2 className="w-4 h-4" />
+                                                                </button>
+                                                            )}
+                                                            {(userRole === 'admin' || userRole === 'vorarbeiter') && (
+                                                                <button onClick={() => handleDeleteClick(employee)} className="text-red-400 hover:text-red-600" title="In Papierkorb">
+                                                                    <Trash2 className="w-4 h-4" />
+                                                                </button>
+                                                            )}
+                                                        </>
                                                     )}
                                                 </td>
                                             </tr>
