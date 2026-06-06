@@ -1,6 +1,6 @@
 {
-  "short_name": "Construction Global Template",
-  "name": "Construction Global Template",
+  "short_name": "Bau-App",
+  "name": "Bau-Management",
   "icons": [
     {
       "src": "/logo.jpeg",
@@ -14,7 +14,7 @@
     }
   ],
   "start_url": "/",
-  "background_color": "#ffffff",
+  "background_color": "#101010",
   "display": "standalone",
   "scope": "/",
   "theme_color": "#101010",

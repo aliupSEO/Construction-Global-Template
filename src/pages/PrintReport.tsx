@@ -880,12 +880,12 @@ export const PrintReport = () => {
                 if (companySnap.exists()) {
                     setCompanyInfo(companySnap.data());
                 } else {
-                    // Fallback stub in case setting wasn't configured yet
+                    // No company profile set yet — show empty until admin configures it in Settings
                     setCompanyInfo({
-                        companyName: "Construction Global Template",
-                        address: "Musterstraße 1, 1010 Wien",
-                        phone: "+43 1 2345 6789",
-                        email: "office@satler-bau.example.com"
+                        companyName: "",
+                        address: "",
+                        phone: "",
+                        email: ""
                     });
                 }
 

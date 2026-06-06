@@ -95,7 +95,7 @@ export const DownloadAppModal: React.FC<DownloadAppModalProps> = ({ isOpen, onCl
           
           <p className="text-gray-500 mt-2 text-sm max-w-sm mx-auto">
              {view === 'selection' && 'Wähle dein aktuelles Gerät aus, um die passenden Installationshinweise zu erhalten.'}
-             {view === 'mobile' && 'Installiere Construction Global Template direkt auf deinem Homescreen.'}
+             {view === 'mobile' && 'Installiere die App direkt auf deinem Homescreen.'}
              {view === 'desktop' && 'Installiere die App auf deinem PC oder Mac für schnellen Zugriff.'}
           </p>
         </div>

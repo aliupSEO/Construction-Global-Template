@@ -96,7 +96,7 @@ export function Login() {
             Gestalten Sie die <br/><span className="text-brand-primary">Zukunft des Bauens.</span>
           </h1>
           <p className="text-lg text-slate-300 max-w-lg leading-relaxed font-light">
-            Das Construction Global Template bietet Ihnen die modernsten Werkzeuge zur Verwaltung Ihrer Baustellen, Mitarbeiter und Berichte – auf Premium-Niveau.
+            Verwalten Sie Ihre Baustellen, Mitarbeiter und Berichte – digital, effizient und auf Premium-Niveau.
           </p>
         </div>
       </div>

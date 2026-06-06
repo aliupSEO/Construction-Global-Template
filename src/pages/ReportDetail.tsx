@@ -82,7 +82,7 @@ export const ReportDetail = () => {
                 if (companySnap.exists()) {
                     setCompanyInfo(companySnap.data());
                 } else {
-                    setCompanyInfo({ companyName: "Construction Global Template" });
+                    setCompanyInfo({ companyName: "" });
                 }
 
                 // Fetch the actual daily report
@@ -439,7 +439,7 @@ export const ReportDetail = () => {
 
                 {/* Print Footer */}
                 <div className="hidden print:block mt-16 text-center text-xs text-gray-500">
-                    <p>Generiert aus Construction Global Template am {new Date().toLocaleDateString('de-DE')} um {new Date().toLocaleTimeString('de-DE')}</p>
+                    <p>Generiert am {new Date().toLocaleDateString('de-DE')} um {new Date().toLocaleTimeString('de-DE')}</p>
                 </div>
 
             </div>
