@@ -84,15 +84,38 @@ export const DailyReportForm = () => {
     useEffect(() => {
         const fetchDropdownData = async () => {
             try {
+                // Fetch Bauleiter from BOTH collections:
+                // 1. Legacy 'managers' collection
+                // 2. Employees with role='admin' (new flow)
                 const managersSnap = await getDocs(collection(db, 'apps', APP_ID, 'managers'));
-                setDbManagers(managersSnap.docs
+                const legacyManagers = managersSnap.docs
                     .filter(doc => !doc.data().status || doc.data().status === 'active')
                     .map(doc => ({
                         id: doc.id,
                         name: doc.data().firstName + ' ' + doc.data().lastName,
                         signature: doc.data().signature,
                         ...doc.data()
-                    })));
+                    }));
+
+                const adminEmpQ = query(
+                    collection(db, 'apps', APP_ID, 'employees'),
+                    where('role', '==', 'admin')
+                );
+                const adminEmpSnap = await getDocs(adminEmpQ);
+                const adminManagers = adminEmpSnap.docs
+                    .filter(doc => !doc.data().status || doc.data().status === 'active')
+                    .map(doc => ({
+                        id: doc.id,
+                        name: doc.data().firstName + ' ' + doc.data().lastName,
+                        signature: doc.data().signature,
+                        ...doc.data()
+                    }));
+
+                // Merge, deduplicate by id
+                const allManagers = [...legacyManagers, ...adminManagers.filter(
+                    am => !legacyManagers.some(lm => lm.id === am.id)
+                )];
+                setDbManagers(allManagers);
 
                 const clientsSnap = await getDocs(collection(db, 'apps', APP_ID, 'clients'));
                 setDbClients(clientsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));

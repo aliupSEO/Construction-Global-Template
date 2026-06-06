@@ -83,7 +83,7 @@ export const Account: React.FC = () => {
         e.preventDefault();
         if (!currentUser) return;
         
-        const targetCollection = userCollection || (userRole === 'admin' ? 'managers' : 'employees');
+        const targetCollection = userCollection || 'employees';
         const targetId = employeeData?.id || employeeId;
         
         setSavingProfile(true);

@@ -100,8 +100,12 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
                                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                                 className="flex items-center space-x-3 bg-white/5 hover:bg-white/10 border border-white/10 px-2 py-1.5 pr-4 rounded-full transition-all cursor-pointer shadow-md group"
                             >
-                                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-primary to-red-400 flex items-center justify-center text-sm font-bold text-white shadow-lg shadow-brand-primary/40 ring-2 ring-transparent group-hover:ring-brand-primary/50 transition-all">
-                                    {getInitials()}
+                                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-primary to-red-400 flex items-center justify-center text-sm font-bold text-white shadow-lg shadow-brand-primary/40 ring-2 ring-transparent group-hover:ring-brand-primary/50 transition-all overflow-hidden">
+                                    {currentUser?.photoURL ? (
+                                        <img src={currentUser.photoURL} alt="Avatar" className="w-full h-full object-cover" />
+                                    ) : (
+                                        getInitials()
+                                    )}
                                 </div>
                                 <div className="hidden md:flex flex-col items-start">
                                     <span className="text-xs font-semibold text-white tracking-wide">{employeeName || currentUser?.displayName || currentUser?.email?.split('@')[0] || 'User'}</span>
