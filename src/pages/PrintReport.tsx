@@ -921,6 +921,19 @@ export const PrintReport = () => {
                         const element = reportRefs.current[x];
                         if (!element) continue;
 
+                        // Clone the element into a detached container OUTSIDE React's DOM tree.
+                        // This prevents html2pdf from corrupting React's virtual DOM reconciliation
+                        // which causes the "insertBefore: node is not a child" crash.
+                        const cloneContainer = document.createElement('div');
+                        cloneContainer.style.position = 'fixed';
+                        cloneContainer.style.top = '-9999px';
+                        cloneContainer.style.left = '-9999px';
+                        cloneContainer.style.width = element.offsetWidth + 'px';
+                        cloneContainer.style.zIndex = '-1';
+                        const cloned = element.cloneNode(true) as HTMLElement;
+                        cloneContainer.appendChild(cloned);
+                        document.body.appendChild(cloneContainer);
+
                         const opt: any = {
                             margin: [10, 10, 8, 10], // top, left, bottom, right
                             filename: isDaily ? 'Tagesbericht.pdf' : isLeave ? `Urlaubsantrag_${reports[x]?.employeeName || 'Mitarbeiter'}.pdf` : 'Wochenbericht.pdf',
@@ -932,7 +945,7 @@ export const PrintReport = () => {
 
                         const pdfArrayBuffer = await (html2pdf()
                             .set(opt)
-                            .from(element)
+                            .from(cloned)
                             .toPdf()
                             .get('pdf')
                             .then((pdf: any) => {
@@ -947,6 +960,9 @@ export const PrintReport = () => {
                                 }
                             }) as any)
                             .output('arraybuffer');
+
+                        // Clean up the detached clone from the document
+                        document.body.removeChild(cloneContainer);
 
                         const reportPdf = await PDFDocument.load(pdfArrayBuffer);
                         const copiedPages = await mergedPdf.copyPages(reportPdf, reportPdf.getPageIndices());

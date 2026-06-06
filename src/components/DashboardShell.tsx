@@ -181,11 +181,7 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
                             <button
                                 onClick={async () => {
                                     setIsLogoutModalOpen(false);
-                                    if (import.meta.env.DEV) {
-                                        console.log("Lokal im Dev-Modus ausgeloggt (Mock)");
-                                    } else {
-                                        await signOut(auth);
-                                    }
+                                    await signOut(auth);
                                     navigate('/login');
                                 }}
                                 className="w-full inline-flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-xl shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"

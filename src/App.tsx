@@ -5,7 +5,6 @@ import { Reports } from './pages/Reports';
 import { Tasks } from './pages/Tasks';
 import { Settings } from './pages/Settings';
 import { Employees } from './pages/Employees';
-import { Managers } from './pages/Managers';
 import { DailyReports } from './pages/DailyReports';
 import { DailyReportForm } from './pages/DailyReportForm';
 import { WeeklyReports } from './pages/WeeklyReports';
@@ -75,7 +74,6 @@ function App() {
                 {/* Admin only */}
                 <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
                     <Route path="/employees" element={<Employees />} />
-                    <Route path="/managers" element={<Managers />} />
                     <Route path="/settings" element={<Settings />} />
                 </Route>
 

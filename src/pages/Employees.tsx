@@ -166,86 +166,75 @@ export const Employees = () => {
             if (isNew && formData.email) {
                 if (!currentUser) throw new Error("Nicht eingeloggt als Admin");
                 
-                if (import.meta.env.DEV) {
-                    throw new Error("User-Anlage geht aus Sicherheitsgründen nur im echten Vercel-Environment (Produktion) via Admin SDK. Bitte pushen und live testen.");
-                } else {
-                    const token = await currentUser.getIdToken();
-                    
-                    const userPassword = formData.password || 'Start1234!';
-                    
-                    const response = await fetch('/api/createUser', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            email: actualEmail,
-                            password: userPassword,
-                            displayName: `${formData.firstName} ${formData.lastName}`,
-                            role: formData.role
-                        })
-                    });
+                const token = await currentUser.getIdToken();
+                
+                const userPassword = formData.password || 'Start1234!';
+                
+                const response = await fetch('/api/createUser', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        email: actualEmail,
+                        password: userPassword,
+                        displayName: `${formData.firstName} ${formData.lastName}`,
+                        role: formData.role
+                    })
+                });
 
-                    if (!response.ok) {
-                        const errorData = await response.json().catch(() => ({}));
-                        throw new Error(errorData.error || 'Fehler beim Erstellen des Benutzer-Logins.');
-                    }
-                    
-                    const responseData = await response.json();
-                    finalAuthUid = responseData.uid;
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || 'Fehler beim Erstellen des Benutzer-Logins.');
                 }
+                
+                const responseData = await response.json();
+                finalAuthUid = responseData.uid;
             }
 
             // Fallback für Legacy Daten
             const employeeData = editingId ? employees.find(e => e.id === editingId) : null;
             if (!isNew && employeeData?.authUid && userRole === 'admin') {
                 if (employeeData.role !== formData.role) {
-                    if (import.meta.env.DEV) {
-                        console.log("Updating Role in DEV mode");
-                    } else {
-                        const token = await currentUser?.getIdToken();
-                        if (token) {
-                            try {
-                                const res = await fetch('/api/updateUserRole', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                                    body: JSON.stringify({ authUid: employeeData.authUid, newRole: formData.role || 'mitarbeiter' })
-                                });
-                                if (!res.ok) console.warn('Online Role Update failed on Backend');
-                            } catch (err) {
-                                console.error('Update Role Network Err:', err);
-                            }
+                    const token = await currentUser?.getIdToken();
+                    if (token) {
+                        try {
+                            const res = await fetch('/api/updateUserRole', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                                body: JSON.stringify({ authUid: employeeData.authUid, newRole: formData.role || 'mitarbeiter' })
+                            });
+                            if (!res.ok) console.warn('Online Role Update failed on Backend');
+                        } catch (err) {
+                            console.error('Update Role Network Err:', err);
                         }
                     }
                 }
 
                 // E-Mail / Password Update
                 if (formData.email !== employeeData.email || formData.password) {
-                    if (import.meta.env.DEV) {
-                        throw new Error("Auth-Update geht aus Sicherheitsgründen nur auf der Live-Version via Admin SDK. Bitte pushen und live testen.");
-                    } else {
-                        const token = await currentUser?.getIdToken();
-                        if (token) {
-                            try {
-                                const authPayload: any = { authUid: employeeData.authUid };
-                                if (formData.email !== employeeData.email) authPayload.email = actualEmail;
-                                if (formData.password) authPayload.password = formData.password;
+                    const token = await currentUser?.getIdToken();
+                    if (token) {
+                        try {
+                            const authPayload: any = { authUid: employeeData.authUid };
+                            if (formData.email !== employeeData.email) authPayload.email = actualEmail;
+                            if (formData.password) authPayload.password = formData.password;
 
-                                const res = await fetch('/api/updateUserAuth', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                                    body: JSON.stringify(authPayload)
-                                });
-                                if (!res.ok) throw new Error(await res.text());
-                            } catch (err) {
-                                console.error('Update Auth Network Err:', err);
-                                throw new Error("Fehler beim Aktualisieren der Login-Daten");
-                            }
+                            const res = await fetch('/api/updateUserAuth', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                                body: JSON.stringify(authPayload)
+                            });
+                            if (!res.ok) throw new Error(await res.text());
+                        } catch (err) {
+                            console.error('Update Auth Network Err:', err);
+                            throw new Error("Fehler beim Aktualisieren der Login-Daten");
                         }
                     }
                 }
             }
+
 
             const fullName = `${formData.firstName} ${formData.lastName}`;
             const id = editingId || finalAuthUid || slugify(fullName);
@@ -455,7 +444,8 @@ export const Employees = () => {
                                         disabled={isSaving}
                                         className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-primary hover:bg-brand-primary/90 transition-colors disabled:opacity-50"
                                     >
-                                        {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                                        <Loader2 className={`w-4 h-4 mr-2 animate-spin${isSaving ? '' : ' hidden'}`} />
+                                        <Save className={`w-4 h-4 mr-2${isSaving ? ' hidden' : ''}`} />
                                         Speichern
                                     </button>
                                 </div>

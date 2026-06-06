@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, FileText, Settings, Circle, Users, UserCircle, CalendarDays, X, ChevronDown, ChevronUp, MapPin, PlusCircle, LayoutList, Download, Clock, CheckCircle, XCircle, HardHat } from 'lucide-react';
+import { LayoutDashboard, FileText, Settings, Circle, Users, CalendarDays, X, ChevronDown, ChevronUp, MapPin, PlusCircle, LayoutList, Download, Clock, CheckCircle, XCircle, HardHat } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTaskSync } from '../hooks/useTaskSync';
 import { useAuth } from '../contexts/AuthContext';
@@ -15,7 +15,6 @@ const mainNavigation = [
 
 const managementNavigation = [
     { name: 'Mitarbeiter', href: '/employees', icon: Users },
-    { name: 'Bauleiter', href: '/managers', icon: UserCircle },
 ];
 
 const settingsNavigation = [

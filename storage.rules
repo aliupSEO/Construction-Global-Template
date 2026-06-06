@@ -12,16 +12,33 @@ service firebase.storage {
       return request.auth.token.role == 'vorarbeiter' || isAdmin();
     }
 
-    // --- SITE PHOTOS & REPORT ATTACHMENTS ---
-    match /apps/{appId}/site_photos/{allPaths=**} {
+    // --- SITE PHOTOS (used by SitePhotos.tsx, SitePhotoModal.tsx, Dashboard.tsx) ---
+    // Path: apps/{appId}/sites/{siteId}/photos/**
+    match /apps/{appId}/sites/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isVorarbeiter();
+      allow delete: if isVorarbeiter();
+    }
+
+    // --- REPORT ATTACHMENTS ---
+    match /apps/{appId}/report_attachments/{allPaths=**} {
       allow read: if isAuthenticated();
       allow write: if isVorarbeiter();
       allow delete: if isAdmin();
     }
 
-    match /apps/{appId}/report_attachments/{allPaths=**} {
+    // --- USER PROFILE PHOTOS (used by Account.tsx) ---
+    // Path: users/{userId}/profile/**
+    match /users/{userId}/profile/{allPaths=**} {
       allow read: if isAuthenticated();
-      allow write: if isVorarbeiter();
+      allow write: if request.auth.uid == userId;
+      allow delete: if request.auth.uid == userId || isAdmin();
+    }
+
+    // --- COMPANY ASSETS (logos, etc. stored via Settings) ---
+    match /apps/{appId}/metadata/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
       allow delete: if isAdmin();
     }
 
