@@ -4,6 +4,7 @@ import { DashboardShell } from '../components/DashboardShell';
 import { db, APP_ID } from '../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { Printer, ArrowLeft, Calendar, User, MapPin, CloudSun, Hash } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const getWeekDateRange = (week: any, year: any): string => {
     const w = Number(week);
@@ -99,7 +100,7 @@ export const ReportDetail = () => {
                     }
 
                 } else {
-                    alert('Dieser Bericht existiert nicht.');
+                    toast.error('Dieser Bericht existiert nicht.');
                     navigate('/reports');
                 }
             } catch (error) {

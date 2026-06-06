@@ -4,6 +4,7 @@ import { db, APP_ID } from '../lib/firebase';
 import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import { Plus, Edit2, Trash2, CalendarDays } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 interface WeeklyReport {
     id: string;
@@ -51,7 +52,7 @@ export const WeeklyReports = () => {
                 await deleteDoc(doc(db, 'apps', APP_ID, 'weekly_reports', id));
             } catch (error) {
                 console.error('Error deleting report:', error);
-                alert('Fehler beim Löschen des Berichts.');
+                toast.error('Fehler beim Löschen des Berichts.');
             }
         }
     };

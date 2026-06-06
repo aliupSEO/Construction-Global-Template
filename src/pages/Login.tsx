@@ -180,7 +180,8 @@ export function Login() {
               disabled={loading}
               className="w-full flex justify-center items-center py-4 px-4 border border-transparent rounded-xl shadow-lg shadow-brand-primary/30 text-sm font-bold text-white bg-brand-primary hover:bg-brand-primary/90 focus:outline-none focus:ring-4 focus:ring-brand-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-8 hover:-translate-y-0.5"
             >
-              {loading ? <Loader2 key="loader" className="w-5 h-5 animate-spin mr-2" /> : <LogIn key="login" className="w-5 h-5 mr-2" />}
+              <Loader2 className={`w-5 h-5 animate-spin mr-2 ${loading ? '' : 'hidden'}`} />
+              <LogIn className={`w-5 h-5 mr-2 ${loading ? 'hidden' : ''}`} />
               <span>{loading ? 'Wird angemeldet...' : 'Login'}</span>
             </button>
           </form>
@@ -246,12 +247,9 @@ export function Login() {
                   disabled={loading}
                   className="flex-1 flex justify-center items-center py-4 px-4 border border-transparent rounded-xl shadow-lg shadow-brand-primary/30 text-sm font-bold text-white bg-brand-primary hover:bg-brand-primary/90 transition-all disabled:opacity-50"
                 >
-                  {loading ? <Loader2 key="loader" className="w-5 h-5 animate-spin" /> : (
-                    <>
-                      <Send key="send" className="w-4 h-4 mr-2" />
-                      <span>Senden</span>
-                    </>
-                  )}
+                  <Loader2 className={`w-5 h-5 animate-spin ${loading ? '' : 'hidden'}`} />
+                  <Send className={`w-4 h-4 mr-2 ${loading ? 'hidden' : ''}`} />
+                  <span className={loading ? 'hidden' : ''}>Senden</span>
                 </button>
               </div>
             </form>

@@ -6,6 +6,7 @@ import { Building2, MapPin, ArrowRight, Plus, X, Save, Archive, ArchiveRestore, 
 import { useNavigate } from 'react-router-dom';
 import { slugify } from '../lib/utils';
 import { useAuth } from '../contexts/AuthContext';
+import toast from 'react-hot-toast';
 
 interface Baustelle {
     id: string;
@@ -66,7 +67,7 @@ export const Sites = () => {
             setIsModalOpen(false);
         } catch (error) {
             console.error('Error creating Baustelle:', error);
-            alert('Fehler beim Erstellen der Baustelle.');
+            toast.error('Fehler beim Erstellen der Baustelle.');
         } finally {
             setSaving(false);
         }
@@ -80,7 +81,7 @@ export const Sites = () => {
             await setDoc(docRef, { status: newStatus }, { merge: true });
         } catch (error) {
             console.error('Error toggling status:', error);
-            alert('Fehler beim Ändern des Status.');
+            toast.error('Fehler beim Ändern des Status.');
         }
     };
 

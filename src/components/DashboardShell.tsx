@@ -66,7 +66,7 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
 
             <div className="lg:pl-[280px] flex flex-col flex-1 min-h-screen print:pl-0 w-full transition-all duration-300">
                 {/* MOBILE HEADER */}
-                <div className="lg:hidden h-20 bg-gradient-to-b from-brand-dark to-black border-b border-white/5 flex items-center justify-between px-6 sticky top-0 z-30 print:hidden shadow-lg shadow-black/20">
+                <div className="lg:hidden h-20 bg-gradient-to-b from-brand-dark to-black border-b border-white/5 flex items-center justify-between px-6 fixed top-0 left-0 right-0 z-30 print:hidden shadow-lg shadow-black/20">
                     <div className="flex items-center">
                         {logoUrl ? (
                             <img src={logoUrl} alt="Logo" className="h-9 w-auto rounded-lg shadow-md border border-white/10 bg-white" />
@@ -81,9 +81,10 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
                         <Menu className="w-6 h-6" />
                     </button>
                 </div>
+                <div className="h-20 lg:hidden" />{/* spacer for fixed mobile header */}
 
                 {/* DESKTOP HEADER */}
-                <header className="hidden lg:flex h-20 bg-gradient-to-b from-brand-dark to-black border-b border-white/5 items-center justify-between px-10 sticky top-0 z-30 print:hidden shadow-lg shadow-black/10">
+                <header className="hidden lg:flex h-20 bg-gradient-to-b from-brand-dark to-black border-b border-white/5 items-center justify-between px-10 fixed top-0 left-[280px] right-0 z-30 print:hidden shadow-lg shadow-black/10">
                     <div className="flex items-center space-x-4">
                         <h2 className="text-white font-heading text-xl tracking-wider font-bold drop-shadow-md">{title}</h2>
                         {title === 'Dashboard' && (
@@ -159,6 +160,7 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
                 </header>
 
                 {/* MAIN CONTENT */}
+                <div className="hidden lg:block h-20" />{/* spacer for fixed desktop header */}
                 <main className="p-4 md:p-8 flex-1">
                     <div className="max-w-7xl mx-auto">
                         {children}

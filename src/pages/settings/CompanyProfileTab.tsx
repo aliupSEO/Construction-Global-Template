@@ -5,6 +5,7 @@ import { fileToBase64 } from '../../lib/utils';
 import { Save, Upload, HardHat } from 'lucide-react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import toast from 'react-hot-toast';
 
 export const CompanyProfileTab = () => {
     const [loading, setLoading] = useState(true);
@@ -50,7 +51,7 @@ export const CompanyProfileTab = () => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
             if (file.size > 800 * 1024) {
-                alert('Das Bild ist zu groß. Bitte wählen Sie ein Bild unter 800 KB.');
+                toast.error('Das Bild ist zu groß. Bitte wählen Sie ein Bild unter 800 KB.');
                 return;
             }
             try {
@@ -68,10 +69,10 @@ export const CompanyProfileTab = () => {
         try {
             const docRef = doc(db, 'apps', APP_ID, 'metadata', 'company_profile');
             await setDoc(docRef, formData, { merge: true });
-            alert('Einstellungen erfolgreich gespeichert.');
+            toast.success('Einstellungen erfolgreich gespeichert.');
         } catch (error) {
             console.error('Error saving settings:', error);
-            alert('Fehler beim Speichern.');
+            toast.error('Fehler beim Speichern.');
         } finally {
             setSaving(false);
         }
@@ -283,11 +284,8 @@ export const CompanyProfileTab = () => {
                         disabled={saving}
                         className="inline-flex items-center px-4 py-3 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-primary hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary disabled:opacity-50"
                     >
-                        {saving ? (
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        ) : (
-                            <Save className="w-4 h-4 mr-2" />
-                        )}
+                        <div className={`animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2 ${saving ? '' : 'hidden'}`} />
+                        <Save className={`w-4 h-4 mr-2 ${saving ? 'hidden' : ''}`} />
                         Speichern
                     </button>
                 </div>

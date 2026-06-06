@@ -11,6 +11,7 @@ import { useTaskSync } from '../hooks/useTaskSync';
 import { getIsoWeekNumber } from '../lib/utils';
 import { translateToGerman } from '../lib/translate';
 import { useAuth } from '../contexts/AuthContext';
+import toast from 'react-hot-toast';
 
 interface AssignedEmployee {
     employeeId: string;
@@ -164,7 +165,7 @@ export const DailyReportForm = () => {
                         });
                         setEmployees(data.employees || []);
                     } else {
-                        alert("Bericht nicht gefunden.");
+                        toast.error("Bericht nicht gefunden.");
                         navigate('/reports');
                     }
                 } catch (error) {
@@ -264,7 +265,7 @@ export const DailyReportForm = () => {
 
         if (hasError) {
             setShowErrors(true);
-            alert(`Bitte tragen Sie für den Mitarbeiter "${missingEmployeeName}" mindestens einen Stunden-Wert (Normal, SW oder Arzt) ein.`);
+            toast.error(`Bitte tragen Sie für den Mitarbeiter "${missingEmployeeName}" mindestens einen Stunden-Wert (Normal, SW oder Arzt) ein.`);
             return;
         }
 
@@ -339,7 +340,7 @@ export const DailyReportForm = () => {
 
         if (hasError) {
             setShowErrors(true);
-            alert(`Bitte tragen Sie für den Mitarbeiter "${missingEmployeeName}" mindestens einen Stunden-Wert (Normal, SW oder Arzt) ein, bevor Sie speichern.`);
+            toast.error(`Bitte tragen Sie für den Mitarbeiter "${missingEmployeeName}" mindestens einen Stunden-Wert (Normal, SW oder Arzt) ein, bevor Sie speichern.`);
             return;
         }
         setShowErrors(false);
@@ -423,7 +424,7 @@ export const DailyReportForm = () => {
             navigate('/reports');
         } catch (error) {
             console.error('Error saving report:', error);
-            alert('Fehler beim Speichern.');
+            toast.error('Fehler beim Speichern.');
         } finally {
             setSaving(false);
         }

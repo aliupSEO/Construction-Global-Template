@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { X, Smartphone, Share, PlusSquare, Download, Monitor, ArrowLeft } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface DownloadAppModalProps {
   isOpen: boolean;
@@ -49,7 +50,7 @@ export const DownloadAppModal: React.FC<DownloadAppModalProps> = ({ isOpen, onCl
         (window as any).deferredPrompt = null;
       }
     } else {
-      alert('Direkte Installation wird von diesem Browser blockiert. Bitte nutze die manuellen Installationshinweise deines Browsers.');
+      toast.error('Direkte Installation wird von diesem Browser blockiert. Bitte nutze die manuellen Installationshinweise deines Browsers.');
     }
   };
 

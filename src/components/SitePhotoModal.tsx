@@ -198,7 +198,8 @@ export const SitePhotoModal = ({ isOpen, onClose, siteId, siteName }: SitePhotoM
                                     disabled={uploadingType !== null}
                                     className="flex items-center justify-center text-xs sm:text-sm font-medium text-brand-primary bg-brand-primary/5 hover:bg-brand-primary/10 px-3 sm:px-4 py-2 rounded-lg transition-colors border border-brand-primary/10 flex-1 sm:flex-none min-w-[140px]"
                                 >
-                                    {uploadingType === 'before' ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Upload className="w-4 h-4 mr-2" />}
+                                    <Loader2 className={`w-4 h-4 mr-2 animate-spin ${uploadingType === 'before' ? '' : 'hidden'}`} />
+                                    <Upload className={`w-4 h-4 mr-2 ${uploadingType === 'before' ? 'hidden' : ''}`} />
                                     <span>{uploadingType === 'before' ? 'Lade...' : 'Hochladen'}</span>
                                 </button>
                                 <button 
@@ -206,7 +207,8 @@ export const SitePhotoModal = ({ isOpen, onClose, siteId, siteName }: SitePhotoM
                                     disabled={uploadingType !== null}
                                     className="flex items-center justify-center text-xs sm:text-sm font-medium text-white bg-brand-primary hover:bg-brand-primary/90 px-3 sm:px-4 py-2 rounded-lg transition-colors shadow-sm flex-1 sm:flex-none min-w-[140px]"
                                 >
-                                    {uploadingType === 'before' ? <Loader2 className="w-4 h-4 mr-2 text-white animate-spin" /> : <Camera className="w-4 h-4 mr-2 text-white" />}
+                                    <Loader2 className={`w-4 h-4 mr-2 text-white animate-spin ${uploadingType === 'before' ? '' : 'hidden'}`} />
+                                    <Camera className={`w-4 h-4 mr-2 text-white ${uploadingType === 'before' ? 'hidden' : ''}`} />
                                     <span>{uploadingType === 'before' ? 'Lade...' : 'Foto machen'}</span>
                                 </button>
                             </div>
@@ -253,7 +255,8 @@ export const SitePhotoModal = ({ isOpen, onClose, siteId, siteName }: SitePhotoM
                                     disabled={uploadingType !== null}
                                     className="flex items-center justify-center text-xs sm:text-sm font-medium text-emerald-600 bg-emerald-50 hover:bg-emerald-100 px-3 sm:px-4 py-2 rounded-lg transition-colors border border-emerald-200 flex-1 sm:flex-none min-w-[140px]"
                                 >
-                                    {uploadingType === 'after' ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Upload className="w-4 h-4 mr-2" />}
+                                    <Loader2 className={`w-4 h-4 mr-2 animate-spin ${uploadingType === 'after' ? '' : 'hidden'}`} />
+                                    <Upload className={`w-4 h-4 mr-2 ${uploadingType === 'after' ? 'hidden' : ''}`} />
                                     <span>{uploadingType === 'after' ? 'Lade...' : 'Hochladen'}</span>
                                 </button>
                                 <button 
@@ -261,7 +264,8 @@ export const SitePhotoModal = ({ isOpen, onClose, siteId, siteName }: SitePhotoM
                                     disabled={uploadingType !== null}
                                     className="flex items-center justify-center text-xs sm:text-sm font-medium bg-emerald-500 hover:bg-emerald-600 px-3 sm:px-4 py-2 rounded-lg transition-colors shadow-sm text-white flex-1 sm:flex-none min-w-[140px]"
                                 >
-                                    {uploadingType === 'after' ? <Loader2 className="w-4 h-4 mr-2 text-white animate-spin" /> : <Camera className="w-4 h-4 mr-2 text-white" />}
+                                    <Loader2 className={`w-4 h-4 mr-2 text-white animate-spin ${uploadingType === 'after' ? '' : 'hidden'}`} />
+                                    <Camera className={`w-4 h-4 mr-2 text-white ${uploadingType === 'after' ? 'hidden' : ''}`} />
                                     <span>{uploadingType === 'after' ? 'Lade...' : 'Foto machen'}</span>
                                 </button>
                             </div>

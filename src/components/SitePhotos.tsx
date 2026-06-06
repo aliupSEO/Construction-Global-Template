@@ -6,6 +6,7 @@ import imageCompression from 'browser-image-compression';
 import { Trash2, Image as ImageIcon, UploadCloud, Camera, X, Download, MapPin, Calendar, Clock, Map, Plus, Archive, ArchiveRestore, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDeleteModal } from './ConfirmDeleteModal';
+import toast from 'react-hot-toast';
 
 interface SitePhoto {
     id: string;
@@ -215,7 +216,7 @@ export const SitePhotos: React.FC<SitePhotosProps> = ({ siteId }) => {
                 }, 
                 (error) => {
                     console.error("Upload error:", error);
-                    alert("Fehler beim Hochladen.");
+                    toast.error("Fehler beim Hochladen.");
                     setUploading(false);
                 }, 
                 async () => {
@@ -241,7 +242,7 @@ export const SitePhotos: React.FC<SitePhotosProps> = ({ siteId }) => {
             );
         } catch (error) {
             console.error("Compression or upload failed:", error);
-            alert(`Fehler bei der Bildverarbeitung: ${error instanceof Error ? error.message : String(error)}`);
+            toast.error(`Fehler bei der Bildverarbeitung: ${error instanceof Error ? error.message : String(error)}`);
             setUploading(false);
             setUploadPhase(null);
         }

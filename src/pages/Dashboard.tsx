@@ -7,6 +7,7 @@ import { collection, query, where, onSnapshot, getDocs, addDoc, serverTimestamp 
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import imageCompression from 'browser-image-compression';
 import { useAuth } from '../contexts/AuthContext';
+import toast from 'react-hot-toast';
 
 interface Baustelle {
     id: string;
@@ -54,7 +55,7 @@ export const Dashboard = () => {
         const files = Array.from(fileList);
 
         if (!selectedSiteId) {
-            alert('Bitte wähle zuerst eine Baustelle aus.');
+            toast.error('Bitte wähle zuerst eine Baustelle aus.');
             return;
         }
 
@@ -68,7 +69,7 @@ export const Dashboard = () => {
     const handleConfirmUpload = async () => {
         if (pendingFiles.length === 0) return;
         if (!selectedSiteId) {
-            alert('Bitte wähle zuerst eine Baustelle aus.');
+            toast.error('Bitte wähle zuerst eine Baustelle aus.');
             return;
         }
 
@@ -180,7 +181,7 @@ export const Dashboard = () => {
 
         } catch (error) {
             console.error("Verarbeitung abgebrochen", error);
-            alert("Fehler bei der Bildverarbeitung");
+            toast.error("Fehler bei der Bildverarbeitung");
             setUploading(false);
             setUploadPhase(null);
         }
@@ -188,7 +189,7 @@ export const Dashboard = () => {
 
     const triggerCamera = () => {
         if (!selectedSiteId) {
-            alert('Bitte zuerst eine Baustelle wählen.');
+            toast.error('Bitte zuerst eine Baustelle wählen.');
             return;
         }
         if (cameraInputRef.current) {
@@ -198,7 +199,7 @@ export const Dashboard = () => {
 
     const triggerUpload = () => {
         if (!selectedSiteId) {
-            alert('Bitte zuerst eine Baustelle wählen.');
+            toast.error('Bitte zuerst eine Baustelle wählen.');
             return;
         }
         if (fileInputRef.current) {

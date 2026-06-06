@@ -5,6 +5,7 @@ import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import { Plus, Edit2, Trash2, FileText } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import toast from 'react-hot-toast';
 
 interface DailyReport {
     id: string;
@@ -48,7 +49,7 @@ export const DailyReports = () => {
                 await deleteDoc(doc(db, 'apps', APP_ID, 'daily_reports', id));
             } catch (error) {
                 console.error('Error deleting report:', error);
-                alert('Fehler beim Löschen des Berichts.');
+                toast.error('Fehler beim Löschen des Berichts.');
             }
         }
     };

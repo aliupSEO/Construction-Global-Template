@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 import { Trash2, Save } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface SignaturePadProps {
     onSave: (base64: string) => void;
@@ -24,7 +25,7 @@ export const SignaturePad: React.FC<SignaturePadProps> = ({ onSave, initialData,
         const dataUrl = padRef.current?.getTrimmedCanvas().toDataURL('image/png');
         if (dataUrl) {
             onSave(dataUrl);
-            alert('Unterschrift gespeichert.');
+            toast.success('Unterschrift gespeichert.');
         }
     };
 

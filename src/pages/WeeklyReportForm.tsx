@@ -8,6 +8,7 @@ import { SignaturePad } from '../components/ui/SignaturePad';
 import { CustomSelect } from '../components/CustomSelect';
 import { slugify } from '../lib/utils';
 import { useAuth } from '../contexts/AuthContext';
+import toast from 'react-hot-toast';
 
 // Helper to get current ISO week number
 function getWeekNumber(d: Date) {
@@ -252,7 +253,7 @@ export const WeeklyReportForm = () => {
                             setWeeklyEntries([oldEntry]);
                         }
                     } else {
-                        alert("Bericht nicht gefunden.");
+                        toast.error("Bericht nicht gefunden.");
                         navigate('/reports');
                     }
                 } catch (error) {
@@ -373,14 +374,14 @@ export const WeeklyReportForm = () => {
         e.preventDefault();
 
         if (weeklyEntries.length === 0) {
-            alert("Bitte fügen Sie mindestens eine Zeile hinzu.");
+            toast.error("Bitte fügen Sie mindestens eine Zeile hinzu.");
             return;
         }
 
         // Validate that all rows have employee and site selected
         const isValid = weeklyEntries.every(entry => entry.employeeId && entry.constructionSiteName);
         if (!isValid) {
-            alert("Bitte stellen Sie sicher, dass in jeder Zeile ein Mitarbeiter und eine Baustelle ausgewählt sind.");
+            toast.error("Bitte stellen Sie sicher, dass in jeder Zeile ein Mitarbeiter und eine Baustelle ausgewählt sind.");
             return;
         }
 
@@ -416,7 +417,7 @@ export const WeeklyReportForm = () => {
             navigate('/reports');
         } catch (error) {
             console.error('Error saving report:', error);
-            alert('Fehler beim Speichern des Wochenberichts.');
+            toast.error('Fehler beim Speichern des Wochenberichts.');
         } finally {
             setSaving(false);
         }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Type, LayoutList, Zap } from 'lucide-react';
 import { useSettings } from '../../contexts/SettingsContext';
+import toast from 'react-hot-toast';
 
 export const GeneralSettingsTab = () => {
     const { settings, updateSettings } = useSettings();

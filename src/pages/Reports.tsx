@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { CustomSelect } from '../components/CustomSelect';
 import { CustomDatePicker } from '../components/CustomDatePicker';
+import toast from 'react-hot-toast';
 
 const getDayKey = (dateString: string) => {
     if (!dateString) return null;
@@ -360,7 +361,7 @@ export const Reports = () => {
             const weeksToGenerate = Object.keys(reportsByWeek).filter(key => !existingKeys.has(key));
             
             if (weeksToGenerate.length === 0) {
-                alert('Alle vergangenen Wochenberichte sind bereits vorhanden.');
+                toast.error('Alle vergangenen Wochenberichte sind bereits vorhanden.');
                 setIsGenerating(false);
                 return;
             }
@@ -458,13 +459,13 @@ export const Reports = () => {
             if (generatedCount > 0) {
                 batch.set(counterRef, { weeklyReportCount: currentWeeklyCount }, { merge: true });
                 await batch.commit();
-                alert(`${generatedCount} Wochenbericht(e) erfolgreich generiert!`);
+                toast(`${generatedCount} Wochenbericht(e) erfolgreich generiert!`);
             } else {
-                alert('Keine generierbaren Daten gefunden (z.B. keine Stunden eingetragen).');
+                toast('Keine generierbaren Daten gefunden (z.B. keine Stunden eingetragen).');
             }
         } catch (error) {
             console.error(error);
-            alert("Fehler bei der Generierung.");
+            toast.error("Fehler bei der Generierung.");
         } finally {
             setIsGenerating(false);
         }

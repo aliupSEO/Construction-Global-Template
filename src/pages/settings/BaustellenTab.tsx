@@ -4,6 +4,7 @@ import { collection, doc, setDoc, deleteDoc, onSnapshot } from 'firebase/firesto
 import { slugify } from '../../lib/utils';
 import { Save, Trash2, Edit2, Archive, ArchiveRestore } from 'lucide-react';
 import { ConfirmDeleteModal } from '../../components/ConfirmDeleteModal';
+import toast from 'react-hot-toast';
 
 interface Baustelle {
     id: string;
@@ -62,7 +63,7 @@ export const BaustellenTab = () => {
             setEditingId(null);
         } catch (error) {
             console.error('Error saving Baustelle:', error);
-            alert('Fehler beim Speichern.');
+            toast.error('Fehler beim Speichern.');
         } finally {
             setSaving(false);
         }
@@ -81,7 +82,7 @@ export const BaustellenTab = () => {
             setItemToDelete(null);
         } catch (error) {
             console.error('Error deleting Baustelle:', error);
-            alert('Fehler beim Löschen.');
+            toast.error('Fehler beim Löschen.');
         }
     };
 
@@ -104,7 +105,7 @@ export const BaustellenTab = () => {
             await setDoc(docRef, { status: newStatus }, { merge: true });
         } catch (error) {
             console.error('Error toggling status:', error);
-            alert('Fehler beim Ändern des Status.');
+            toast.error('Fehler beim Ändern des Status.');
         }
     };
 

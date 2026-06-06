@@ -361,7 +361,8 @@ export const Account: React.FC = () => {
                                             disabled={savingProfile}
                                             className="w-full flex justify-center items-center py-2.5 px-4 rounded-xl text-sm font-bold text-white bg-brand-primary hover:bg-brand-primary/90 focus:ring-4 focus:ring-brand-primary/30 transition-all disabled:opacity-50 uppercase tracking-wider"
                                         >
-                                            {savingProfile ? <Loader2 key="loader" className="w-4 h-4 mr-2 animate-spin" /> : <Save key="save" className="w-4 h-4 mr-2" />}
+                                             <Loader2 className={`w-4 h-4 mr-2 animate-spin ${savingProfile ? '' : 'hidden'}`} />
+                                             <Save className={`w-4 h-4 mr-2 ${savingProfile ? 'hidden' : ''}`} />
                                             <span>ÄNDERUNGEN SPEICHERN</span>
                                         </button>
                                     </div>
@@ -500,7 +501,8 @@ export const Account: React.FC = () => {
                                             disabled={savingPassword}
                                             className="flex-1 flex justify-center items-center py-2.5 px-4 rounded-xl text-sm font-bold text-white bg-brand-primary hover:bg-brand-primary/90 focus:ring-4 focus:ring-brand-primary/30 transition-all disabled:opacity-50 uppercase tracking-wider"
                                         >
-                                            {savingPassword ? <Loader2 key="loader" className="w-4 h-4 mr-2 animate-spin" /> : <Save key="save" className="w-4 h-4 mr-2" />}
+                                             <Loader2 className={`w-4 h-4 mr-2 animate-spin ${savingPassword ? '' : 'hidden'}`} />
+                                             <Save className={`w-4 h-4 mr-2 ${savingPassword ? 'hidden' : ''}`} />
                                             <span>PASSWORT ÄNDERN</span>
                                         </button>
                                     </div>
