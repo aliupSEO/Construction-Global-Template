@@ -5,6 +5,7 @@ import { auth } from '../lib/firebase';
 import { Lock, Mail, Loader2, AlertCircle, HardHat, Eye, EyeOff, LogIn, ArrowLeft, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { logger } from '../lib/logger';
 
 export function Login() {
   const [email, setEmail] = useState('');
@@ -40,12 +41,13 @@ export function Login() {
         }
       }
 
-      const actualEmail = email.includes('@') ? email : `${email}@satler-digital.com`;
+      const defaultDomain = import.meta.env.VITE_DEFAULT_EMAIL_DOMAIN || 'satler-digital.com';
+      const actualEmail = email.includes('@') ? email : `${email}@${defaultDomain}`;
       await signInWithEmailAndPassword(auth, actualEmail, password);
       toast.success('Anmeldung erfolgreich');
       navigate('/');
     } catch (err: any) {
-      console.error('Login error:', err);
+      logger.error('Login error:', err);
       setError(err.message || 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie E-Mail und Passwort.');
       toast.error('Anmeldung fehlgeschlagen');
     } finally {
@@ -62,12 +64,13 @@ export function Login() {
       if (!email) {
         throw new Error('Bitte geben Sie Ihre E-Mail-Adresse ein.');
       }
-      const actualEmail = email.includes('@') ? email : `${email}@satler-digital.com`;
+      const defaultDomain = import.meta.env.VITE_DEFAULT_EMAIL_DOMAIN || 'satler-digital.com';
+      const actualEmail = email.includes('@') ? email : `${email}@${defaultDomain}`;
       await sendPasswordResetEmail(auth, actualEmail);
       setResetSent(true);
       toast.success('Link zum Zurücksetzen gesendet!');
     } catch (err: any) {
-      console.error('Reset error:', err);
+      logger.error('Reset error:', err);
       setError(err.message || 'Fehler beim Senden der E-Mail.');
       toast.error('Fehler beim Senden');
     } finally {

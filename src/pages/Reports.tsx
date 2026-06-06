@@ -9,6 +9,7 @@ import { CustomSelect } from '../components/CustomSelect';
 import { CustomDatePicker } from '../components/CustomDatePicker';
 import toast from 'react-hot-toast';
 import { softDelete, getDaysUntilExpiry } from '../lib/softDelete';
+import { logger } from '../lib/logger';
 
 const getDayKey = (dateString: string) => {
     if (!dateString) return null;
@@ -85,6 +86,7 @@ export const Reports = () => {
     const [weeklyReports, setWeeklyReports] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [showGenerateConfirm, setShowGenerateConfirm] = useState(false);
 
     const [selectedDaily, setSelectedDaily] = useState<string[]>([]);
     const [selectedWeekly, setSelectedWeekly] = useState<string[]>([]);
@@ -301,8 +303,7 @@ export const Reports = () => {
     };
 
     const generatePastWeeklyReports = async () => {
-        if (!window.confirm('Fehlende Wochenberichte für vergangene Wochen automatisch generieren?')) return;
-        
+        setShowGenerateConfirm(false);
         setIsGenerating(true);
         try {
             const currentDate = new Date();
@@ -463,7 +464,7 @@ export const Reports = () => {
                 toast('Keine generierbaren Daten gefunden (z.B. keine Stunden eingetragen).');
             }
         } catch (error) {
-            console.error(error);
+            logger.error('Report generation error:', error);
             toast.error("Fehler bei der Generierung.");
         } finally {
             setIsGenerating(false);
@@ -478,7 +479,7 @@ export const Reports = () => {
             });
             toast.success('Bericht in den Papierkorb verschoben.');
         } catch (error) {
-            console.error('Fehler beim Löschen:', error);
+            logger.error('Fehler beim Löschen:', error);
             toast.error('Fehler beim Löschen.');
         }
     };
@@ -802,17 +803,29 @@ export const Reports = () => {
                                 <p className="text-xs text-gray-500">Automatisch Wochenberichte für vergangene Zeiten erstellen.</p>
                             </div>
                         </div>
-                        <button
-                            onClick={generatePastWeeklyReports}
-                            disabled={isGenerating}
-                            className={`w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-brand-primary/20 text-sm font-medium rounded-xl text-brand-primary bg-white hover:bg-brand-primary hover:text-white shadow-sm transition-all duration-200 group ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        >
-                            {isGenerating ? (
-                                <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-primary group-hover:border-white mr-2"></div> Generiere...</>
-                            ) : (
-                                'Berichte generieren'
-                            )}
-                        </button>
+                        {showGenerateConfirm ? (
+                            <div className="flex items-center gap-2 w-full sm:w-auto">
+                                <span className="text-xs text-amber-700 bg-amber-50 border border-amber-200 px-3 py-2 rounded-lg">Wirklich generieren?</span>
+                                <button onClick={generatePastWeeklyReports} disabled={isGenerating} className="px-4 py-2 bg-brand-primary text-white text-sm font-semibold rounded-xl shadow-sm hover:bg-brand-primary/90 transition-colors">
+                                    {isGenerating ? 'Generiere...' : 'Ja, generieren'}
+                                </button>
+                                <button onClick={() => setShowGenerateConfirm(false)} className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-semibold rounded-xl hover:bg-gray-200 transition-colors">
+                                    Abbrechen
+                                </button>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={() => setShowGenerateConfirm(true)}
+                                disabled={isGenerating}
+                                className={`w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-brand-primary/20 text-sm font-medium rounded-xl text-brand-primary bg-white hover:bg-brand-primary hover:text-white shadow-sm transition-all duration-200 group ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            >
+                                {isGenerating ? (
+                                    <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-primary group-hover:border-white mr-2"></div> Generiere...</>
+                                ) : (
+                                    'Berichte generieren'
+                                )}
+                            </button>
+                        )}
                     </div>
 
                     {filteredWeeklyReports.length === 0 ? (

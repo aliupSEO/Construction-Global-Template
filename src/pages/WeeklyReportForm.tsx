@@ -9,6 +9,7 @@ import { CustomSelect } from '../components/CustomSelect';
 import { slugify } from '../lib/utils';
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
+import { logger } from '../lib/logger';
 
 // Helper to get current ISO week number
 function getWeekNumber(d: Date) {
@@ -89,10 +90,37 @@ export const WeeklyReportForm = () => {
             });
             
             if (hasExistingHours) {
-                const confirmMsg = "Für diesen Wochentag sind bereits Arbeitsstunden oder Abwesenheiten eingetragen. Sind Sie sicher, dass Sie diesen Tag als Feiertag markieren möchten? Alle bestehenden Einträge für diesen Wochentag werden mit 'F' überschrieben.";
-                if (!window.confirm(confirmMsg)) {
-                    return;
-                }
+                toast(
+                    (t) => (
+                        <div className="text-sm">
+                            <p className="font-semibold mb-2">Tag als Feiertag markieren?</p>
+                            <p className="text-gray-600 mb-3 text-xs">Alle bestehenden Einträge für diesen Tag werden mit "F" überschrieben.</p>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => {
+                                        toast.dismiss(t.id);
+                                        setHolidayDays(prev => ({ ...prev, [day]: nextVal }));
+                                        setWeeklyEntries(entries => entries.map(entry => ({
+                                            ...entry,
+                                            days: { ...entry.days, [day]: 'F' }
+                                        })));
+                                    }}
+                                    className="px-3 py-1.5 bg-brand-primary text-white text-xs rounded-lg font-semibold"
+                                >
+                                    Ja, markieren
+                                </button>
+                                <button
+                                    onClick={() => toast.dismiss(t.id)}
+                                    className="px-3 py-1.5 bg-gray-100 text-gray-700 text-xs rounded-lg font-semibold"
+                                >
+                                    Abbrechen
+                                </button>
+                            </div>
+                        </div>
+                    ),
+                    { duration: 10000 }
+                );
+                return;
             }
         }
 
@@ -170,7 +198,7 @@ export const WeeklyReportForm = () => {
                     .filter(doc => !doc.data().status || doc.data().status === 'active')
                     .map(doc => ({ id: doc.id, ...doc.data() })));
             } catch (error) {
-                console.error("Error fetching dropdowns:", error);
+                logger.error("Error fetching dropdowns:", error);
             }
         };
 
@@ -257,7 +285,7 @@ export const WeeklyReportForm = () => {
                         navigate('/reports');
                     }
                 } catch (error) {
-                    console.error("Error fetching report:", error);
+                    logger.error("Error fetching report:", error);
                 }
             } else {
                 try {
@@ -267,7 +295,7 @@ export const WeeklyReportForm = () => {
                     setNextReportNumber(nextNumber);
                     setFormData(prev => ({ ...prev, reportNumber: nextNumber }));
                 } catch (error) {
-                    console.error("Error fetching counter:", error);
+                    logger.error("Error fetching counter:", error);
                 }
             }
             setLoading(false);
@@ -416,7 +444,7 @@ export const WeeklyReportForm = () => {
 
             navigate('/reports');
         } catch (error) {
-            console.error('Error saving report:', error);
+            logger.error('Error saving report:', error);
             toast.error('Fehler beim Speichern des Wochenberichts.');
         } finally {
             setSaving(false);

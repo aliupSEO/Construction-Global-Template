@@ -2,7 +2,7 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper functions
+    // ─── Helper Functions ───────────────────────────────────
     function isAuthenticated() {
       return request.auth != null;
     }
@@ -22,99 +22,111 @@ service cloud.firestore {
       return request.auth.uid == resource.data.employeeId;
     }
 
+    // Soft-delete fields that only admins may write
+    // (defined inline in each rule below)
+
+    // ─── Default Deny All ───────────────────────────────────
     match /apps/{appId}/{document=**} {
-      allow read, write: if false; // Default deny all
+      allow read, write: if false;
     }
 
-    // ─── EMPLOYEES ───────────────────────────────────────
+    // ─── EMPLOYEES ──────────────────────────────────────────
     match /apps/{appId}/employees/{docId} {
       allow read: if isVorarbeiter();
-      allow create, update, delete: if isAdmin();
+      allow create, delete: if isAdmin();
+      // Admin can update anything; vorarbeiter cannot touch soft-delete fields
+      allow update: if isAdmin()
+        || (isVorarbeiter() && !request.resource.data.keys().hasAny(['isDeleted', 'expireAt', 'deletedBy', 'deletedAt', 'deletedByName']));
     }
 
-    // ─── MANAGERS ────────────────────────────────────────
+    // ─── MANAGERS ───────────────────────────────────────────
     match /apps/{appId}/managers/{docId} {
       allow read: if isVorarbeiter();
       allow create, update, delete: if isAdmin();
     }
 
-    // ─── DAILY REPORTS ───────────────────────────────────
+    // ─── DAILY REPORTS ──────────────────────────────────────
     match /apps/{appId}/daily_reports/{docId} {
       allow read: if isMitarbeiter();
-      allow create, update: if isVorarbeiter();
+      allow create: if isVorarbeiter();
       allow delete: if isAdmin();
+      // Admins can update anything; vorarbeiter can update but cannot write trash fields
+      allow update: if isAdmin()
+        || (isVorarbeiter() && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['isDeleted', 'expireAt', 'deletedBy', 'deletedAt', 'deletedByName']));
     }
 
-    // ─── WEEKLY REPORTS ──────────────────────────────────
+    // ─── WEEKLY REPORTS ─────────────────────────────────────
     match /apps/{appId}/weekly_reports/{docId} {
       allow read: if isMitarbeiter();
-      allow create, update: if isVorarbeiter();
+      allow create: if isVorarbeiter();
       allow delete: if isAdmin();
+      allow update: if isAdmin()
+        || (isVorarbeiter() && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['isDeleted', 'expireAt', 'deletedBy', 'deletedAt', 'deletedByName']));
     }
 
-    // ─── BAUSTELLEN (SITES) ──────────────────────────────
+    // ─── BAUSTELLEN (SITES) ─────────────────────────────────
     match /apps/{appId}/baustellen/{docId} {
       allow read: if isMitarbeiter();
-      allow create, update: if isVorarbeiter();
+      allow create: if isVorarbeiter();
       allow delete: if isAdmin();
+      allow update: if isAdmin()
+        || (isVorarbeiter() && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['isDeleted', 'expireAt', 'deletedBy', 'deletedAt', 'deletedByName']));
     }
 
-    // ─── CLIENTS ─────────────────────────────────────────
+    // ─── CLIENTS ────────────────────────────────────────────
     match /apps/{appId}/clients/{docId} {
       allow read: if isVorarbeiter();
       allow create, update, delete: if isAdmin();
     }
 
-    // ─── LEAVE REQUESTS ──────────────────────────────────
+    // ─── LEAVE REQUESTS ─────────────────────────────────────
     match /apps/{appId}/leave_requests/{docId} {
-      // Employees can read and create their own requests
       allow read: if isMitarbeiter() && (isVorarbeiter() || isOwnLeaveRequest());
       allow create: if isMitarbeiter() && request.auth.uid == request.resource.data.employeeId;
-      // Only admins/vorarbeiter can update status (approve/reject)
       allow update: if isVorarbeiter();
       allow delete: if isAdmin();
     }
 
-    // ─── METADATA / SETTINGS ─────────────────────────────
+    // ─── METADATA / SETTINGS ────────────────────────────────
     match /apps/{appId}/metadata/{docId} {
       allow read: if isMitarbeiter();
       allow write: if isAdmin();
     }
 
-    // ─── SYSTEM LOGS ─────────────────────────────────────
+    // ─── SYSTEM LOGS ────────────────────────────────────────
     match /apps/{appId}/system_logs/{docId} {
       allow read: if isAdmin();
-      allow create: if isMitarbeiter(); // Anyone can write logs
-      allow update, delete: if false;  // Immutable
+      allow create: if isMitarbeiter();
+      allow update, delete: if false; // Immutable
     }
 
-    // ─── ACTIONS / TASKS ─────────────────────────────────
+    // ─── ACTIONS / TASKS ────────────────────────────────────
     match /apps/{appId}/actions/{docId} {
       allow read, write: if isVorarbeiter();
     }
 
-    // ─── SITE ACTIVITIES ─────────────────────────────────
+    // ─── SITE ACTIVITIES ────────────────────────────────────
     match /apps/{appId}/site_activities/{docId} {
       allow read: if isMitarbeiter();
       allow create, update: if isVorarbeiter();
       allow delete: if isAdmin();
     }
 
-    // ─── SITE PHOTOS ─────────────────────────────────────
+    // ─── SITE PHOTOS ────────────────────────────────────────
     match /apps/{appId}/site_photos/{docId} {
       allow read: if isMitarbeiter();
       allow create: if isVorarbeiter();
       allow delete: if isAdmin();
     }
 
-    // ─── BAUSTELLEN FOTOS ────────────────────────────────
+    // ─── BAUSTELLEN FOTOS ───────────────────────────────────
     match /apps/{appId}/baustellen_fotos/{docId} {
       allow read: if isMitarbeiter();
       allow create: if isVorarbeiter();
       allow delete: if isAdmin();
     }
 
-    // ─── GLOBAL DENY ─────────────────────────────────────
+    // ─── GLOBAL DENY ────────────────────────────────────────
     match /{document=**} {
       allow read, write: if false;
     }
