@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { LayoutDashboard, FileText, Settings, Circle, Users, CalendarDays, X, MapPin, Download, HardHat } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { LayoutDashboard, FileText, Settings, Users, CalendarDays, X, MapPin, Download, HardHat, User, LogOut } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTaskSync } from '../hooks/useTaskSync';
 import { useAuth } from '../contexts/AuthContext';
 import { DownloadAppModal } from './DownloadAppModal';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db, APP_ID } from '../lib/firebase';
+import { auth } from '../lib/firebase';
+import { signOut } from 'firebase/auth';
 
 interface SidebarProps {
     isOpen?: boolean;
@@ -37,10 +39,12 @@ const NavLink = ({ to, icon: Icon, label, active, badge, onClick }: {
 
 export const Sidebar = ({ isOpen, onClose, logoUrl }: SidebarProps) => {
     const location = useLocation();
+    const navigate = useNavigate();
     const { isOnline } = useTaskSync();
-    const { userRole } = useAuth();
+    const { userRole, employeeName, currentUser } = useAuth();
     const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
     const [pendingLeaveCount, setPendingLeaveCount] = useState(0);
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
     // Swipe to close
     const touchStartX = useRef<number | null>(null);
@@ -139,18 +143,53 @@ export const Sidebar = ({ isOpen, onClose, logoUrl }: SidebarProps) => {
                 </nav>
 
                 {/* Bottom area */}
-                <div className="p-4 mt-auto bg-gradient-to-t from-[#050505] to-transparent">
+                <div className="p-4 mt-auto bg-gradient-to-t from-[#050505] to-transparent space-y-3">
+
+                    {/* User profile card */}
+                    <div className="flex items-center gap-3 px-3 py-3 rounded-2xl bg-white/5 border border-white/10">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-primary to-red-400 flex items-center justify-center text-xs font-bold text-white shrink-0 overflow-hidden">
+                            {currentUser?.photoURL
+                                ? <img src={currentUser.photoURL} alt="avatar" className="w-full h-full object-cover" />
+                                : (employeeName?.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2) || currentUser?.email?.slice(0,2).toUpperCase() || 'SB')
+                            }
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-xs font-semibold text-white truncate">{employeeName || currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Benutzer'}</p>
+                            <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">{userRole || 'Mitarbeiter'}</p>
+                        </div>
+                    </div>
+
+                    {/* Account + Logout */}
+                    <Link
+                        to="/konto"
+                        onClick={onClose}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                    >
+                        <User className="w-4 h-4 shrink-0" />
+                        Mein Konto
+                    </Link>
+
+                    <button
+                        onClick={() => setShowLogoutConfirm(true)}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:text-white hover:bg-red-500/20 transition-colors"
+                    >
+                        <LogOut className="w-4 h-4 shrink-0" />
+                        Abmelden
+                    </button>
+
+                    <div className="h-px bg-white/5 my-1" />
+
                     <button
                         onClick={() => setIsDownloadModalOpen(true)}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-3 mb-4 rounded-xl border border-brand-primary/40 text-sm font-bold text-brand-primary bg-brand-primary/10 hover:bg-brand-primary hover:text-white transition-all group"
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-brand-primary/40 text-sm font-bold text-brand-primary bg-brand-primary/10 hover:bg-brand-primary hover:text-white transition-all group"
                     >
                         <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
                         App Download
                     </button>
 
-                    <div className="flex items-center justify-between px-1">
+                    <div className="flex items-center justify-between px-1 pt-1">
                         <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
-                            <span className={`relative flex w-2 h-2`}>
+                            <span className="relative flex w-2 h-2">
                                 {isOnline && <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-40 animate-ping" />}
                                 <span className={`relative inline-flex rounded-full w-2 h-2 ${isOnline ? 'bg-emerald-500' : 'bg-gray-500'}`} />
                             </span>
@@ -164,6 +203,39 @@ export const Sidebar = ({ isOpen, onClose, logoUrl }: SidebarProps) => {
             </aside>
 
             <DownloadAppModal isOpen={isDownloadModalOpen} onClose={() => setIsDownloadModalOpen(false)} />
+
+            {/* Logout confirmation modal */}
+            {showLogoutConfirm && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowLogoutConfirm(false)} />
+                    <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 z-10">
+                        <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mb-4 mx-auto">
+                            <LogOut className="w-6 h-6 text-red-500" />
+                        </div>
+                        <h3 className="text-xl font-bold text-center text-gray-900 mb-2">Abmelden?</h3>
+                        <p className="text-sm text-center text-gray-500 mb-6">Möchten Sie sich wirklich abmelden?</p>
+                        <div className="flex flex-col gap-2">
+                            <button
+                                onClick={async () => {
+                                    setShowLogoutConfirm(false);
+                                    onClose?.();
+                                    await signOut(auth);
+                                    navigate('/login');
+                                }}
+                                className="w-full flex justify-center items-center px-4 py-3 rounded-xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 transition-colors"
+                            >
+                                Ja, Abmelden
+                            </button>
+                            <button
+                                onClick={() => setShowLogoutConfirm(false)}
+                                className="w-full flex justify-center items-center px-4 py-3 rounded-xl text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+                            >
+                                Abbrechen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };
