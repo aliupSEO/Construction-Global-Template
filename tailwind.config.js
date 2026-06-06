@@ -15,6 +15,13 @@ export default {
         sans: ['Barlow', 'sans-serif'], // Body Font
         heading: ['Arial', 'sans-serif'], // Headings
       },
+      transitionTimingFunction: {
+        'spring': 'cubic-bezier(0.16, 1, 0.3, 1)',
+      },
+      backgroundColor: {
+        'white-8': 'rgba(255,255,255,0.08)',
+        'white-12': 'rgba(255,255,255,0.12)',
+      },
     },
   },
   plugins: [],

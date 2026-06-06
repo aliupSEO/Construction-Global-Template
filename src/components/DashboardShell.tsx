@@ -56,32 +56,34 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
         <div className="min-h-screen bg-brand-surface print:bg-white flex flex-col lg:flex-row">
             <Sidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} logoUrl={logoUrl} />
 
-            {/* Mobile Overlay */}
-            {isMobileMenuOpen && (
-                <div
-                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden transition-opacity"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                />
-            )}
+            {/* Mobile Overlay — always rendered, fades with opacity */}
+            <div
+                className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+            />
 
             <div className="lg:pl-[280px] flex flex-col flex-1 min-h-screen print:pl-0 w-full transition-all duration-300">
                 {/* MOBILE HEADER */}
-                <div className="lg:hidden h-20 bg-gradient-to-b from-brand-dark to-black border-b border-white/5 flex items-center justify-between px-6 fixed top-0 left-0 right-0 z-30 print:hidden shadow-lg shadow-black/20">
-                    <div className="flex items-center">
+                <div className="lg:hidden h-16 bg-gradient-to-b from-brand-dark to-black border-b border-white/5 flex items-center justify-between px-4 fixed top-0 left-0 right-0 z-30 print:hidden shadow-lg shadow-black/20">
+                    <div className="flex items-center gap-3">
                         {logoUrl ? (
-                            <img src={logoUrl} alt="Logo" className="h-9 w-auto rounded-lg shadow-md border border-white/10 bg-white" />
+                            <img src={logoUrl} alt="Logo" className="h-8 w-auto rounded-lg shadow-md border border-white/10 bg-white" />
                         ) : (
-                            <div className="h-9 w-9 rounded-lg bg-gradient-to-tr from-brand-primary/20 to-brand-primary/5 border border-brand-primary/20 flex items-center justify-center shadow-md">
-                                <HardHat className="w-5 h-5 text-brand-primary" />
+                            <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-brand-primary/20 to-brand-primary/5 border border-brand-primary/20 flex items-center justify-center shadow-md shrink-0">
+                                <HardHat className="w-4 h-4 text-brand-primary" />
                             </div>
                         )}
-                        <span className="text-xs uppercase tracking-widest text-brand-primary font-bold ml-3 mt-0.5">Construction</span>
+                        <span className="text-sm font-bold text-white tracking-wide truncate max-w-[160px]">{title}</span>
                     </div>
-                    <button onClick={() => setIsMobileMenuOpen(true)} className="text-gray-400 hover:text-white p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-transparent hover:border-white/10 shadow-sm">
-                        <Menu className="w-6 h-6" />
+                    <button
+                        onClick={() => setIsMobileMenuOpen(true)}
+                        className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl transition-colors border border-transparent hover:border-white/10"
+                        aria-label="Open menu"
+                    >
+                        <Menu className="w-5 h-5" />
                     </button>
                 </div>
-                <div className="h-20 lg:hidden" />{/* spacer for fixed mobile header */}
+                <div className="h-16 lg:hidden" />{/* spacer for fixed mobile header */}
 
                 {/* DESKTOP HEADER */}
                 <header className="hidden lg:flex h-20 bg-gradient-to-b from-brand-dark to-black border-b border-white/5 items-center justify-between px-10 fixed top-0 left-[280px] right-0 z-30 print:hidden shadow-lg shadow-black/10">
@@ -161,7 +163,7 @@ export const DashboardShell: React.FC<Props> = ({ children, title }) => {
 
                 {/* MAIN CONTENT */}
                 <div className="hidden lg:block h-20" />{/* spacer for fixed desktop header */}
-                <main className="p-4 md:p-8 flex-1">
+                <main className="p-4 sm:p-6 lg:p-8 flex-1 min-w-0">
                     <div className="max-w-7xl mx-auto">
                         {children}
                     </div>
