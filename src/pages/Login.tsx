@@ -45,7 +45,7 @@ export function Login() {
       const actualEmail = email.includes('@') ? email : `${email}@${defaultDomain}`;
       await signInWithEmailAndPassword(auth, actualEmail, password);
       toast.success('Anmeldung erfolgreich');
-      navigate('/');
+      navigate('/dashboard');
     } catch (err: any) {
       logger.error('Login error:', err);
       setError(err.message || 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie E-Mail und Passwort.');
@@ -81,21 +81,26 @@ export function Login() {
   return (
     <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-brand-dark flex">
       {/* Left Column - Image */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-brand-dark">
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-dark/90 via-brand-dark/50 to-transparent z-10" />
-        <img 
-          src="/login-bg.png" 
-          alt="Premium Construction Site" 
-          className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-80"
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+        {/* Full-bleed photo — no blend mode so it shows in full color */}
+        <img
+          src="/login-bg.png"
+          alt="Premium Construction Site"
+          className="absolute inset-0 w-full h-full object-cover"
         />
+        {/* Overlay: dark enough for text, light enough to see the photo */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black/75 via-black/50 to-black/25 z-10" />
+        {/* Bottom fade for extra text contrast */}
+        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black/65 to-transparent z-10" />
+
         <div className="relative z-20 flex flex-col justify-center p-12 lg:p-16 xl:p-24 h-full">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-brand-primary/20 backdrop-blur-md border border-brand-primary/30 mb-8 shadow-2xl">
             <HardHat className="w-8 h-8 text-brand-primary" />
           </div>
-          <h1 className="text-4xl xl:text-5xl font-bold text-white mb-6 leading-tight tracking-tight">
+          <h1 className="text-4xl xl:text-5xl font-bold text-white mb-6 leading-tight tracking-tight drop-shadow-lg">
             Gestalten Sie die <br/><span className="text-brand-primary">Zukunft des Bauens.</span>
           </h1>
-          <p className="text-lg text-slate-300 max-w-lg leading-relaxed font-light">
+          <p className="text-lg text-slate-200 max-w-lg leading-relaxed font-light drop-shadow">
             Verwalten Sie Ihre Baustellen, Mitarbeiter und Berichte – digital, effizient und auf Premium-Niveau.
           </p>
         </div>

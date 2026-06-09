@@ -102,7 +102,7 @@ export function ResetPassword() {
       toast.success('Passwort erfolgreich geändert!');
       
       // Auto redirect after 2 seconds
-      setTimeout(() => navigate('/'), 2000);
+      setTimeout(() => navigate('/dashboard'), 2000);
       
     } catch (err: any) {
       console.error('Password reset error:', err);

@@ -20,6 +20,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { Login } from './pages/Login';
 import { ResetPassword } from './pages/ResetPassword';
 import { Account } from './pages/Account';
+import { LandingPage } from './pages/LandingPage';
 
 // Only post navigation messages in development/iframe preview contexts
 export function NavigationTracker() {
@@ -99,6 +100,7 @@ function App() {
             <NavigationTracker />
             <Routes>
                 {/* Public Routes */}
+                <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 
@@ -110,7 +112,7 @@ function App() {
 
                 {/* Admin + Vorarbeiter */}
                 <Route element={<ProtectedRoute allowedRoles={['admin', 'vorarbeiter']} />}>
-                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/reports" element={<Reports />} />
                     <Route path="/daily-reports/:id" element={<DailyReportForm />} />
                     <Route path="/weekly-reports/:id" element={<WeeklyReportForm />} />

@@ -124,7 +124,7 @@ export const Sidebar = ({ isOpen, onClose, logoUrl }: SidebarProps) => {
                 {/* Navigation */}
                 <nav className="flex-1 px-3 py-2 space-y-0.5 overflow-y-auto">
                     <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest px-4 py-2">Hauptmenü</p>
-                    <NavLink to="/" icon={LayoutDashboard} label="Dashboard" active={location.pathname === '/'} onClick={onClose} />
+                    <NavLink to="/dashboard" icon={LayoutDashboard} label="Dashboard" active={location.pathname === '/dashboard'} onClick={onClose} />
                     <NavLink to="/sites" icon={MapPin} label="Baustellen" active={location.pathname.startsWith('/sites')} onClick={onClose} />
 
                     <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest px-4 pt-5 pb-2">Verwaltung</p>
