@@ -70,8 +70,8 @@ function Counter({
   const [count, setCount] = useState(0);
   const [started, setStarted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const frameRef = useRef<number>();
-  const startRef = useRef<number>();
+  const frameRef = useRef<number | undefined>(undefined);
+  const startRef = useRef<number | undefined>(undefined);
 
   // Observe the block-level div — fires when truly scrolled into view
   useEffect(() => {
@@ -250,13 +250,11 @@ export function LandingPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-20">
           {/* Logo */}
           <a href="#hero" className="flex items-center gap-3 group" aria-label="Home">
-            <div className="w-12 h-12 rounded-xl overflow-hidden shadow-lg group-hover:scale-105 transition-transform duration-200 border-2 border-red-600/30 bg-white flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl overflow-hidden shadow-lg shadow-red-700/40 group-hover:scale-105 transition-transform duration-200 bg-red-600 flex items-center justify-center">
               {logoUrl ? (
-                <img src={logoUrl} alt="Logo" className="w-full h-full object-contain p-1" />
+                <img src={logoUrl} alt="Logo" className="w-full h-full object-contain p-1.5" />
               ) : (
-                <div className="w-full h-full bg-gradient-to-tr from-red-600/20 to-red-600/5 flex items-center justify-center">
-                  <HardHat className="w-6 h-6 text-red-600" />
-                </div>
+                <HardHat className="w-6 h-6 text-white" />
               )}
             </div>
             <div>
@@ -671,13 +669,11 @@ export function LandingPage() {
               <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-[#101010] rounded-3xl transform -rotate-3 opacity-20" />
               <div className="relative bg-[#101010] rounded-3xl p-8 shadow-2xl border border-white/5">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 bg-white flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl overflow-hidden bg-red-600 shadow-md shadow-red-600/40 flex items-center justify-center">
                     {logoUrl ? (
-                      <img src={logoUrl} alt="Logo" className="w-full h-full object-contain p-1" />
+                      <img src={logoUrl} alt="Logo" className="w-full h-full object-contain p-1.5" />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-tr from-red-600/20 to-red-600/5 flex items-center justify-center">
-                        <HardHat className="w-5 h-5 text-red-600" />
-                      </div>
+                      <HardHat className="w-5 h-5 text-white" />
                     )}
                   </div>
                   <div>
@@ -859,13 +855,11 @@ export function LandingPage() {
       <footer className="bg-[#0a0a0a] border-t border-white/5 py-12" style={{ fontFamily: 'Barlow, sans-serif' }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 bg-white flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl overflow-hidden bg-red-700 shadow-md shadow-red-700/40 flex items-center justify-center">
               {logoUrl ? (
-                <img src={logoUrl} alt="Logo" className="w-full h-full object-contain p-1" />
+                <img src={logoUrl} alt="Logo" className="w-full h-full object-contain p-1.5" />
               ) : (
-                <div className="w-full h-full bg-gradient-to-tr from-red-600/20 to-red-600/5 flex items-center justify-center">
-                  <HardHat className="w-5 h-5 text-red-600" />
-                </div>
+                <HardHat className="w-5 h-5 text-white" />
               )}
             </div>
             <div>
