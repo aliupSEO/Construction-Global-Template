@@ -855,7 +855,7 @@ export function LandingPage() {
       <footer className="bg-[#0a0a0a] border-t border-white/5 py-12" style={{ fontFamily: 'Barlow, sans-serif' }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl overflow-hidden bg-red-700 shadow-md shadow-red-700/40 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl overflow-hidden bg-red-600 shadow-md shadow-red-600/40 flex items-center justify-center">
               {logoUrl ? (
                 <img src={logoUrl} alt="Logo" className="w-full h-full object-contain p-1.5" />
               ) : (
