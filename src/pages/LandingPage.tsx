@@ -157,84 +157,84 @@ export function LandingPage() {
   const features = [
     {
       icon: <ClipboardList className="w-6 h-6" />,
-      title: 'Daily & Weekly Reports',
-      desc: 'Generate professional construction reports in seconds. Track progress, log issues, and share with stakeholders instantly.',
+      title: 'Tages- & Wochenberichte',
+      desc: 'Erstellen Sie professionelle Bauberichte in Sekunden. Fortschritt verfolgen, Probleme erfassen und sofort mit Beteiligten teilen.',
       color: 'from-red-500 to-red-700',
     },
     {
       icon: <Users className="w-6 h-6" />,
-      title: 'Employee Management',
-      desc: 'Manage your entire workforce — roles, leave requests, assignments — from a single powerful dashboard.',
+      title: 'Mitarbeiterverwaltung',
+      desc: 'Verwalten Sie Ihre gesamte Belegschaft – Rollen, Urlaubsanträge und Einsätze – in einem einzigen leistungsstarken Dashboard.',
       color: 'from-slate-700 to-slate-900',
     },
     {
       icon: <MapPin className="w-6 h-6" />,
-      title: 'Site Tracking',
-      desc: 'Monitor multiple construction sites in real time. Assign teams, track milestones, and stay on schedule.',
+      title: 'Baustellenverfolgung',
+      desc: 'Überwachen Sie mehrere Baustellen in Echtzeit. Teams einteilen, Meilensteine verfolgen und Zeitpläne einhalten.',
       color: 'from-amber-500 to-orange-600',
     },
     {
       icon: <BarChart3 className="w-6 h-6" />,
-      title: 'Analytics Dashboard',
-      desc: 'Visual KPIs, productivity metrics, and project health indicators give you actionable insights at a glance.',
+      title: 'Analyse-Dashboard',
+      desc: 'Visuelle KPIs, Produktivitätskennzahlen und Projektindikatoren liefern Ihnen auf einen Blick verwertbare Erkenntnisse.',
       color: 'from-red-500 to-rose-700',
     },
     {
       icon: <Calendar className="w-6 h-6" />,
-      title: 'Leave Management',
-      desc: 'Streamline vacation requests and approvals with automated workflows that keep your crew on the same page.',
+      title: 'Urlaubsverwaltung',
+      desc: 'Vereinfachen Sie Urlaubsanträge und Genehmigungen mit automatisierten Workflows, die Ihr Team stets auf dem gleichen Stand halten.',
       color: 'from-slate-600 to-slate-800',
     },
     {
       icon: <FileText className="w-6 h-6" />,
-      title: 'Print-Ready Documents',
-      desc: 'Export polished PDF reports and documents formatted exactly how clients and authorities expect them.',
+      title: 'Druckfertige Dokumente',
+      desc: 'Exportieren Sie professionelle PDF-Berichte und Dokumente, genau so formatiert, wie es Kunden und Behörden erwarten.',
       color: 'from-amber-600 to-red-600',
     },
   ];
 
   const benefits = [
-    'Save 5+ hours per week on manual reporting',
-    'Reduce miscommunication on site by 80%',
-    'Real-time visibility for managers & owners',
-    'Role-based access for your whole team',
-    'Works offline — syncs when connected',
-    'GDPR-compliant data storage in Europe',
+    'Sparen Sie über 5 Stunden pro Woche bei der manuellen Berichterstellung',
+    'Missverständnisse auf der Baustelle um 80 % reduzieren',
+    'Echtzeit-Überblick für Führungskräfte und Eigentümer',
+    'Rollenbasierter Zugriff für das gesamte Team',
+    'Funktioniert offline – synchronisiert bei Verbindung',
+    'DSGVO-konforme Datenspeicherung in Europa',
   ];
 
   const stats = [
-    { label: 'Active Projects', value: 2400, suffix: '+' },
-    { label: 'Reports Generated', value: 48000, suffix: '+' },
-    { label: 'Team Members Managed', value: 12000, suffix: '+' },
-    { label: 'Hours Saved Monthly', value: 95, suffix: '%' },
+    { label: 'Aktive Projekte', value: 2400, suffix: '+' },
+    { label: 'Generierte Berichte', value: 48000, suffix: '+' },
+    { label: 'Verwaltete Mitarbeiter', value: 12000, suffix: '+' },
+    { label: 'Monatlich gesparte Stunden', value: 95, suffix: '%' },
   ];
 
   const testimonials = [
     {
       name: 'Markus Bauer',
-      role: 'Site Manager, Wien',
-      text: 'The reporting alone saves us half a day every week. Crystal clear dashboards, fast, and works perfectly on mobile.',
+      role: 'Bauleiter, Wien',
+      text: 'Allein die Berichtsfunktion spart uns jede Woche einen halben Tag. Glasklare Dashboards, schnell und auf dem Handy perfekt nutzbar.',
       stars: 5,
     },
     {
       name: 'Elena Müller',
-      role: 'Project Director, Graz',
-      text: 'Finally a construction management tool built for how we actually work. Our entire crew adopted it within a week.',
+      role: 'Projektleiterin, Graz',
+      text: 'Endlich ein Baumanagementsystem, das so funktioniert, wie wir wirklich arbeiten. Unser gesamtes Team hat es innerhalb einer Woche übernommen.',
       stars: 5,
     },
     {
       name: 'Thomas Huber',
-      role: 'CEO, Huber Bau GmbH',
-      text: 'The analytics dashboard gives me real-time visibility I never had before. Absolutely game-changing for our business.',
+      role: 'Geschäftsführer, Huber Bau GmbH',
+      text: 'Das Analyse-Dashboard gibt mir einen Echtzeitüberblick, den ich vorher nie hatte. Absolut wegweisend für unser Unternehmen.',
       stars: 5,
     },
   ];
 
   const navLinks = [
-    { label: 'Features', href: '#features' },
-    { label: 'Benefits', href: '#benefits' },
-    { label: 'Stats', href: '#stats' },
-    { label: 'Testimonials', href: '#testimonials' },
+    { label: 'Funktionen', href: '#features' },
+    { label: 'Vorteile', href: '#benefits' },
+    { label: 'Kennzahlen', href: '#stats' },
+    { label: 'Referenzen', href: '#testimonials' },
   ];
 
   return (
@@ -284,14 +284,14 @@ export function LandingPage() {
               onClick={() => navigate('/login')}
               className="px-5 py-2.5 text-sm font-semibold text-white border border-white/20 rounded-xl hover:border-white/40 hover:bg-white/5 transition-all duration-200"
             >
-              Sign In
+              Anmelden
             </button>
             <button
               id="lp-nav-cta"
               onClick={() => navigate('/login')}
               className="px-5 py-2.5 text-sm font-bold text-white bg-red-600 rounded-xl hover:bg-red-500 transition-all duration-200 shadow-lg shadow-red-600/30 hover:shadow-red-500/40 hover:-translate-y-0.5"
             >
-              Get Started Free
+              Kostenlos starten
             </button>
           </div>
 
@@ -328,8 +328,8 @@ export function LandingPage() {
               </a>
             ))}
             <div className="pt-3 flex flex-col gap-2">
-              <button onClick={() => navigate('/login')} className="w-full py-3 text-sm font-semibold text-white border border-white/20 rounded-xl hover:bg-white/5 transition-all">Sign In</button>
-              <button onClick={() => navigate('/login')} className="w-full py-3 text-sm font-bold text-white bg-red-600 rounded-xl hover:bg-red-500 transition-all shadow-lg shadow-red-600/30">Get Started Free</button>
+              <button onClick={() => navigate('/login')} className="w-full py-3 text-sm font-semibold text-white border border-white/20 rounded-xl hover:bg-white/5 transition-all">Anmelden</button>
+              <button onClick={() => navigate('/login')} className="w-full py-3 text-sm font-bold text-white bg-red-600 rounded-xl hover:bg-red-500 transition-all shadow-lg shadow-red-600/30">Kostenlos starten</button>
             </div>
           </div>
         </div>
@@ -362,19 +362,19 @@ export function LandingPage() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-600/10 border border-red-500/20 rounded-full mb-8">
               <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-              <span className="text-red-400 text-xs font-semibold uppercase tracking-widest">Construction Intelligence Platform</span>
+              <span className="text-red-400 text-xs font-semibold uppercase tracking-widest">Intelligente Bau-Management-Plattform</span>
             </div>
 
             <h1 className="text-5xl sm:text-6xl xl:text-7xl font-extrabold text-white leading-[1.05] tracking-tight mb-6" style={{ fontFamily: 'Arial, sans-serif' }}>
-              Build Smarter.<br />
+              Klüger bauen.<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-red-400 to-amber-400">
-                Manage Better.
+                Besser verwalten.
               </span>
             </h1>
 
             <p className="text-lg lg:text-xl text-slate-400 leading-relaxed max-w-xl mx-auto lg:mx-0 mb-10">
-              The all-in-one construction management platform for modern teams.
-              Reports, employees, sites, and analytics — unified in one powerful dashboard.
+              Die All-in-One-Baumanagementsoftware für moderne Teams.
+              Berichte, Mitarbeiter, Baustellen und Analysen – vereint in einem leistungsstarken Dashboard.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -383,7 +383,7 @@ export function LandingPage() {
                 onClick={() => navigate('/login')}
                 className="group px-8 py-4 bg-red-600 text-white font-bold rounded-2xl shadow-2xl shadow-red-600/30 hover:bg-red-500 hover:shadow-red-500/40 hover:-translate-y-1 transition-all duration-200 flex items-center justify-center gap-2 text-base"
               >
-                Start Free Today
+                Jetzt kostenlos starten
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
               <a
@@ -391,7 +391,7 @@ export function LandingPage() {
                 id="lp-hero-cta-secondary"
                 className="px-8 py-4 border border-white/20 text-white font-semibold rounded-2xl hover:border-white/40 hover:bg-white/5 transition-all duration-200 flex items-center justify-center gap-2 text-base"
               >
-                See Features
+                Funktionen entdecken
                 <ChevronDown className="w-4 h-4" />
               </a>
             </div>
@@ -406,7 +406,7 @@ export function LandingPage() {
                 ))}
               </div>
               <div className="text-sm text-slate-400">
-                <span className="text-white font-semibold">2,400+</span> teams trust us worldwide
+                <span className="text-white font-semibold">2.400+</span> Teams vertrauen uns weltweit
               </div>
             </div>
           </div>
@@ -425,11 +425,11 @@ export function LandingPage() {
                     <HardHat className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <p className="text-white font-bold text-sm">Daily Report</p>
-                    <p className="text-red-200 text-xs">Site A — Baustelle Wien Mitte</p>
+                    <p className="text-white font-bold text-sm">Tagesbericht</p>
+                    <p className="text-red-200 text-xs">Baustelle A — Wien Mitte</p>
                   </div>
                   <div className="ml-auto text-right">
-                    <p className="text-white text-xs font-semibold">Today</p>
+                    <p className="text-white text-xs font-semibold">Heute</p>
                     <p className="text-red-200 text-xs">09 Jun 2026</p>
                   </div>
                 </div>
@@ -437,10 +437,10 @@ export function LandingPage() {
                 {/* Card body */}
                 <div className="p-6 space-y-4">
                   {[
-                    { label: 'Workers on Site', value: '24', icon: <Users className="w-4 h-4 text-red-400" />, delta: '+3' },
-                    { label: 'Tasks Completed', value: '18 / 22', icon: <CheckCircle2 className="w-4 h-4 text-green-400" />, delta: '82%' },
-                    { label: 'Hours Logged', value: '192h', icon: <Clock className="w-4 h-4 text-amber-400" />, delta: 'On track' },
-                    { label: 'Open Issues', value: '2', icon: <AlertTriangle className="w-4 h-4 text-orange-400" />, delta: '↓ 1' },
+                    { label: 'Arbeiter vor Ort', value: '24', icon: <Users className="w-4 h-4 text-red-400" />, delta: '+3' },
+                    { label: 'Aufgaben erledigt', value: '18 / 22', icon: <CheckCircle2 className="w-4 h-4 text-green-400" />, delta: '82%' },
+                    { label: 'Gebuchte Stunden', value: '192h', icon: <Clock className="w-4 h-4 text-amber-400" />, delta: 'Im Plan' },
+                    { label: 'Offene Probleme', value: '2', icon: <AlertTriangle className="w-4 h-4 text-orange-400" />, delta: '↓ 1' },
                   ].map((row) => (
                     <div key={row.label} className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
                       <div className="flex items-center gap-3">
@@ -457,7 +457,7 @@ export function LandingPage() {
                   {/* Mini progress */}
                   <div className="pt-2">
                     <div className="flex justify-between text-xs text-slate-500 mb-2">
-                      <span>Overall Progress</span>
+                      <span>Gesamtfortschritt</span>
                       <span className="text-white font-semibold">68%</span>
                     </div>
                     <div className="h-2 bg-white/5 rounded-full overflow-hidden">
@@ -472,12 +472,12 @@ export function LandingPage() {
               {/* Floating badge cards */}
               <div className="absolute -top-4 -right-4 bg-[#1a1a1a] border border-white/10 rounded-2xl px-4 py-3 shadow-2xl flex items-center gap-2 animate-bounce" style={{ animationDuration: '3s' }}>
                 <TrendingUp className="w-4 h-4 text-green-400" />
-                <span className="text-white text-xs font-semibold">+24% Efficiency</span>
+                <span className="text-white text-xs font-semibold">+24% Effizienz</span>
               </div>
 
               <div className="absolute -bottom-4 -left-4 bg-red-600 rounded-2xl px-4 py-3 shadow-2xl flex items-center gap-2" style={{ animation: 'float 4s ease-in-out infinite 1.5s' }}>
                 <Shield className="w-4 h-4 text-white" />
-                <span className="text-white text-xs font-semibold">GDPR Compliant</span>
+                <span className="text-white text-xs font-semibold">DSGVO-konform</span>
               </div>
             </div>
           </div>
@@ -485,7 +485,7 @@ export function LandingPage() {
 
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50">
-          <span className="text-white text-xs uppercase tracking-widest">Scroll</span>
+          <span className="text-white text-xs uppercase tracking-widest">Scrollen</span>
           <div className="w-px h-10 bg-gradient-to-b from-white to-transparent" />
         </div>
       </section>
@@ -493,7 +493,7 @@ export function LandingPage() {
       {/* ── LOGO BAR ── */}
       <section className="bg-[#0a0a0a] border-y border-white/5 py-8" style={{ fontFamily: 'Barlow, sans-serif' }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <p className="text-center text-slate-600 text-xs uppercase tracking-widest mb-8">Trusted by construction teams across Europe</p>
+          <p className="text-center text-slate-600 text-xs uppercase tracking-widest mb-8">Vertraut von Bauteams in ganz Europa</p>
           <div className="flex flex-wrap justify-center items-center gap-8 lg:gap-14">
             {['Bau AG', 'Huber Bau', 'Wien Construct', 'Alpine Build', 'ProBau GmbH', 'StadtBau'].map((company) => (
               <div key={company} className="text-slate-600 font-bold text-sm tracking-wide hover:text-slate-400 transition-colors cursor-default flex items-center gap-2">
@@ -512,14 +512,14 @@ export function LandingPage() {
             <div className="text-center mb-20">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-100 rounded-full mb-6">
                 <Zap className="w-4 h-4 text-red-600" />
-                <span className="text-red-700 text-xs font-semibold uppercase tracking-widest">Platform Features</span>
+                <span className="text-red-700 text-xs font-semibold uppercase tracking-widest">Plattform-Funktionen</span>
               </div>
               <h2 className="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-5 tracking-tight" style={{ fontFamily: 'Arial, sans-serif' }}>
-                Everything your team needs,<br />
-                <span className="text-red-600">nothing they don't.</span>
+                Alles, was Ihr Team braucht –<br />
+                <span className="text-red-600">nichts, was es nicht braucht.</span>
               </h2>
               <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-                Built specifically for the construction industry — from small contractors to large project developers.
+                Speziell für die Baubranche entwickelt – von kleinen Handwerksbetrieben bis hin zu großen Projektentwicklern.
               </p>
             </div>
           </FadeIn>
@@ -545,22 +545,22 @@ export function LandingPage() {
             <div>
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-600/10 border border-red-500/20 rounded-full mb-8">
                 <Globe className="w-4 h-4 text-red-400" />
-                <span className="text-red-400 text-xs font-semibold uppercase tracking-widest">Built for Scale</span>
+                <span className="text-red-400 text-xs font-semibold uppercase tracking-widest">Skalierbar entwickelt</span>
               </div>
               <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-6 leading-tight tracking-tight" style={{ fontFamily: 'Arial, sans-serif' }}>
-                One platform.<br />
-                <span className="text-red-500">Every jobsite.</span>
+                Eine Plattform.<br />
+                <span className="text-red-500">Jede Baustelle.</span>
               </h2>
               <p className="text-slate-400 text-lg mb-10 leading-relaxed">
-                Whether you're managing 2 sites or 200, our platform scales with your business. Multi-role access, real-time sync, and enterprise-grade security built in.
+                Egal ob Sie 2 oder 200 Baustellen verwalten – unsere Plattform wächst mit Ihrem Unternehmen. Mehrere Rollen, Echtzeit-Synchronisation und Unternehmenssicherheit inklusive.
               </p>
 
               <div className="space-y-4">
                 {[
-                  { icon: <Shield className="w-5 h-5 text-red-400" />, text: 'Enterprise-grade security with role-based access control' },
-                  { icon: <Zap className="w-5 h-5 text-amber-400" />, text: 'Real-time sync across all devices — mobile, tablet, desktop' },
-                  { icon: <Globe className="w-5 h-5 text-blue-400" />, text: 'Multilingual support for international construction teams' },
-                  { icon: <TrendingUp className="w-5 h-5 text-green-400" />, text: 'AI-assisted report generation saves hours per week' },
+                  { icon: <Shield className="w-5 h-5 text-red-400" />, text: 'Unternehmensgerechte Sicherheit mit rollenbasierter Zugriffskontrolle' },
+                  { icon: <Zap className="w-5 h-5 text-amber-400" />, text: 'Echtzeit-Synchronisation auf allen Geräten – Handy, Tablet, Desktop' },
+                  { icon: <Globe className="w-5 h-5 text-blue-400" />, text: 'Mehrsprachige Unterstützung für internationale Bauteams' },
+                  { icon: <TrendingUp className="w-5 h-5 text-green-400" />, text: 'KI-gestützte Berichterstellung spart Stunden pro Woche' },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-4 p-4 bg-white/5 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
                     <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center shrink-0">{item.icon}</div>
@@ -574,7 +574,7 @@ export function LandingPage() {
                 onClick={() => navigate('/login')}
                 className="mt-10 group px-8 py-4 bg-red-600 text-white font-bold rounded-2xl shadow-2xl shadow-red-600/30 hover:bg-red-500 hover:-translate-y-1 transition-all duration-200 flex items-center gap-2"
               >
-                Explore the Platform
+                Plattform erkunden
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
@@ -589,17 +589,17 @@ export function LandingPage() {
                 <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <MapPin className="w-5 h-5 text-red-500" />
-                    <span className="text-white font-semibold text-sm">Active Construction Sites</span>
+                    <span className="text-white font-semibold text-sm">Aktive Baustellen</span>
                   </div>
                   <span className="text-xs text-slate-500 bg-white/5 px-3 py-1 rounded-full">Live</span>
                 </div>
                 {/* Sites list */}
                 <div className="p-6 space-y-3">
                   {[
-                    { name: 'Wien Mitte Tower', progress: 78, status: 'On Track', color: 'text-green-400', workers: 34 },
-                    { name: 'Graz Süd Wohnbau', progress: 45, status: 'On Track', color: 'text-green-400', workers: 21 },
-                    { name: 'Linz Bridge Phase 2', progress: 92, status: 'Finishing', color: 'text-amber-400', workers: 12 },
-                    { name: 'Salzburg Office Hub', progress: 18, status: 'Starting', color: 'text-blue-400', workers: 8 },
+                    { name: 'Wien Mitte Tower', progress: 78, status: 'Im Plan', color: 'text-green-400', workers: 34 },
+                    { name: 'Graz Süd Wohnbau', progress: 45, status: 'Im Plan', color: 'text-green-400', workers: 21 },
+                    { name: 'Linz Brücke Phase 2', progress: 92, status: 'Abschlussphase', color: 'text-amber-400', workers: 12 },
+                    { name: 'Salzburg Office Hub', progress: 18, status: 'Startphase', color: 'text-blue-400', workers: 8 },
                   ].map((site) => (
                     <div key={site.name} className="p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-red-500/20 transition-all group">
                       <div className="flex items-center justify-between mb-3">
@@ -608,7 +608,7 @@ export function LandingPage() {
                           <p className={`text-xs font-medium mt-0.5 ${site.color}`}>{site.status}</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-slate-400 text-xs">{site.workers} workers</p>
+                          <p className="text-slate-400 text-xs">{site.workers} Arbeiter</p>
                           <p className="text-white text-sm font-bold">{site.progress}%</p>
                         </div>
                       </div>
@@ -633,18 +633,18 @@ export function LandingPage() {
           <FadeIn>
             <div className="text-center mb-16">
               <h2 className="text-3xl lg:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight" style={{ fontFamily: 'Arial, sans-serif' }}>
-                Proven results across the industry
+                Bewährte Ergebnisse in der gesamten Branche
               </h2>
-              <p className="text-gray-500 text-lg">Real numbers from real construction teams</p>
+              <p className="text-gray-500 text-lg">Echte Zahlen von echten Bauteams</p>
             </div>
           </FadeIn>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { value: '2,400+', label: 'Active Projects' },
-              { value: '48,000+', label: 'Reports Generated' },
-              { value: '12,000+', label: 'Team Members Managed' },
-              { value: '95%', label: 'Hours Saved Monthly' },
+              { value: '2.400+', label: 'Aktive Projekte' },
+              { value: '48.000+', label: 'Generierte Berichte' },
+              { value: '12.000+', label: 'Verwaltete Mitarbeiter' },
+              { value: '95%', label: 'Monatlich gesparte Stunden' },
             ].map((s, i) => (
               <FadeIn key={s.label} delay={i * 120}>
                 <div className="bg-white rounded-3xl p-8 text-center shadow-xl shadow-slate-200/60 border border-slate-100 hover:border-red-200 hover:shadow-red-100/40 transition-all duration-300">
@@ -688,11 +688,11 @@ export function LandingPage() {
                 {/* Timeline */}
                 <div className="space-y-4">
                   {[
-                    { time: '08:00', event: 'Daily report submitted', type: 'success' },
-                    { time: '09:15', event: 'New employee assigned to Site B', type: 'info' },
-                    { time: '10:30', event: 'Leave request approved', type: 'success' },
-                    { time: '11:45', event: 'Weekly PDF exported & sent', type: 'primary' },
-                    { time: '13:00', event: 'Site milestone reached: 75%', type: 'warn' },
+                    { time: '08:00', event: 'Tagesbericht eingereicht', type: 'success' },
+                    { time: '09:15', event: 'Neuer Mitarbeiter Baustelle B zugewiesen', type: 'info' },
+                    { time: '10:30', event: 'Urlaubsantrag genehmigt', type: 'success' },
+                    { time: '11:45', event: 'Wöchentliches PDF exportiert & gesendet', type: 'primary' },
+                    { time: '13:00', event: 'Meilenstein erreicht: 75%', type: 'warn' },
                   ].map((ev) => (
                     <div key={ev.time} className="flex items-start gap-4">
                       <span className="text-slate-500 text-xs w-12 shrink-0 pt-0.5">{ev.time}</span>
@@ -711,9 +711,9 @@ export function LandingPage() {
                 {/* Bottom stat bar */}
                 <div className="mt-6 pt-6 border-t border-white/10 grid grid-cols-3 gap-4">
                   {[
-                    { label: 'Reports', value: '12' },
-                    { label: 'Sites', value: '4' },
-                    { label: 'Workers', value: '68' },
+                    { label: 'Berichte', value: '12' },
+                    { label: 'Baustellen', value: '4' },
+                    { label: 'Arbeiter', value: '68' },
                   ].map((s) => (
                     <div key={s.label} className="text-center">
                       <p className="text-white font-extrabold text-xl">{s.value}</p>
@@ -730,14 +730,14 @@ export function LandingPage() {
             <div>
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-100 rounded-full mb-8">
                 <CheckCircle2 className="w-4 h-4 text-red-600" />
-                <span className="text-red-700 text-xs font-semibold uppercase tracking-widest">Why Teams Choose Us</span>
+                <span className="text-red-700 text-xs font-semibold uppercase tracking-widest">Warum Teams uns wählen</span>
               </div>
               <h2 className="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 tracking-tight leading-tight" style={{ fontFamily: 'Arial, sans-serif' }}>
-                Stop drowning in<br />
-                <span className="text-red-600">paperwork.</span>
+                Schluss mit dem<br />
+                <span className="text-red-600">Papierchaos.</span>
               </h2>
               <p className="text-gray-500 text-lg mb-10 leading-relaxed">
-                Our platform replaces spreadsheets, paper forms, and scattered WhatsApp messages with a single source of truth for your entire construction operation.
+                Unsere Plattform ersetzt Tabellenkalkulationen, Papierformulare und verstreute WhatsApp-Nachrichten durch eine einzige verlässliche Informationsquelle für Ihren gesamten Baubetrieb.
               </p>
 
               <ul className="space-y-4">
@@ -756,7 +756,7 @@ export function LandingPage() {
                 onClick={() => navigate('/login')}
                 className="mt-10 group px-8 py-4 bg-[#101010] text-white font-bold rounded-2xl hover:bg-[#1a1a1a] transition-all duration-200 flex items-center gap-2 text-sm shadow-xl"
               >
-                See the Platform in Action
+                Plattform in Aktion erleben
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
@@ -770,9 +770,9 @@ export function LandingPage() {
           <FadeIn>
             <div className="text-center mb-20">
               <h2 className="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-5 tracking-tight" style={{ fontFamily: 'Arial, sans-serif' }}>
-                Loved by construction pros
+                Geliebt von Bauprofis
               </h2>
-              <p className="text-gray-500 text-lg">Don't take our word for it</p>
+              <p className="text-gray-500 text-lg">Überzeugen Sie sich selbst</p>
             </div>
           </FadeIn>
 
@@ -820,18 +820,18 @@ export function LandingPage() {
           <FadeIn>
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-600/10 border border-red-500/20 rounded-full mb-8">
               <HardHat className="w-4 h-4 text-red-400" />
-              <span className="text-red-400 text-xs font-semibold uppercase tracking-widest">Ready to build smarter?</span>
+              <span className="text-red-400 text-xs font-semibold uppercase tracking-widest">Bereit, klüger zu bauen?</span>
             </div>
 
             <h2 className="text-4xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight" style={{ fontFamily: 'Arial, sans-serif' }}>
-              Start managing your sites<br />
+              Verwalten Sie Ihre Baustellen<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-amber-400">
-                like a pro today.
+                ab heute wie ein Profi.
               </span>
             </h2>
 
             <p className="text-slate-400 text-lg max-w-xl mx-auto mb-10 leading-relaxed">
-              Join thousands of construction professionals who've already digitized their operations. Setup takes less than 5 minutes.
+              Schließen Sie sich Tausenden von Bauprofis an, die ihren Betrieb bereits digitalisiert haben. Die Einrichtung dauert weniger als 5 Minuten.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -841,12 +841,12 @@ export function LandingPage() {
                 className="group px-10 py-5 bg-red-600 text-white font-bold rounded-2xl shadow-2xl shadow-red-600/30 hover:bg-red-500 hover:shadow-red-500/40 hover:-translate-y-1 transition-all duration-200 flex items-center justify-center gap-3 text-base"
               >
                 <HardHat className="w-5 h-5" />
-                Access the Platform
+                Zur Plattform
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
 
-            <p className="text-slate-600 text-sm mt-6">No credit card required · GDPR compliant · Cancel anytime</p>
+            <p className="text-slate-600 text-sm mt-6">Keine Kreditkarte erforderlich · DSGVO-konform · Jederzeit kündbar</p>
           </FadeIn>
         </div>
       </section>
@@ -864,18 +864,18 @@ export function LandingPage() {
             </div>
             <div>
               <p className="text-white font-bold text-sm">Construction Management Suite</p>
-              <p className="text-slate-600 text-xs">Built for the industry, by the industry.</p>
+              <p className="text-slate-600 text-xs">Von der Branche, für die Branche.</p>
             </div>
           </div>
 
           <div className="flex items-center gap-6">
-            {['Privacy', 'Terms', 'Contact', 'Support'].map((l) => (
+            {['Datenschutz', 'AGB', 'Kontakt', 'Support'].map((l) => (
               <a key={l} href="#" className="text-slate-600 hover:text-slate-400 text-sm transition-colors">{l}</a>
             ))}
           </div>
 
           <p className="text-slate-700 text-xs text-center md:text-right">
-            © 2026 BM Construction Suite. All rights reserved.
+            © 2026 BM Construction Suite. Alle Rechte vorbehalten.
           </p>
         </div>
       </footer>
